@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BL読了カードメーカー</title>
+  <style>
+    :root {
+      --bg: #fff8f4;
+      --paper: #fffdf8;
+      --ink: #4c342d;
+      --muted: #8f7468;
+      --pink: #f3b8c8;
+      --pink-soft: #fde5eb;
+      --cream: #fff1d6;
+      --brown: #8b5e4a;
+      --sage: #9faf95;
+      --line: #ecd3c7;
+      --shadow: 0 18px 48px rgba(96, 63, 50, .13);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Hiragino Sans", "Yu Gothic", "YuGothic", "Meiryo", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(243, 184, 200, .22), transparent 32rem),
+        linear-gradient(145deg, #fff8f4 0%, #fff5e8 42%, #fdf1f3 100%);
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 18px 14px 36px;
+    }
+
+    .top {
+      display: grid;
+      align-content: center;
+      gap: 22px;
+      padding: 34px 0 22px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      width: fit-content;
+      color: var(--brown);
+      font-weight: 700;
+      font-size: .88rem;
+    }
+
+    .brand-mark {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--pink-soft);
+      color: #b35d75;
+      border: 1px solid rgba(179, 93, 117, .18);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.45rem, 12vw, 4.35rem);
+      line-height: 1.03;
+      letter-spacing: 0;
+      color: #5b382f;
+      max-width: 8em;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 36rem;
+      color: var(--muted);
+      line-height: 1.85;
+      font-size: 1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hero-preview {
+      width: 100%;
+      max-width: 390px;
+      justify-self: center;
+      background: rgba(255, 253, 248, .7);
+      border: 1px solid rgba(236, 211, 199, .75);
+      box-shadow: var(--shadow);
+      padding: 10px;
+      border-radius: var(--radius);
+    }
+
+    .hero-preview img {
+      display: block;
+      width: 100%;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .section {
+      padding: 18px 0;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 1.18rem;
+      color: #5a3b32;
+    }
+
+    .panel {
+      background: rgba(255, 253, 248, .86);
+      border: 1px solid rgba(236, 211, 199, .9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      font-weight: 700;
+      color: #67473e;
+      font-size: .92rem;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffefb;
+      color: var(--ink);
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 86px;
+      resize: vertical;
+      line-height: 1.65;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #d994a7;
+      box-shadow: 0 0 0 3px rgba(243, 184, 200, .28);
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .tag-box {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding-top: 3px;
+    }
+
+    .tag-check input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+      min-height: 1px;
+    }
+
+    .tag-check span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fffdf9;
+      color: #78594f;
+      font-weight: 700;
+      font-size: .86rem;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .tag-check input:checked + span {
+      color: #6b2f43;
+      background: var(--pink-soft);
+      border-color: #e5aaba;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5);
+    }
+
+    .hint {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .meter-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .meter {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 6px 10px;
+      font-weight: 700;
+      color: #67473e;
+    }
+
+    .meter > * {
+      min-width: 0;
+    }
+
+    input[type="range"] {
+      grid-column: 1 / -1;
+      min-height: 30px;
+      padding: 0;
+      accent-color: #d98da2;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .meter output {
+      text-align: right;
+      color: #9d5369;
+    }
+
+    .count {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: .8rem;
+      margin-top: 5px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: var(--radius);
+      min-height: 48px;
+      padding: 12px 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn.primary {
+      color: #fff;
+      background: #a86678;
+      box-shadow: 0 12px 28px rgba(168, 102, 120, .25);
+    }
+
+    .btn.secondary {
+      color: #6a4036;
+      background: #ffe9cf;
+      border: 1px solid #edcba7;
+    }
+
+    .btn.ghost {
+      color: #6a4036;
+      background: #fffdf9;
+      border: 1px solid var(--line);
+    }
+
+    .preview-wrap {
+      display: grid;
+      gap: 14px;
+    }
+
+    .canvas-shell {
+      background: rgba(255, 253, 248, .86);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .ad-note {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: .83rem;
+    }
+
+    .search-links {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+    }
+
+    .search-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 45px;
+      border-radius: var(--radius);
+      background: #fffdf9;
+      border: 1px solid var(--line);
+      color: #6b473e;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .footer {
+      padding: 18px 0 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    @media (min-width: 760px) {
+      .page {
+        padding: 28px 24px 48px;
+      }
+
+      .top {
+        grid-template-columns: 1fr .75fr;
+        align-items: center;
+        min-height: 82vh;
+      }
+
+      .hero-copy {
+        display: grid;
+        gap: 18px;
+      }
+
+      .meta-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tag-box {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .meter-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .actions {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .preview-wrap {
+        grid-template-columns: minmax(0, 1fr) 260px;
+        align-items: start;
+      }
+
+      .search-links {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="top" id="top">
+      <div class="hero-copy">
+        <div class="brand"><span class="brand-mark">BL</span> 読了カードメーカー</div>
+        <h1>BL読了<br>カード<br>メーカー</h1>
+        <p class="lead">作品名、作者名、刺さった要素、読後感を入れるだけ。Xに投稿しやすい1200×1200pxの読了カード画像を、スマホでもさっと作れます。</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#form" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">カードを作る</a>
+          <a class="btn ghost" href="#preview" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">プレビューを見る</a>
+        </div>
+      </div>
+      <div class="hero-preview" aria-hidden="true">
+        <img id="heroImage" alt="">
+      </div>
+    </section>
+
+    <section class="section" id="form">
+      <h2 class="section-title">入力フォーム</h2>
+      <div class="panel">
+        <form class="form-grid">
+          <div class="meta-row">
+            <label>作品名
+              <input id="titleInput" type="text" placeholder="例：きみと春待ち">
+            </label>
+            <label>作者名
+              <input id="authorInput" type="text" placeholder="例：桜井ゆめ">
+            </label>
+          </div>
+
+          <div class="meta-row">
+            <label>読了日
+              <input id="dateInput" type="date">
+            </label>
+            <label>ネタバレ範囲
+              <select id="spoilerInput">
+                <option>ネタバレなし</option>
+                <option>ふんわり</option>
+                <option>ネタバレあり</option>
+              </select>
+            </label>
+          </div>
+
+          <div>
+            <label>刺さった要素（最大5個）</label>
+            <div class="tag-box" id="tagBox"></div>
+            <p class="hint" id="tagHint">0 / 5 選択中</p>
+          </div>
+
+          <div>
+            <label>読後感</label>
+            <div class="meter-grid" id="meterGrid"></div>
+          </div>
+
+          <label>ひとこと感想
+            <textarea id="commentInput" maxlength="60" placeholder="60文字以内で、読後の熱をそっと残す"></textarea>
+            <span class="count"><span>カード内で自動改行します</span><span id="commentCount">0 / 60</span></span>
+          </label>
+        </form>
+      </div>
+    </section>
+
+    <section class="section" id="preview">
+      <h2 class="section-title">プレビュー</h2>
+      <div class="preview-wrap">
+        <div>
+          <div class="canvas-shell">
+            <canvas id="cardCanvas" width="1200" height="1200" aria-label="生成されたBL読了カード"></canvas>
+          </div>
+          <div class="actions">
+            <button class="btn primary" id="saveButton" type="button">画像を保存</button>
+            <button class="btn secondary" id="shareButton" type="button">Xで共有</button>
+            <button class="btn ghost" id="resetButton" type="button">入力を整える</button>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <p class="ad-note">※このページにはPR/広告リンクを含む場合があります</p>
+          <div class="search-links" id="searchLinks"></div>
+        </aside>
+      </div>
+    </section>
+
+    <p class="footer">BL読了カードメーカー</p>
+  </main>
+
+  <script>
+    const tagOptions = [
+      "執着", "両片想い", "すれ違い", "溺愛", "体格差", "年下攻め", "年上受け", "幼なじみ", "ケンカップル", "主従",
+      "共依存", "健気受け", "クール攻め", "重い愛", "甘々", "シリアス", "ハピエン", "メリバ", "ギャップ", "余韻強め"
+    ];
+
+    const meters = [
+      { key: "sweet", label: "甘さ", value: 4 },
+      { key: "heavy", label: "重さ", value: 3 },
+      { key: "spice", label: "えろ度", value: 3 },
+      { key: "after", label: "余韻", value: 4 },
+      { key: "twist", label: "拗らせ度", value: 3 }
+    ];
+
+    const els = {
+      title: document.getElementById("titleInput"),
+      author: document.getElementById("authorInput"),
+      date: document.getElementById("dateInput"),
+      spoiler: document.getElementById("spoilerInput"),
+      tagBox: document.getElementById("tagBox"),
+      tagHint: document.getElementById("tagHint"),
+      meterGrid: document.getElementById("meterGrid"),
+      comment: document.getElementById("commentInput"),
+      commentCount: document.getElementById("commentCount"),
+      canvas: document.getElementById("cardCanvas"),
+      heroImage: document.getElementById("heroImage"),
+      links: document.getElementById("searchLinks"),
+      save: document.getElementById("saveButton"),
+      share: document.getElementById("shareButton"),
+      reset: document.getElementById("resetButton")
+    };
+
+    function setToday() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset() * 60000;
+      els.date.value = new Date(now.getTime() - offset).toISOString().slice(0, 10);
+    }
+
+    function setupTags() {
+      els.tagBox.innerHTML = "";
+      tagOptions.forEach((tag) => {
+        const label = document.createElement("label");
+        label.className = "tag-check";
+        label.innerHTML = `<input type="checkbox" value="${tag}"><span>${tag}</span>`;
+        els.tagBox.appendChild(label);
+      });
+    }
+
+    function setupMeters() {
+      els.meterGrid.innerHTML = "";
+      meters.forEach((meter) => {
+        const row = document.createElement("div");
+        row.className = "meter";
+        row.innerHTML = `
+          <span>${meter.label}</span>
+          <input id="${meter.key}Input" type="range" min="1" max="5" step="1" value="${meter.value}" aria-label="${meter.label}">
+          <output id="${meter.key}Output">${meter.value}</output>
+        `;
+        els.meterGrid.appendChild(row);
+      });
+    }
+
+    function getSelectedTags() {
+      return Array.from(els.tagBox.querySelectorAll("input:checked")).map((input) => input.value);
+    }
+
+    function getMeterValues() {
+      return meters.map((meter) => {
+        const input = document.getElementById(`${meter.key}Input`);
+        return { ...meter, value: Number(input.value) };
+      });
+    }
+
+    function getCardData() {
+      return {
+        title: els.title.value.trim() || "作品名未入力",
+        author: els.author.value.trim(),
+        date: els.date.value ? els.date.value.replaceAll("-", ".") : "",
+        spoiler: els.spoiler.value,
+        tags: getSelectedTags(),
+        meters: getMeterValues(),
+        comment: els.comment.value.trim()
+      };
+    }
+
+    function roundedRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+      const chars = Array.from(text || "");
+      const lines = [];
+      let line = "";
+      chars.forEach((char) => {
+        const test = line + char;
+        if (ctx.measureText(test).width > maxWidth && line) {
+          lines.push(line);
+          line = char;
+        } else {
+          line = test;
+        }
+      });
+      if (line) lines.push(line);
+      const visible = typeof maxLines === "number" ? lines.slice(0, maxLines) : lines;
+      visible.forEach((l, index) => {
+        let output = l;
+        if (maxLines && index === maxLines - 1 && lines.length > maxLines) output = l.slice(0, Math.max(0, l.length - 1)) + "…";
+        ctx.fillText(output, x, y + index * lineHeight);
+      });
+      return visible.length * lineHeight;
+    }
+
+    function drawStars(ctx, label, value, x, y) {
+      ctx.fillStyle = "#6b473e";
+      ctx.font = "700 28px 'Yu Gothic', sans-serif";
+      ctx.fillText(label, x, y);
+      ctx.font = "34px serif";
+      for (let i = 1; i <= 5; i++) {
+        ctx.fillStyle = i <= value ? "#d98da2" : "#ead6cf";
+        ctx.fillText("★", x + 112 + (i - 1) * 34, y + 2);
+      }
+    }
+
+    function drawRadarChart(ctx, meterValues, cx, cy, radius) {
+      const axes = meterValues;
+      const sides = axes.length;
+      const start = -Math.PI / 2;
+
+      ctx.save();
+      ctx.strokeStyle = "#e7cfc4";
+      ctx.lineWidth = 2;
+      ctx.fillStyle = "rgba(255, 244, 230, .72)";
+      for (let level = 5; level >= 1; level--) {
+        ctx.beginPath();
+        const r = radius * level / 5;
+        for (let i = 0; i < sides; i++) {
+          const angle = start + i * Math.PI * 2 / sides;
+          const x = cx + Math.cos(angle) * r;
+          const y = cy + Math.sin(angle) * r;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        if (level === 5) ctx.fill();
+        ctx.stroke();
+      }
+
+      axes.forEach((axis, i) => {
+        const angle = start + i * Math.PI * 2 / sides;
+        const x = cx + Math.cos(angle) * radius;
+        const y = cy + Math.sin(angle) * radius;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        const labelX = cx + Math.cos(angle) * (radius + 64);
+        const labelY = cy + Math.sin(angle) * (radius + 52);
+        ctx.fillStyle = "#6d4a40";
+        ctx.font = "700 24px 'Yu Gothic', sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(axis.label, labelX, labelY);
+      });
+
+      ctx.beginPath();
+      axes.forEach((axis, i) => {
+        const angle = start + i * Math.PI * 2 / sides;
+        const r = radius * axis.value / 5;
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.closePath();
+      ctx.fillStyle = "rgba(217, 141, 162, .34)";
+      ctx.strokeStyle = "#c66f88";
+      ctx.lineWidth = 5;
+      ctx.fill();
+      ctx.stroke();
+
+      axes.forEach((axis, i) => {
+        const angle = start + i * Math.PI * 2 / sides;
+        const r = radius * axis.value / 5;
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r;
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = "#fffdf8";
+        ctx.fill();
+        ctx.strokeStyle = "#c66f88";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    function drawCard() {
+      const data = getCardData();
+      const ctx = els.canvas.getContext("2d");
+      const w = els.canvas.width;
+      const h = els.canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "#fff8f4";
+      ctx.fillRect(0, 0, w, h);
+
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, "#fffdf8");
+      grad.addColorStop(.52, "#fff1df");
+      grad.addColorStop(1, "#fde4eb");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.fillStyle = "rgba(255,255,255,.48)";
+      for (let i = 0; i < 26; i++) {
+        const x = 58 + (i * 137) % 1100;
+        const y = 40 + (i * 211) % 1110;
+        ctx.beginPath();
+        ctx.arc(x, y, 2 + (i % 4), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      roundedRect(ctx, 72, 72, 1056, 1056, 34);
+      ctx.fillStyle = "rgba(255, 253, 248, .88)";
+      ctx.fill();
+      ctx.strokeStyle = "#e9cfc4";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = "#a35f74";
+      ctx.font = "700 34px 'Yu Gothic', sans-serif";
+      ctx.fillText("BL読了カード", 120, 150);
+
+      ctx.fillStyle = "#5b382f";
+      ctx.font = "800 64px 'Yu Gothic', sans-serif";
+      drawWrappedText(ctx, `『${data.title}』`, 120, 250, 585, 76, 3);
+
+      let authorY = 490;
+      if (data.author) {
+        ctx.fillStyle = "#7b5b50";
+        ctx.font = "700 32px 'Yu Gothic', sans-serif";
+        ctx.fillText(`${data.author} 先生`, 124, authorY);
+      }
+
+      ctx.fillStyle = "#8c6b60";
+      ctx.font = "700 28px 'Yu Gothic', sans-serif";
+      if (data.date) ctx.fillText(`読了日  ${data.date}`, 124, 548);
+
+      roundedRect(ctx, 120, 594, 584, 138, 24);
+      ctx.fillStyle = "#fff3e3";
+      ctx.fill();
+      ctx.strokeStyle = "#ecd3c7";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = "#6b473e";
+      ctx.font = "700 25px 'Yu Gothic', sans-serif";
+      ctx.fillText("刺さった要素", 146, 638);
+      ctx.font = "700 26px 'Yu Gothic', sans-serif";
+      const tagText = data.tags.length ? data.tags.map((tag) => `#${tag}`).join("  ") : "まだ選んでいません";
+      drawWrappedText(ctx, tagText, 146, 682, 530, 36, 2);
+
+      roundedRect(ctx, 120, 770, 584, 172, 24);
+      ctx.fillStyle = "#fffdf8";
+      ctx.fill();
+      ctx.strokeStyle = "#ecd3c7";
+      ctx.stroke();
+      ctx.fillStyle = "#6b473e";
+      ctx.font = "700 25px 'Yu Gothic', sans-serif";
+      ctx.fillText("ひとこと感想", 146, 816);
+      ctx.fillStyle = "#5d4038";
+      ctx.font = "700 34px 'Yu Gothic', sans-serif";
+      drawWrappedText(ctx, data.comment || "読了の余韻をここに。", 146, 870, 530, 48, 2);
+
+      const starBaseX = 756;
+      const starBaseY = 760;
+      const starItems = data.meters.slice(0, 4);
+      starItems.forEach((item, index) => {
+        drawStars(ctx, item.label, item.value, starBaseX, starBaseY + index * 56);
+      });
+
+      roundedRect(ctx, 742, 120, 320, 70, 35);
+      ctx.fillStyle = "#fce5eb";
+      ctx.fill();
+      ctx.fillStyle = "#8e4d63";
+      ctx.font = "700 26px 'Yu Gothic', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(data.spoiler, 902, 164);
+
+      drawRadarChart(ctx, data.meters, 910, 452, 198);
+
+      ctx.textAlign = "left";
+      roundedRect(ctx, 120, 984, 928, 62, 31);
+      ctx.fillStyle = "rgba(159, 175, 149, .16)";
+      ctx.fill();
+      ctx.fillStyle = "#7a5a50";
+      ctx.font = "700 23px 'Yu Gothic', sans-serif";
+      ctx.fillText("甘さ・重さ・えろ度・余韻・拗らせ度を5角形チャートで記録", 154, 1024);
+
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#a07d72";
+      ctx.font = "700 22px 'Yu Gothic', sans-serif";
+      ctx.fillText("BL読了カードメーカー", w / 2, 1090);
+
+      els.heroImage.src = els.canvas.toDataURL("image/png");
+    }
+
+    function createSearchLinks(title, author) {
+      const query = encodeURIComponent([title || "作品名未入力", author].filter(Boolean).join(" "));
+      return [
+        { name: "DMMブックスで探す", url: `https://book.dmm.com/search/?searchstr=${query}` },
+        { name: "コミックシーモアで探す", url: `https://www.cmoa.jp/search/result/?word=${query}` },
+        { name: "Renta!で探す", url: `https://renta.papy.co.jp/renta/sc/frm/search?word=${query}` },
+        { name: "ebookjapanで探す", url: `https://ebookjapan.yahoo.co.jp/search/?keyword=${query}` }
+      ];
+    }
+
+    function renderSearchLinks() {
+      const data = getCardData();
+      els.links.innerHTML = "";
+      createSearchLinks(data.title, data.author).forEach((link) => {
+        const a = document.createElement("a");
+        a.href = link.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = link.name;
+        els.links.appendChild(a);
+      });
+    }
+
+    function updateTagLimit(changedInput) {
+      const selected = getSelectedTags();
+      if (selected.length > 5 && changedInput) changedInput.checked = false;
+      const count = getSelectedTags().length;
+      els.tagHint.textContent = `${count} / 5 選択中`;
+    }
+
+    function updateMeterOutputs() {
+      meters.forEach((meter) => {
+        const input = document.getElementById(`${meter.key}Input`);
+        const output = document.getElementById(`${meter.key}Output`);
+        output.textContent = input.value;
+      });
+    }
+
+    function updateAll() {
+      updateMeterOutputs();
+      els.commentCount.textContent = `${els.comment.value.length} / 60`;
+      renderSearchLinks();
+      drawCard();
+    }
+
+    function saveImage() {
+      drawCard();
+      const link = document.createElement("a");
+      const safeTitle = (els.title.value.trim() || "bl-reading-card").replace(/[\\/:*?"<>|]/g, "");
+      link.download = `${safeTitle}-BL読了カード.png`;
+      link.href = els.canvas.toDataURL("image/png");
+      link.click();
+    }
+
+    function shareToX() {
+      const data = getCardData();
+      const tags = data.tags.length ? data.tags.join("、") : "未選択";
+      const text = `『${data.title}』読了カード作った\n\n刺さった要素：\n${tags}\n\n#商業BL #BL読了カード`;
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+    }
+
+    function resetInputs() {
+      els.title.value = "";
+      els.author.value = "";
+      els.comment.value = "";
+      els.spoiler.value = "ネタバレなし";
+      setToday();
+      els.tagBox.querySelectorAll("input").forEach((input) => input.checked = false);
+      meters.forEach((meter) => {
+        document.getElementById(`${meter.key}Input`).value = meter.value;
+      });
+      updateTagLimit();
+      updateAll();
+      location.hash = "#form";
+    }
+
+    setupTags();
+    setupMeters();
+    setToday();
+    els.title.value = "恋の温度は夜にほどける";
+    els.author.value = "浅月めぐ";
+    els.comment.value = "甘さの奥にある重さが刺さって、最後の余韻まで大好き。";
+    ["両片想い", "溺愛", "重い愛", "ハピエン", "余韻強め"].forEach((tag) => {
+      const input = Array.from(els.tagBox.querySelectorAll("input")).find((el) => el.value === tag);
+      if (input) input.checked = true;
+    });
+    updateTagLimit();
+    updateAll();
+
+    document.addEventListener("input", (event) => {
+      if (event.target.closest("#tagBox")) updateTagLimit(event.target);
+      updateAll();
+    });
+
+    document.addEventListener("change", (event) => {
+      if (event.target.closest("#tagBox")) updateTagLimit(event.target);
+      updateAll();
+    });
+
+    els.save.addEventListener("click", saveImage);
+    els.share.addEventListener("click", shareToX);
+    els.reset.addEventListener("click", resetInputs);
+  </script>
+</body>
+</html>
