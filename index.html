@@ -235,6 +235,43 @@
       line-height: 1.55;
     }
 
+    .image-picker {
+      display: grid;
+      gap: 10px;
+    }
+
+    .file-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+    }
+
+    input[type="file"] {
+      padding: 9px;
+      background: #fffdf9;
+    }
+
+    .image-note {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .mini-btn {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffdf9;
+      color: #6a4036;
+      min-height: 34px;
+      padding: 6px 10px;
+      font-weight: 800;
+      cursor: pointer;
+      width: fit-content;
+    }
+
     .meter-grid {
       display: grid;
       gap: 12px;
@@ -394,6 +431,12 @@
         flex-wrap: wrap;
       }
 
+      .image-note {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
       .meter-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -454,6 +497,16 @@
                 <option>ネタバレあり</option>
               </select>
             </label>
+          </div>
+
+          <div class="image-picker">
+            <label>カード画像（1枚）
+              <input id="imageInput" type="file" accept="image/*">
+            </label>
+            <div class="image-note">
+              <span id="imageStatus">画像なしでも作れます</span>
+              <button class="mini-btn" id="clearImageButton" type="button">画像を外す</button>
+            </div>
           </div>
 
           <div>
@@ -518,6 +571,9 @@
       author: document.getElementById("authorInput"),
       date: document.getElementById("dateInput"),
       spoiler: document.getElementById("spoilerInput"),
+      image: document.getElementById("imageInput"),
+      imageStatus: document.getElementById("imageStatus"),
+      clearImage: document.getElementById("clearImageButton"),
       tagBox: document.getElementById("tagBox"),
       tagHint: document.getElementById("tagHint"),
       meterGrid: document.getElementById("meterGrid"),
@@ -530,6 +586,9 @@
       share: document.getElementById("shareButton"),
       reset: document.getElementById("resetButton")
     };
+
+    let uploadedImage = null;
+    let uploadedImageName = "";
 
     function setToday() {
       const now = new Date();
@@ -592,6 +651,34 @@
       ctx.arcTo(x, y + h, x, y, r);
       ctx.arcTo(x, y, x + w, y, r);
       ctx.closePath();
+    }
+
+    function drawImageCover(ctx, image, x, y, w, h, r) {
+      const imageRatio = image.width / image.height;
+      const frameRatio = w / h;
+      let sw = image.width;
+      let sh = image.height;
+      let sx = 0;
+      let sy = 0;
+
+      if (imageRatio > frameRatio) {
+        sw = image.height * frameRatio;
+        sx = (image.width - sw) / 2;
+      } else {
+        sh = image.width / frameRatio;
+        sy = (image.height - sh) / 2;
+      }
+
+      ctx.save();
+      roundedRect(ctx, x, y, w, h, r);
+      ctx.clip();
+      ctx.drawImage(image, sx, sy, sw, sh, x, y, w, h);
+      ctx.restore();
+
+      roundedRect(ctx, x, y, w, h, r);
+      ctx.strokeStyle = "#e4bfc8";
+      ctx.lineWidth = 5;
+      ctx.stroke();
     }
 
     function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
@@ -741,20 +828,34 @@
       ctx.font = "700 34px 'Yu Gothic', sans-serif";
       ctx.fillText("BL読了カード", 120, 150);
 
+      let titleX = 120;
+      let titleWidth = 585;
+      let titleY = 250;
+      let authorY = 490;
+      if (uploadedImage) {
+        roundedRect(ctx, 118, 206, 248, 334, 26);
+        ctx.fillStyle = "#fffdf8";
+        ctx.fill();
+        drawImageCover(ctx, uploadedImage, 132, 220, 220, 306, 20);
+        titleX = 392;
+        titleWidth = 315;
+        titleY = 246;
+        authorY = 510;
+      }
+
       ctx.fillStyle = "#5b382f";
       ctx.font = "800 64px 'Yu Gothic', sans-serif";
-      drawWrappedText(ctx, `『${data.title}』`, 120, 250, 585, 76, 3);
+      drawWrappedText(ctx, `『${data.title}』`, titleX, titleY, titleWidth, 76, 3);
 
-      let authorY = 490;
       if (data.author) {
         ctx.fillStyle = "#7b5b50";
         ctx.font = "700 32px 'Yu Gothic', sans-serif";
-        ctx.fillText(`${data.author} 先生`, 124, authorY);
+        ctx.fillText(`${data.author} 先生`, uploadedImage ? 392 : 124, authorY);
       }
 
       ctx.fillStyle = "#8c6b60";
       ctx.font = "700 28px 'Yu Gothic', sans-serif";
-      if (data.date) ctx.fillText(`読了日  ${data.date}`, 124, 548);
+      if (data.date) ctx.fillText(`読了日  ${data.date}`, uploadedImage ? 392 : 124, 548);
 
       roundedRect(ctx, 120, 594, 584, 138, 24);
       ctx.fillStyle = "#fff3e3";
@@ -855,8 +956,30 @@
     function updateAll() {
       updateMeterOutputs();
       els.commentCount.textContent = `${els.comment.value.length} / 60`;
+      els.imageStatus.textContent = uploadedImage ? `${uploadedImageName} を使用中` : "画像なしでも作れます";
       renderSearchLinks();
       drawCard();
+    }
+
+    function loadSelectedImage(file) {
+      if (!file) {
+        uploadedImage = null;
+        uploadedImageName = "";
+        updateAll();
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const image = new Image();
+        image.onload = () => {
+          uploadedImage = image;
+          uploadedImageName = file.name;
+          updateAll();
+        };
+        image.src = reader.result;
+      };
+      reader.readAsDataURL(file);
     }
 
     function saveImage() {
@@ -879,6 +1002,9 @@
       els.title.value = "";
       els.author.value = "";
       els.comment.value = "";
+      els.image.value = "";
+      uploadedImage = null;
+      uploadedImageName = "";
       els.spoiler.value = "ネタバレなし";
       setToday();
       els.tagBox.querySelectorAll("input").forEach((input) => input.checked = false);
@@ -909,6 +1035,10 @@
     });
 
     document.addEventListener("change", (event) => {
+      if (event.target === els.image) {
+        loadSelectedImage(event.target.files[0]);
+        return;
+      }
       if (event.target.closest("#tagBox")) updateTagLimit(event.target);
       updateAll();
     });
@@ -916,6 +1046,12 @@
     els.save.addEventListener("click", saveImage);
     els.share.addEventListener("click", shareToX);
     els.reset.addEventListener("click", resetInputs);
+    els.clearImage.addEventListener("click", () => {
+      els.image.value = "";
+      uploadedImage = null;
+      uploadedImageName = "";
+      updateAll();
+    });
   </script>
 </body>
 </html>
