@@ -7,7 +7,7 @@
 ## 構成
 
 - `index.html`: フロントエンド本体
-- `_redirects`: `/cards`, `/card/:id`, `/tag/:tag` のSPA表示用
+- `_redirects`: `/create`, `/cards`, `/card/:id`, `/tag/:tag`, `/work/:slug` のSPA表示用
 - `functions/api/cards/index.js`: 公開カード一覧取得・投稿作成
 - `functions/api/cards/[id].js`: 個別カード取得・削除
 - `functions/api/tags/[tag].js`: タグ別カード一覧取得
@@ -24,7 +24,7 @@ Cloudflare Pagesの設定は以下です。
 ```text
 Framework preset: None
 Build command: 空欄
-Build output directory: /
+Build output directory: docs
 Functions directory: functions
 ```
 
@@ -81,8 +81,19 @@ GET    /api/tags/:tag?limit=20
 
 ## DMMリンク
 
-審査中のため、現在はアフィリエイトIDを入れずに通常のDMM検索URLへリンクしています。
-審査通過後に差し替えやすいように、DMM検索URL生成は `createDmmSearchUrl` にまとめています。
+審査中のため、現在はアフィリエイトリンクもDMM検索リンクも表示していません。
+審査通過後に差し替えやすいように、フロントエンド側に以下の設定だけ用意しています。
+
+```js
+const ENABLE_AFFILIATE_LINKS = false;
+const DMM_AFFILIATE_ID = "";
+function buildDmmAffiliateUrl(workTitle) {
+  if (!ENABLE_AFFILIATE_LINKS || !DMM_AFFILIATE_ID || !workTitle) return "";
+  return "";
+}
+```
+
+`ENABLE_AFFILIATE_LINKS` が `false` の間は、購入導線は「購入リンク準備中」として表示されます。
 
 ## MVPで入れている荒らし対策
 

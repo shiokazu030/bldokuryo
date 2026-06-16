@@ -4,6 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>BL読了カードメーカー</title>
+  <meta name="description" content="読んだBL作品の感想を読了カードにして、みんなのカードから次の1冊にも出会えるサイトです。">
+  <meta property="og:site_name" content="BL読了カードメーカー">
+  <meta property="og:title" content="BL読了カードメーカー">
+  <meta property="og:description" content="読んだ作品の沼度をカードにして残そう。">
   <style>
     :root {
       --bg: #fff8f4;
@@ -35,29 +39,32 @@
 
     button, input, textarea, select { font: inherit; }
     a { color: inherit; }
-    .page { width: min(100%, 1040px); margin: 0 auto; padding: 18px 14px 36px; }
-    .top { display: grid; align-content: center; gap: 22px; padding: 34px 0 22px; }
-    .brand { display: inline-flex; align-items: center; gap: 9px; width: fit-content; color: var(--brown); font-weight: 700; font-size: .88rem; }
+    .page { width: min(100%, 1080px); margin: 0 auto; padding: 18px 14px 36px; }
+    .site-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0 14px; }
+    .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--brown); font-weight: 800; font-size: .92rem; text-decoration: none; }
     .brand-mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--pink-soft); color: #b35d75; border: 1px solid rgba(179, 93, 117, .18); }
-    h1 { margin: 0; font-size: clamp(2.45rem, 12vw, 4.35rem); line-height: 1.03; letter-spacing: 0; color: #5b382f; max-width: 8em; }
-    .lead { margin: 0; max-width: 36rem; color: var(--muted); line-height: 1.85; font-size: 1rem; }
+    .nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .nav a { color: #6a4036; text-decoration: none; font-weight: 800; font-size: .84rem; padding: 8px 10px; border-radius: 999px; background: rgba(255,253,248,.7); border: 1px solid rgba(236,211,199,.7); }
+    .top { display: grid; gap: 18px; padding: 18px 0 12px; }
+    .hero-copy { display: grid; gap: 14px; }
+    h1 { margin: 0; font-size: clamp(2rem, 9vw, 3.6rem); line-height: 1.08; letter-spacing: 0; color: #5b382f; }
+    .lead { margin: 0; max-width: 40rem; color: var(--muted); line-height: 1.85; font-size: 1rem; }
     .hero-actions, .inline-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .hero-preview { width: 100%; max-width: 390px; justify-self: center; background: rgba(255, 253, 248, .7); border: 1px solid rgba(236, 211, 199, .75); box-shadow: var(--shadow); padding: 10px; border-radius: var(--radius); }
-    .hero-preview img { display: block; width: 100%; border-radius: 6px; background: #fff; }
     .section { padding: 18px 0; }
-    .section-title { margin: 0 0 12px; font-size: 1.18rem; color: #5a3b32; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+    .section-title { margin: 0; font-size: 1.2rem; color: #5a3b32; }
     .panel { background: rgba(255, 253, 248, .86); border: 1px solid rgba(236, 211, 199, .9); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; }
     .form-grid { display: grid; gap: 14px; }
     label { display: grid; gap: 7px; font-weight: 700; color: #67473e; font-size: .92rem; }
     input, textarea, select { width: 100%; min-height: 46px; border: 1px solid var(--line); border-radius: var(--radius); background: #fffefb; color: var(--ink); padding: 11px 12px; outline: none; }
-    textarea { min-height: 92px; resize: vertical; line-height: 1.65; }
+    textarea { min-height: 108px; resize: vertical; line-height: 1.65; }
     input:focus, textarea:focus, select:focus { border-color: #d994a7; box-shadow: 0 0 0 3px rgba(243, 184, 200, .28); }
     .meta-row { display: grid; grid-template-columns: 1fr; gap: 14px; }
     .tag-box { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding-top: 3px; }
     .tag-check input, .radio-card input { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; min-height: 1px; }
     .tag-check span { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 8px 11px; border-radius: 999px; border: 1px solid var(--line); background: #fffdf9; color: #78594f; font-weight: 700; font-size: .86rem; user-select: none; white-space: nowrap; }
     .tag-check input:checked + span { color: #6b2f43; background: var(--pink-soft); border-color: #e5aaba; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5); }
-    .hint, .ad-note, .status-text { margin: 6px 0 0; color: var(--muted); font-size: .82rem; line-height: 1.55; }
+    .hint, .status-text { margin: 6px 0 0; color: var(--muted); font-size: .82rem; line-height: 1.55; }
     .image-picker, .publish-options { display: grid; gap: 10px; }
     input[type="file"] { padding: 9px; background: #fffdf9; }
     .image-note { display: grid; grid-template-columns: 1fr; gap: 10px; color: var(--muted); font-size: .82rem; line-height: 1.55; }
@@ -66,7 +73,7 @@
     .meter { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 10px; font-weight: 700; color: #67473e; }
     input[type="range"] { grid-column: 1 / -1; min-height: 30px; padding: 0; accent-color: #d98da2; background: transparent; border: 0; box-shadow: none; }
     .meter output { text-align: right; color: #9d5369; }
-    .count { display: flex; justify-content: space-between; color: var(--muted); font-size: .8rem; margin-top: 5px; }
+    .count { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: .8rem; margin-top: 5px; }
     .radio-grid { display: grid; grid-template-columns: 1fr; gap: 9px; }
     .radio-card span { display: block; border: 1px solid var(--line); border-radius: var(--radius); background: #fffdf9; padding: 12px; font-weight: 800; color: #6a4036; }
     .radio-card input:checked + span { background: var(--pink-soft); border-color: #e5aaba; color: #6b2f43; }
@@ -77,94 +84,120 @@
     .btn.secondary { color: #6a4036; background: #ffe9cf; border: 1px solid #edcba7; }
     .btn.ghost { color: #6a4036; background: #fffdf9; border: 1px solid var(--line); }
     .btn.danger { color: #fff; background: #8c4a4a; }
+    .btn.small { min-height: 38px; padding: 8px 12px; font-size: .84rem; }
     .preview-wrap { display: grid; gap: 14px; }
     .canvas-shell { background: rgba(255, 253, 248, .86); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; box-shadow: var(--shadow); }
     canvas { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 6px; background: #fff; }
-    .search-links { display: grid; grid-template-columns: 1fr; gap: 9px; }
-    .search-links a { display: flex; align-items: center; justify-content: center; min-height: 45px; border-radius: var(--radius); background: #fffdf9; border: 1px solid var(--line); color: #6b473e; text-decoration: none; font-weight: 800; }
-    .card-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    .mini-card { display: grid; gap: 9px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255, 253, 248, .9); text-decoration: none; box-shadow: 0 10px 28px rgba(96, 63, 50, .08); }
-    .mini-card strong { color: #5b382f; line-height: 1.45; }
-    .mini-meta { display: flex; flex-wrap: wrap; gap: 7px; color: var(--muted); font-size: .82rem; }
+    .complete-panel { display: grid; gap: 12px; }
+    .complete-title { margin: 0; color: #5b382f; font-size: 1.1rem; }
+    .share-preview { white-space: pre-wrap; line-height: 1.65; background: #fffdf9; border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; color: #5d4038; font-size: .9rem; }
+    .feed-list { display: grid; gap: 14px; }
+    .feed-card { display: grid; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255, 253, 248, .92); box-shadow: 0 10px 28px rgba(96, 63, 50, .08); }
+    .feed-image { background: #fff; border: 1px solid #efd8ce; border-radius: var(--radius); padding: 8px; }
+    .feed-body { display: grid; gap: 8px; }
+    .feed-title { color: #5b382f; font-size: 1.08rem; line-height: 1.45; font-weight: 900; text-decoration: none; }
+    .feed-author, .mini-meta { display: flex; flex-wrap: wrap; gap: 7px; color: var(--muted); font-size: .82rem; }
+    .feed-comment { margin: 0; color: #5d4038; line-height: 1.65; }
+    .sample-label { width: fit-content; color: #8e4d63; background: #fce5eb; border: 1px solid #e5aaba; border-radius: 999px; padding: 4px 8px; font-size: .74rem; font-weight: 800; }
     .tag-pill { display: inline-flex; align-items: center; min-height: 28px; padding: 5px 9px; border: 1px solid #e7c9d1; border-radius: 999px; background: #fff1f5; color: #7c4055; font-weight: 800; font-size: .78rem; text-decoration: none; }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
     .detail-layout { display: grid; gap: 14px; }
     .kv { display: grid; gap: 8px; color: #6b473e; line-height: 1.65; }
-    .delete-box { display: grid; gap: 9px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .delete-box, .purchase-slot { display: grid; gap: 9px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .empty { padding: 18px; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); background: rgba(255,253,248,.7); }
     .hidden { display: none !important; }
     .footer { padding: 18px 0 0; text-align: center; color: var(--muted); font-size: .78rem; }
 
     @media (min-width: 760px) {
-      .page { padding: 28px 24px 48px; }
-      .top { grid-template-columns: 1fr .75fr; align-items: center; min-height: 70vh; }
-      .hero-copy { display: grid; gap: 18px; }
+      .page { padding: 24px 24px 48px; }
+      .top { grid-template-columns: 1fr .75fr; align-items: center; min-height: 42vh; }
       .meta-row, .meter-grid, .radio-grid { grid-template-columns: 1fr 1fr; }
       .tag-box { display: flex; flex-wrap: wrap; }
       .image-note { display: flex; align-items: center; justify-content: space-between; }
       .actions { grid-template-columns: repeat(4, 1fr); }
-      .preview-wrap { grid-template-columns: minmax(0, 1fr) 300px; align-items: start; }
-      .card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .detail-layout { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
+      .preview-wrap { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
+      .feed-card { grid-template-columns: 230px minmax(0, 1fr); align-items: start; }
+      .detail-layout { grid-template-columns: minmax(0, 1fr) 360px; align-items: start; }
     }
   </style>
 </head>
 <body>
   <main class="page">
+    <header class="site-header">
+      <a class="brand" href="/"><span class="brand-mark">BL</span> BL読了カードメーカー</a>
+      <nav class="nav" aria-label="主要メニュー">
+        <a href="/cards">みんなのカード</a>
+        <a href="/create">読了カードを作る</a>
+      </nav>
+    </header>
+
     <section class="top" id="top">
       <div class="hero-copy">
-        <div class="brand"><span class="brand-mark">BL</span> 読了カードメーカー</div>
-        <h1>BL読了<br>カード<br>メーカー</h1>
-        <p class="lead">読んだ作品の沼度をカードにして残そう。画像保存だけでも、サイト内に公開して個別URLを作ることもできます。</p>
+        <h1>みんなの読了カード</h1>
+        <p class="lead">読んだ作品の沼度や感想が流れてくる場所です。気になるカードから、次に読む1冊を見つけてください。</p>
         <div class="hero-actions">
-          <a class="btn primary" href="/create">カードを作る</a>
+          <a class="btn primary" href="/create">読了カードを作る</a>
           <a class="btn ghost" href="/cards">みんなの読了カードを見る</a>
         </div>
       </div>
-      <div class="hero-preview" aria-hidden="true">
-        <img id="heroImage" alt="">
+      <div class="panel">
+        <p class="lead">この感想、誰かの次の1冊になるかも。カードを作ったら、画像保存とX投稿文のコピーまでまとめてできます。</p>
       </div>
     </section>
 
     <section class="section" id="latestSection">
-      <h2 class="section-title">新着カード</h2>
-      <div class="card-grid" id="latestCards"></div>
-      <p class="status-text" id="latestStatus">読み込み中です</p>
-      <div class="inline-actions">
-        <a class="btn ghost" href="/cards">もっと見る</a>
+      <div class="section-head">
+        <h2 class="section-title">新着読了カード</h2>
+        <a class="btn ghost small" href="/cards">もっと見る</a>
       </div>
+      <div class="feed-list" id="latestCards"></div>
+      <p class="status-text" id="latestStatus">読み込み中です</p>
     </section>
 
-    <section class="section" id="createArea">
-    <div id="form">
-      <h2 class="section-title">入力フォーム</h2>
+    <section class="section" id="popularSection">
+      <div class="section-head">
+        <h2 class="section-title">人気の読了カード</h2>
+      </div>
+      <div class="feed-list" id="popularCards"></div>
+      <p class="status-text" id="popularStatus">まずは新着順で表示しています</p>
+    </section>
+
+    <section class="section" id="tagCloudSection">
+      <h2 class="section-title">タグから探す</h2>
+      <div class="tag-cloud" id="tagCloud"></div>
+    </section>
+
+    <section class="section hidden" id="createArea">
+      <h2 class="section-title">読了カードを作る</h2>
       <div class="panel">
         <form class="form-grid" id="cardForm">
           <div class="meta-row">
             <label>作品名 必須
               <input id="titleInput" type="text" maxlength="80" required placeholder="例：きみと春待ち">
             </label>
-            <label>作者名 任意
-              <input id="authorInput" type="text" maxlength="60" placeholder="例：桜井ゆめ">
+            <label>作者名・サークル名 任意
+              <input id="authorInput" type="text" maxlength="60" placeholder="例：桜野ゆめ">
             </label>
           </div>
 
           <div class="image-picker">
-            <label>カード画像（非公開の画像作成用・1枚）
+            <label>カードに入れる画像 任意
               <input id="imageInput" type="file" accept="image/*">
             </label>
             <div class="image-note">
-              <span id="imageStatus">公開投稿には画像ファイルは保存されません</span>
+              <span id="imageStatus">公開投稿には画像ファイル自体は保存されません</span>
               <button class="mini-btn" id="clearImageButton" type="button">画像を外す</button>
             </div>
           </div>
 
           <div>
-            <label>タグ 任意（最大5個）</label>
+            <label>タグ 任意 最大5個</label>
             <div class="tag-box" id="tagBox"></div>
             <p class="hint" id="tagHint">0 / 5 選択中</p>
           </div>
 
           <div>
-            <label>読後感</label>
+            <label>評価</label>
             <div class="meter-grid" id="meterGrid"></div>
           </div>
 
@@ -183,7 +216,7 @@
 
           <label>削除用パスワード 任意
             <input id="deletePasswordInput" type="password" maxlength="80" autocomplete="new-password" placeholder="公開する場合は入力推奨">
-            <span class="hint">公開後に自分で削除する時に使います。未入力でも公開できます。</span>
+            <span class="hint">公開後に自分で削除するときに使います。未入力でも公開できます。</span>
           </label>
 
           <div class="actions">
@@ -195,31 +228,40 @@
           <p class="status-text" id="formStatus"></p>
         </form>
       </div>
-    </div>
     </section>
 
-    <section class="section" id="previewArea">
-    <div id="preview">
-      <h2 class="section-title">プレビュー</h2>
+    <section class="section hidden" id="previewArea">
+      <h2 class="section-title">完成した読了カード</h2>
       <div class="preview-wrap">
         <div>
           <div class="canvas-shell">
             <canvas id="cardCanvas" width="1200" height="1200" aria-label="生成されたBL読了カード"></canvas>
           </div>
           <div class="actions" id="completeActions">
-            <button class="btn primary" id="saveButtonBottom" type="button">画像を保存</button>
-            <button class="btn secondary" id="copyButtonBottom" type="button">投稿文をコピー</button>
-            <button class="btn ghost" id="xButton" type="button">Xを開く</button>
-            <a class="btn ghost hidden" id="publicPageButton" href="#">公開ページを見る</a>
+            <button class="btn primary" id="xButton" type="button">Xに投稿する</button>
+            <button class="btn secondary" id="saveButtonBottom" type="button">画像を保存</button>
+            <a class="btn ghost hidden" id="publicPageButton" href="#">カード詳細ページを見る</a>
+            <button class="btn ghost" id="againButton" type="button">もう1枚作る</button>
           </div>
         </div>
 
-        <aside class="panel">
-          <p class="ad-note">※このページにはPR/広告リンクを含む場合があります</p>
-          <div class="search-links" id="searchLinks"></div>
+        <aside class="panel complete-panel">
+          <div>
+            <p class="complete-title">あなたの読了カードが完成しました</p>
+            <p class="hint">Xに投稿すると、同じ作品を読んだ人や次の1冊を探している人に届きやすくなります。</p>
+          </div>
+          <label>投稿文テンプレ
+            <select id="shareTemplate">
+              <option value="simple">シンプル型</option>
+              <option value="limit">限界オタク型</option>
+              <option value="recommend">布教型</option>
+            </select>
+          </label>
+          <div class="share-preview" id="sharePreview"></div>
+          <button class="btn secondary" id="copyButtonBottom" type="button">投稿文をコピー</button>
+          <p class="hint">画像を保存してからXで添付してください。Xの仕様上、このボタンだけでは画像添付まではできません。</p>
         </aside>
       </div>
-    </div>
     </section>
 
     <section class="section hidden" id="cardsView">
@@ -232,7 +274,7 @@
           </select>
         </label>
       </div>
-      <div class="card-grid" id="cardsGrid"></div>
+      <div class="feed-list" id="cardsGrid"></div>
       <p class="status-text" id="cardsStatus">読み込み中です</p>
       <div class="inline-actions">
         <a class="btn primary" href="/create">自分も読了カードを作る</a>
@@ -240,7 +282,7 @@
     </section>
 
     <section class="section hidden" id="detailView">
-      <h2 class="section-title">読了カード</h2>
+      <h2 class="section-title" id="detailTitle">読了カード</h2>
       <div class="detail-layout">
         <div>
           <div class="canvas-shell">
@@ -251,16 +293,31 @@
       </div>
     </section>
 
+    <section class="section hidden" id="workView">
+      <h2 class="section-title" id="workTitle">作品ページ</h2>
+      <p class="lead" id="workDescription"></p>
+      <div class="panel purchase-slot" id="workPurchaseSlot"></div>
+      <div class="feed-list" id="workCards"></div>
+      <p class="status-text" id="workStatus">読み込み中です</p>
+      <div class="inline-actions">
+        <a class="btn primary" href="/create">この作品の読了カードを作る</a>
+        <a class="btn ghost" href="/cards">みんなのカードへ</a>
+      </div>
+    </section>
+
     <p class="footer">BL読了カードメーカー</p>
   </main>
 
   <script>
     const SITE_ORIGIN = location.origin;
     const SITE_HOST = location.host || "dokuryo.pages.dev";
+    const SITE_NAME = "BL読了カードメーカー";
+    const ENABLE_AFFILIATE_LINKS = false;
+    const DMM_AFFILIATE_ID = "";
     const MAX_TAGS = 5;
     const LAST_POST_KEY = "dokuryo_last_post_at";
     const NG_WORDS = ["死ね", "殺す", "バカ", "詐欺", "無料配布"];
-    const tagOptions = ["重め", "甘々", "泣ける", "執着攻め", "商業BL", "両片想い", "すれ違い", "溺愛", "体格差", "年下攻め", "年上受け", "幼なじみ", "ケンカップル", "主従", "共依存", "健気受け", "クール攻め", "重い愛", "ハピエン", "余韻強め"];
+    const tagOptions = ["BL", "商業BL", "二次創作", "執着攻め", "年下攻め", "オメガバース", "Dom/Sub", "泣ける", "甘々", "地雷注意", "重め", "両片想い", "すれ違い", "溺愛", "体格差", "年上受け", "幼なじみ", "ケンカップル", "主従", "共依存", "健気受け", "クール攻め", "重い愛", "ハピエン", "余韻強め"];
     const meters = [
       { key: "sweetness", label: "甘さ", value: 4 },
       { key: "heaviness", label: "重さ", value: 3 },
@@ -272,33 +329,45 @@
       {
         id: "sample-001",
         title: "恋の温度は夜にほどける",
-        author: "浅月めぐ",
-        comment: "甘さの奥にある重さが刺さって、最後の余韻まで大好き。",
+        author: "水月めぐ",
+        comment: "甘さの奥にある重さが刺さって、最後の余韻まで大好き。これは語りたくなる読後感。",
         sweetness: 4, heaviness: 4, numa: 5, crying: 2, spice: 3,
-        tags: ["両片想い", "重い愛", "余韻強め", "商業BL"],
-        created_at: "2026-06-16T11:00:00.000Z"
+        tags: ["商業BL", "両片想い", "重い愛", "余韻強め"],
+        created_at: "2026-06-16T11:00:00.000Z",
+        source: "sample"
       },
       {
         id: "sample-002",
         title: "まばたきの先で君を抱く",
         author: "瀬戸ひより",
-        comment: "すれ違いが長くてしんどいのに、最後の回収で全部報われるタイプ。",
+        comment: "すれ違いが痛いのに、回収があたたかい。泣けるBLを読みたい日にちょうどいい。",
         sweetness: 3, heaviness: 5, numa: 5, crying: 4, spice: 2,
-        tags: ["すれ違い", "泣ける", "執着攻め", "重め"],
-        created_at: "2026-06-15T09:30:00.000Z"
+        tags: ["商業BL", "泣ける", "執着攻め", "重め"],
+        created_at: "2026-06-15T09:30:00.000Z",
+        source: "sample"
       },
       {
         id: "sample-003",
         title: "きみの熱だけで眠れない",
-        author: "梓井いろは",
-        comment: "軽やかに読めるのに沼度が高い。ケンカップル好きにかなり効く。",
+        author: "柳井いろは",
+        comment: "軽やかに読めるのに沼度が高い。ケンカップル好きにはかなり刺さるはず。",
         sweetness: 4, heaviness: 2, numa: 4, crying: 1, spice: 4,
-        tags: ["ケンカップル", "甘々", "商業BL"],
-        created_at: "2026-06-14T13:15:00.000Z"
+        tags: ["BL", "ケンカップル", "甘々", "商業BL"],
+        created_at: "2026-06-14T13:15:00.000Z",
+        source: "sample"
       }
     ];
 
     const els = {
+      top: document.getElementById("top"),
+      latestSection: document.getElementById("latestSection"),
+      popularSection: document.getElementById("popularSection"),
+      tagCloudSection: document.getElementById("tagCloudSection"),
+      createArea: document.getElementById("createArea"),
+      previewArea: document.getElementById("previewArea"),
+      cardsView: document.getElementById("cardsView"),
+      detailView: document.getElementById("detailView"),
+      workView: document.getElementById("workView"),
       title: document.getElementById("titleInput"),
       author: document.getElementById("authorInput"),
       image: document.getElementById("imageInput"),
@@ -306,6 +375,7 @@
       clearImage: document.getElementById("clearImageButton"),
       tagBox: document.getElementById("tagBox"),
       tagHint: document.getElementById("tagHint"),
+      tagCloud: document.getElementById("tagCloud"),
       meterGrid: document.getElementById("meterGrid"),
       comment: document.getElementById("commentInput"),
       commentCount: document.getElementById("commentCount"),
@@ -314,24 +384,31 @@
       formStatus: document.getElementById("formStatus"),
       canvas: document.getElementById("cardCanvas"),
       detailCanvas: document.getElementById("detailCanvas"),
-      heroImage: document.getElementById("heroImage"),
-      links: document.getElementById("searchLinks"),
       save: document.getElementById("saveButton"),
       saveBottom: document.getElementById("saveButtonBottom"),
       copy: document.getElementById("copyButton"),
       copyBottom: document.getElementById("copyButtonBottom"),
       x: document.getElementById("xButton"),
       reset: document.getElementById("resetButton"),
+      again: document.getElementById("againButton"),
       publicPage: document.getElementById("publicPageButton"),
+      shareTemplate: document.getElementById("shareTemplate"),
+      sharePreview: document.getElementById("sharePreview"),
       latestCards: document.getElementById("latestCards"),
       latestStatus: document.getElementById("latestStatus"),
-      cardsView: document.getElementById("cardsView"),
+      popularCards: document.getElementById("popularCards"),
+      popularStatus: document.getElementById("popularStatus"),
       cardsGrid: document.getElementById("cardsGrid"),
       cardsStatus: document.getElementById("cardsStatus"),
       cardsTitle: document.getElementById("cardsTitle"),
       tagFilter: document.getElementById("tagFilter"),
-      detailView: document.getElementById("detailView"),
-      detailPanel: document.getElementById("detailPanel")
+      detailTitle: document.getElementById("detailTitle"),
+      detailPanel: document.getElementById("detailPanel"),
+      workTitle: document.getElementById("workTitle"),
+      workDescription: document.getElementById("workDescription"),
+      workPurchaseSlot: document.getElementById("workPurchaseSlot"),
+      workCards: document.getElementById("workCards"),
+      workStatus: document.getElementById("workStatus")
     };
 
     let uploadedImage = null;
@@ -340,17 +417,22 @@
     let lastPublicId = "";
 
     function setSectionVisibility(mode) {
-      document.getElementById("top").classList.toggle("hidden", mode !== "home" && mode !== "create");
-      document.getElementById("latestSection").classList.toggle("hidden", mode !== "home");
-      document.getElementById("createArea").classList.toggle("hidden", mode !== "home" && mode !== "create");
-      document.getElementById("previewArea").classList.toggle("hidden", mode !== "home" && mode !== "create");
+      const home = mode === "home";
+      els.top.classList.toggle("hidden", !home);
+      els.latestSection.classList.toggle("hidden", !home);
+      els.popularSection.classList.toggle("hidden", !home);
+      els.tagCloudSection.classList.toggle("hidden", !home);
+      els.createArea.classList.toggle("hidden", mode !== "create");
+      els.previewArea.classList.toggle("hidden", mode !== "create");
       els.cardsView.classList.toggle("hidden", mode !== "cards");
       els.detailView.classList.toggle("hidden", mode !== "detail");
+      els.workView.classList.toggle("hidden", mode !== "work");
     }
 
     function setupTags() {
       els.tagBox.innerHTML = "";
       els.tagFilter.innerHTML = `<option value="">すべて</option>`;
+      els.tagCloud.innerHTML = "";
       tagOptions.forEach((tag) => {
         const label = document.createElement("label");
         label.className = "tag-check";
@@ -361,6 +443,12 @@
         option.value = tag;
         option.textContent = tag;
         els.tagFilter.appendChild(option);
+
+        const link = document.createElement("a");
+        link.className = "tag-pill";
+        link.href = `/tag/${encodeURIComponent(tag)}`;
+        link.textContent = `#${tag}`;
+        els.tagCloud.appendChild(link);
       });
     }
 
@@ -396,6 +484,7 @@
     function getCardData() {
       const values = getMeterValues();
       return {
+        id: lastPublicId,
         title: els.title.value.trim() || "作品名未入力",
         author: els.author.value.trim(),
         comment: els.comment.value.trim(),
@@ -407,32 +496,36 @@
         crying: values[3].value,
         spice: values[4].value,
         createdAt: new Date().toISOString(),
-        publicUrl: lastPublicUrl
+        publicUrl: lastPublicUrl,
+        source: "user"
       };
     }
 
     function cardFromApi(row) {
-      return {
+      const card = {
         id: row.id,
         title: row.title,
         author: row.author || "",
         comment: row.comment || "",
         tags: Array.isArray(row.tags) ? row.tags : [],
         createdAt: row.created_at,
+        created_at: row.created_at,
         publicUrl: `${SITE_ORIGIN}/card/${row.id}`,
         sweetness: row.sweetness,
         heaviness: row.heaviness,
         numa: row.numa,
         crying: row.crying,
         spice: row.spice,
-        meters: [
-          { key: "sweetness", label: "甘さ", value: row.sweetness },
-          { key: "heaviness", label: "重さ", value: row.heaviness },
-          { key: "numa", label: "沼度", value: row.numa },
-          { key: "crying", label: "泣ける", value: row.crying },
-          { key: "spice", label: "刺激", value: row.spice }
-        ]
+        source: row.source || "user"
       };
+      card.meters = [
+        { key: "sweetness", label: "甘さ", value: card.sweetness },
+        { key: "heaviness", label: "重さ", value: card.heaviness },
+        { key: "numa", label: "沼度", value: card.numa },
+        { key: "crying", label: "泣ける", value: card.crying },
+        { key: "spice", label: "刺激", value: card.spice }
+      ];
+      return card;
     }
 
     function getSampleCards(tagName = "") {
@@ -635,17 +728,16 @@
         titleX = 392; titleWidth = 300; titleY = 246; titleMaxFont = 48; titleMinFont = 28; authorY = 510; metaX = 392; metaWidth = 300;
       }
       fitWrappedText(ctx, `『${data.title || "作品名未入力"}』`, titleX, titleY, { maxWidth: titleWidth, maxLines: 3, maxFont: titleMaxFont, minFont: titleMinFont, weight: 800, color: "#5b382f" });
-      if (data.author) fitSingleLineText(ctx, `${data.author} 先生`, metaX, authorY, { maxWidth: metaWidth, maxFont: localImage ? 26 : 32, minFont: 20, weight: 700, color: "#7b5b50" });
+      if (data.author) fitSingleLineText(ctx, `${data.author}`, metaX, authorY, { maxWidth: metaWidth, maxFont: localImage ? 26 : 32, minFont: 20, weight: 700, color: "#7b5b50" });
       ctx.fillStyle = "#8c6b60"; ctx.font = "700 28px 'Yu Gothic', sans-serif";
-      ctx.fillText(`作成日  ${formatDate(data.createdAt)}`, metaX, 548);
+      ctx.fillText(`読了日  ${formatDate(data.createdAt)}`, metaX, 548);
 
       roundedRect(ctx, 120, 594, 584, 138, 24); ctx.fillStyle = "#fff3e3"; ctx.fill(); ctx.strokeStyle = "#ecd3c7"; ctx.lineWidth = 2; ctx.stroke();
       ctx.fillStyle = "#6b473e"; ctx.font = "700 25px 'Yu Gothic', sans-serif"; ctx.fillText("タグ", 146, 638);
-      ctx.font = "700 26px 'Yu Gothic', sans-serif";
       fitWrappedText(ctx, data.tags.length ? data.tags.map((tag) => `#${tag}`).join("  ") : "タグなし", 146, 682, { maxWidth: 530, maxLines: 2, maxFont: 26, minFont: 18, weight: 700, color: "#6b473e", lineRatio: 1.35 });
 
       roundedRect(ctx, 120, 770, 584, 172, 24); ctx.fillStyle = "#fffdf8"; ctx.fill(); ctx.strokeStyle = "#ecd3c7"; ctx.stroke();
-      ctx.fillStyle = "#6b473e"; ctx.font = "700 25px 'Yu Gothic', sans-serif"; ctx.fillText("感想", 146, 816);
+      ctx.fillStyle = "#6b473e"; ctx.font = "700 25px 'Yu Gothic', sans-serif"; ctx.fillText("ひとこと感想", 146, 816);
       fitWrappedText(ctx, data.comment || "読了の余韻をここに。", 146, 870, { maxWidth: 530, maxLines: 2, maxFont: 34, minFont: 22, weight: 700, color: "#5d4038", lineRatio: 1.42 });
 
       data.meters.slice(0, 4).forEach((item, index) => drawStars(ctx, item.label, clampRating(item.value), 756, 760 + index * 56));
@@ -653,40 +745,33 @@
       ctx.fillStyle = "#8e4d63"; ctx.font = "700 26px 'Yu Gothic', sans-serif"; ctx.textAlign = "center"; ctx.fillText(`沼度 ${stars(data.numa).slice(0, 5)}`, 902, 164);
       drawRadarChart(ctx, data.meters, 910, 452, 198);
       ctx.textAlign = "left"; roundedRect(ctx, 120, 984, 928, 62, 31); ctx.fillStyle = "rgba(159, 175, 149, .16)"; ctx.fill();
-      ctx.fillStyle = "#7a5a50"; ctx.font = "700 23px 'Yu Gothic', sans-serif"; ctx.fillText("甘さ・重さ・沼度・泣ける・刺激を5角形チャートで記録", 154, 1024);
+      ctx.fillStyle = "#7a5a50"; ctx.font = "700 23px 'Yu Gothic', sans-serif"; ctx.fillText("甘さ・重さ・沼度・泣ける・刺激を五角形チャートで記録", 154, 1024);
       ctx.textAlign = "center"; ctx.fillStyle = "#a07d72"; ctx.font = "700 22px 'Yu Gothic', sans-serif";
       ctx.fillText(data.publicUrl ? data.publicUrl.replace(/^https?:\/\//, "") : SITE_HOST, w / 2, 1090);
-      if (targetCanvas === els.canvas) els.heroImage.src = els.canvas.toDataURL("image/png");
     }
 
-    function createDmmSearchUrl(title) {
-      const q = encodeURIComponent(title || "");
-      return `https://book.dmm.com/search/?searchstr=${q}`;
+    function buildDmmAffiliateUrl(workTitle) {
+      if (!ENABLE_AFFILIATE_LINKS || !DMM_AFFILIATE_ID || !workTitle) return "";
+      return "";
     }
 
-    function createSearchLinks(title) {
-      const q = encodeURIComponent(title || "作品名未入力");
-      return [
-        { name: "DMMでこの作品を探す", url: createDmmSearchUrl(title) },
-        { name: "コミックシーモアで探す", url: `https://www.cmoa.jp/search/result/?word=${q}` },
-        { name: "Renta!で探す", url: `https://renta.papy.co.jp/renta/sc/frm/search?word=${q}` },
-        { name: "ebookjapanで探す", url: `https://ebookjapan.yahoo.co.jp/search/?keyword=${q}` }
-      ];
-    }
-
-    function renderSearchLinks() {
-      const data = getCardData();
-      els.links.innerHTML = "";
-      createSearchLinks(data.title).forEach((link) => {
-        const a = document.createElement("a");
-        a.href = link.url; a.target = "_blank"; a.rel = "nofollow sponsored noopener"; a.textContent = link.name;
-        els.links.appendChild(a);
-      });
+    function renderPurchaseSlot(target, workTitle) {
+      const url = buildDmmAffiliateUrl(workTitle);
+      if (url) {
+        target.innerHTML = `<p class="hint">このページには広告リンクが含まれます。</p><a class="btn secondary" href="${url}" target="_blank" rel="sponsored noopener">購入ページを見る</a>`;
+      } else {
+        target.innerHTML = `<p class="hint">購入リンク準備中です。審査完了後にここへ作品検索・購入導線を追加できます。</p>`;
+      }
     }
 
     function formatDate(value) {
       if (!value) return new Date().toISOString().slice(0, 10).replaceAll("-", ".");
       return new Date(value).toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replaceAll("/", ".");
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "";
+      return new Date(value).toLocaleString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
     }
 
     function updateTagLimit(changedInput) {
@@ -703,12 +788,16 @@
       });
     }
 
+    function updateSharePreview() {
+      els.sharePreview.textContent = buildPostText(getCardData(), els.shareTemplate.value);
+    }
+
     function updateAll() {
       updateMeterOutputs();
       els.commentCount.textContent = `${els.comment.value.length} / 160`;
-      els.imageStatus.textContent = uploadedImage ? `${uploadedImageName} を使用中（公開投稿には保存されません）` : "公開投稿には画像ファイルは保存されません";
-      renderSearchLinks();
+      els.imageStatus.textContent = uploadedImage ? `${uploadedImageName} を使用中（公開投稿には保存されません）` : "公開投稿には画像ファイル自体は保存されません";
       drawCard(els.canvas, getCardData(), { allowImage: true });
+      updateSharePreview();
     }
 
     function loadSelectedImage(file) {
@@ -730,18 +819,36 @@
       link.click();
     }
 
-    function buildPostText(data) {
-      return `『${data.title}』読了📚\n\n甘さ：${stars(data.sweetness)}\n重さ：${stars(data.heaviness)}\n沼度：${stars(data.numa)}\n泣ける：${stars(data.crying)}\n刺激：${stars(data.spice)}\n\n${data.comment || ""}\n\n読了カードはこちら👇\n${data.publicUrl || SITE_ORIGIN}\n\n#読了カード #商業BL #BL好きさんと繋がりたい`;
+    function buildTagsForPost(data) {
+      const tags = ["#読了カード", "#読了記録"];
+      if (data.tags.includes("BL")) tags.push("#BL読了");
+      if (data.tags.includes("商業BL")) tags.push("#商業BL");
+      return tags.join(" ");
+    }
+
+    function buildPostText(data, type = "simple") {
+      const url = data.publicUrl || lastPublicUrl || SITE_ORIGIN;
+      const title = data.title || "作品名未入力";
+      const comment = data.comment ? data.comment.slice(0, 48) : "感想を読了カードにしました。";
+      const tags = buildTagsForPost(data);
+      if (type === "limit") {
+        return `『${title}』読了。\nこれはちょっと刺さりすぎた……。\n感想をカードに残しました。\n\n${comment}\n\n${tags}\n${url}`;
+      }
+      if (type === "recommend") {
+        return `この作品、好きな人には絶対刺さると思う。\n『${title}』の読了カードを作りました。\n\n刺さったポイント：\n${comment}\n\n${tags}\n${url}`;
+      }
+      return `『${title}』読了しました。\n感想を読了カードにしました。\n\n刺さったポイント：\n${comment}\n\n${tags}\n${url}`;
     }
 
     async function copyPostText() {
-      const text = buildPostText(getCardData());
+      const text = buildPostText(getCardData(), els.shareTemplate.value);
       await navigator.clipboard.writeText(text);
-      els.formStatus.textContent = "投稿文をコピーしました。画像を保存してXで添付してください。";
+      els.formStatus.textContent = "投稿文をコピーしました。画像を保存して、Xで添付してください。";
     }
 
     function openX() {
-      window.open("https://x.com/compose/post", "_blank", "noopener");
+      const text = buildPostText(getCardData(), els.shareTemplate.value);
+      window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
     }
 
     async function submitCard(event) {
@@ -753,7 +860,7 @@
         els.publicPage.classList.add("hidden");
         els.formStatus.textContent = "非公開カードを作成しました。画像保存や投稿文コピーができます。";
         updateAll();
-        location.hash = "#preview";
+        location.hash = "#previewArea";
         return;
       }
 
@@ -783,44 +890,83 @@
         localStorage.setItem(LAST_POST_KEY, String(Date.now()));
         els.publicPage.href = lastPublicUrl;
         els.publicPage.classList.remove("hidden");
-        els.formStatus.textContent = "公開しました。投稿文をコピーしてXに画像を添付できます。";
+        els.formStatus.textContent = "公開しました。画像保存と投稿文コピーをしてXに投稿できます。";
         updateAll();
-        await loadLatestCards();
-        location.hash = "#preview";
+        await loadHomeCards();
+        location.hash = "#previewArea";
       } catch (error) {
         els.formStatus.textContent = error.message;
       }
     }
 
-    function renderCardList(target, rows) {
+    function truncate(text, length) {
+      const value = String(text || "");
+      return value.length > length ? `${value.slice(0, length - 1)}…` : value;
+    }
+
+    function workSlug(title) {
+      return encodeURIComponent(String(title || "作品名未入力").trim());
+    }
+
+    function renderCardList(target, rows, options = {}) {
       target.innerHTML = "";
       if (!rows.length) {
-        target.innerHTML = `<div class="panel">まだ公開カードがありません。</div>`;
+        target.innerHTML = `<div class="empty">まだ公開カードがありません。最初の1枚を作ってみてください。</div>`;
         return;
       }
       rows.forEach((row) => {
-        const card = document.createElement("a");
-        card.className = "mini-card";
-        card.href = `/card/${encodeURIComponent(row.id)}`;
-        card.innerHTML = `
-          <strong>${escapeHtml(row.title)}</strong>
-          <div class="mini-meta"><span>沼度 ${stars(row.numa)}</span><span>${escapeHtml(formatDate(row.created_at))}</span></div>
-          <div class="mini-meta">${(row.tags || []).slice(0, 4).map((tag) => `<span class="tag-pill">#${escapeHtml(tag)}</span>`).join("")}</div>
+        const data = cardFromApi(row);
+        const article = document.createElement("article");
+        article.className = "feed-card";
+        const canvas = document.createElement("canvas");
+        canvas.width = 1200;
+        canvas.height = 1200;
+        const imageBox = document.createElement("a");
+        imageBox.className = "feed-image";
+        imageBox.href = `/card/${encodeURIComponent(data.id)}`;
+        imageBox.appendChild(canvas);
+        const tags = data.tags.slice(0, 5).map((tag) => `<a class="tag-pill" href="/tag/${encodeURIComponent(tag)}">#${escapeHtml(tag)}</a>`).join("");
+        article.innerHTML = `
+          <div class="feed-body">
+            ${data.source === "sample" || String(data.id).startsWith("sample-") ? `<span class="sample-label">サンプル</span>` : ""}
+            <a class="feed-title" href="/card/${encodeURIComponent(data.id)}">${escapeHtml(data.title)}</a>
+            ${data.author ? `<div class="feed-author">${escapeHtml(data.author)}</div>` : ""}
+            <p class="feed-comment">${escapeHtml(truncate(data.comment || "感想はまだありません。", options.long ? 120 : 78))}</p>
+            <div class="mini-meta"><span>沼度 ${stars(data.numa)}</span><span>${escapeHtml(formatDate(data.createdAt))}</span></div>
+            <div class="mini-meta">${tags || `<span class="tag-pill">タグなし</span>`}</div>
+            <div class="inline-actions">
+              <a class="btn primary small" href="/card/${encodeURIComponent(data.id)}">詳細を見る</a>
+              <a class="btn ghost small" href="/work/${workSlug(data.title)}">同じ作品のカードを見る</a>
+            </div>
+          </div>
         `;
-        target.appendChild(card);
+        article.insertBefore(imageBox, article.firstChild);
+        target.appendChild(article);
+        drawCard(canvas, data, { allowImage: false });
       });
     }
 
-    async function loadLatestCards() {
+    async function fetchCards(limit = 20) {
+      const res = await fetch(`/api/cards?limit=${limit}`);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "読み込みに失敗しました。");
+      const rows = json.cards || [];
+      return rows.length ? rows : getSampleCards();
+    }
+
+    async function loadHomeCards() {
       try {
-        const res = await fetch("/api/cards?limit=3");
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.error || "読み込みに失敗しました。");
-        renderCardList(els.latestCards, json.cards || []);
+        const rows = await fetchCards(20);
+        renderCardList(els.latestCards, rows.slice(0, 5));
+        renderCardList(els.popularCards, [...rows].sort((a, b) => Number(b.numa || 0) - Number(a.numa || 0)).slice(0, 3));
         els.latestStatus.textContent = "";
+        els.popularStatus.textContent = "今は沼度が高いカードを仮表示しています。";
       } catch {
-        renderCardList(els.latestCards, getSampleCards().slice(0, 3));
-        els.latestStatus.textContent = "サンプルカードを表示しています。D1設定後に公開カードへ切り替わります。";
+        const rows = getSampleCards();
+        renderCardList(els.latestCards, rows);
+        renderCardList(els.popularCards, [...rows].sort((a, b) => b.numa - a.numa));
+        els.latestStatus.textContent = "サンプルカードを表示しています。";
+        els.popularStatus.textContent = "サンプルカードを表示しています。";
       }
     }
 
@@ -834,11 +980,12 @@
         const res = await fetch(path);
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "読み込みに失敗しました。");
-        renderCardList(els.cardsGrid, json.cards || []);
-        els.cardsStatus.textContent = "";
-      } catch (error) {
-        renderCardList(els.cardsGrid, getSampleCards(tagName).slice(0, 20));
-        els.cardsStatus.textContent = "サンプルカードを表示しています。D1設定後に公開カードへ切り替わります。";
+        const rows = json.cards || [];
+        renderCardList(els.cardsGrid, rows.length ? rows : getSampleCards(tagName).slice(0, 20), { long: true });
+        els.cardsStatus.textContent = rows.length ? "" : "サンプルカードを表示しています。";
+      } catch {
+        renderCardList(els.cardsGrid, getSampleCards(tagName).slice(0, 20), { long: true });
+        els.cardsStatus.textContent = "サンプルカードを表示しています。";
       }
     }
 
@@ -852,24 +999,29 @@
         const data = cardFromApi(json.card);
         drawCard(els.detailCanvas, data, { allowImage: false });
         renderDetailPanel(data);
+        loadSameWorkCards(data);
       } catch (error) {
         const sample = getSampleCards().find((card) => card.id === id);
         if (sample) {
           drawCard(els.detailCanvas, sample, { allowImage: false });
           renderDetailPanel(sample);
+          loadSameWorkCards(sample);
           return;
         }
-        els.detailPanel.innerHTML = `<p class="status-text">${escapeHtml(error.message)}</p><a class="btn primary" href="/#form">自分も読了カードを作る</a>`;
+        els.detailPanel.innerHTML = `<p class="status-text">${escapeHtml(error.message)}</p><a class="btn primary" href="/create">自分も読了カードを作る</a>`;
       }
     }
 
     function renderDetailPanel(data) {
+      els.detailTitle.textContent = data.title;
+      const shareUrl = data.publicUrl || `${SITE_ORIGIN}/card/${data.id}`;
+      const xText = buildPostText({ ...data, publicUrl: shareUrl }, "simple");
       els.detailPanel.innerHTML = `
         <div class="kv">
           <strong>${escapeHtml(data.title)}</strong>
-          ${data.author ? `<span>${escapeHtml(data.author)} 先生</span>` : ""}
+          ${data.author ? `<span>${escapeHtml(data.author)}</span>` : ""}
           ${data.comment ? `<p>${escapeHtml(data.comment)}</p>` : ""}
-          <span>作成日 ${escapeHtml(formatDate(data.createdAt))}</span>
+          <span>投稿日 ${escapeHtml(formatDateTime(data.createdAt))}</span>
           <span>甘さ ${stars(data.sweetness)}</span>
           <span>重さ ${stars(data.heaviness)}</span>
           <span>沼度 ${stars(data.numa)}</span>
@@ -878,10 +1030,11 @@
           <div>${data.tags.map((tag) => `<a class="tag-pill" href="/tag/${encodeURIComponent(tag)}">#${escapeHtml(tag)}</a>`).join(" ") || "タグなし"}</div>
         </div>
         <div class="actions">
-          <a class="btn primary" href="${createDmmSearchUrl(data.title)}" target="_blank" rel="noopener">DMMでこの作品を探す</a>
-          ${data.tags[0] ? `<a class="btn secondary" href="/tag/${encodeURIComponent(data.tags[0])}">同じタグの読了カードを見る</a>` : `<a class="btn secondary" href="/cards">みんなの読了カードを見る</a>`}
-          <a class="btn ghost" href="/#form">自分も読了カードを作る</a>
+          <a class="btn primary" href="https://x.com/intent/tweet?text=${encodeURIComponent(xText)}" target="_blank" rel="noopener">Xで共有する</a>
+          <a class="btn secondary" href="/work/${workSlug(data.title)}">同じ作品のカードを見る</a>
+          <a class="btn ghost" href="/create">自分も読了カードを作る</a>
         </div>
+        <div class="purchase-slot" id="detailPurchaseSlot"></div>
         <div class="delete-box">
           <label>このカードを削除
             <input id="detailDeletePassword" type="password" placeholder="削除用パスワード">
@@ -889,8 +1042,47 @@
           <button class="btn danger" id="detailDeleteButton" type="button">削除する</button>
           <p class="status-text" id="detailDeleteStatus"></p>
         </div>
+        <div class="delete-box">
+          <strong>同じ作品の他のカード</strong>
+          <div id="sameWorkCards" class="feed-list"></div>
+        </div>
       `;
+      renderPurchaseSlot(document.getElementById("detailPurchaseSlot"), data.title);
       document.getElementById("detailDeleteButton").addEventListener("click", () => deleteCard(data.id));
+    }
+
+    async function loadSameWorkCards(data) {
+      const box = document.getElementById("sameWorkCards");
+      if (!box) return;
+      try {
+        const rows = await fetchCards(50);
+        const filtered = rows.filter((row) => row.title === data.title && row.id !== data.id).slice(0, 3);
+        if (!filtered.length) {
+          box.innerHTML = `<p class="hint">まだ他のカードはありません。</p>`;
+          return;
+        }
+        box.innerHTML = filtered.map((row) => `<a class="tag-pill" href="/card/${encodeURIComponent(row.id)}">${escapeHtml(row.title)} / 沼度 ${stars(row.numa)}</a>`).join("");
+      } catch {
+        box.innerHTML = `<p class="hint">読み込みできませんでした。</p>`;
+      }
+    }
+
+    async function loadWorkPage(slug) {
+      const title = decodeURIComponent(slug || "");
+      setSectionVisibility("work");
+      els.workTitle.textContent = title || "作品ページ";
+      els.workDescription.textContent = "この作品に投稿された読了カード一覧です。";
+      renderPurchaseSlot(els.workPurchaseSlot, title);
+      els.workStatus.textContent = "読み込み中です";
+      try {
+        const rows = await fetchCards(50);
+        const filtered = rows.filter((row) => row.title === title);
+        renderCardList(els.workCards, filtered.length ? filtered : getSampleCards().filter((row) => row.title === title), { long: true });
+        els.workStatus.textContent = filtered.length ? "" : "該当カードがない場合はサンプルまたは空状態を表示しています。";
+      } catch {
+        renderCardList(els.workCards, getSampleCards().filter((row) => row.title === title), { long: true });
+        els.workStatus.textContent = "サンプルカードを表示しています。";
+      }
     }
 
     async function deleteCard(id) {
@@ -925,34 +1117,40 @@
       els.formStatus.textContent = "";
       updateTagLimit();
       updateAll();
-      location.hash = "#form";
+      location.hash = "#createArea";
+    }
+
+    function prepareCreatePage() {
+      setSectionVisibility("create");
+      if (!els.title.value) {
+        els.title.value = "恋の温度は夜にほどける";
+        els.author.value = "水月めぐ";
+        els.comment.value = "甘さの奥にある重さが刺さって、最後の余韻まで大好き。";
+        ["商業BL", "両片想い", "重い愛", "余韻強め"].forEach((tag) => {
+          const input = Array.from(els.tagBox.querySelectorAll("input")).find((el) => el.value === tag);
+          if (input) input.checked = true;
+        });
+        updateTagLimit();
+      }
+      updateAll();
     }
 
     function route() {
       const rawPath = decodeURIComponent(location.pathname);
       const path = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : rawPath;
       if (path === "/cards") loadCardsPage();
-      else if (path === "/create") {
-        setSectionVisibility("create");
-        location.hash = location.hash || "#form";
-      }
+      else if (path === "/create") prepareCreatePage();
       else if (path.startsWith("/tag/")) loadCardsPage(path.replace("/tag/", ""));
       else if (path.startsWith("/card/")) loadCardDetail(path.replace("/card/", ""));
+      else if (path.startsWith("/work/")) loadWorkPage(path.replace("/work/", ""));
       else {
         setSectionVisibility("home");
-        loadLatestCards();
+        loadHomeCards();
       }
     }
 
     setupTags();
     setupMeters();
-    els.title.value = "恋の温度は夜にほどける";
-    els.author.value = "浅月めぐ";
-    els.comment.value = "甘さの奥にある重さが刺さって、最後の余韻まで大好き。";
-    ["両片想い", "溺愛", "重い愛", "ハピエン", "余韻強め"].forEach((tag) => {
-      const input = Array.from(els.tagBox.querySelectorAll("input")).find((el) => el.value === tag);
-      if (input) input.checked = true;
-    });
     updateTagLimit();
     updateAll();
     route();
@@ -966,6 +1164,7 @@
       if (event.target.closest("#tagBox")) updateTagLimit(event.target);
       updateAll();
     });
+    window.addEventListener("popstate", route);
     els.form.addEventListener("submit", submitCard);
     els.save.addEventListener("click", saveImage);
     els.saveBottom.addEventListener("click", saveImage);
@@ -973,6 +1172,8 @@
     els.copyBottom.addEventListener("click", copyPostText);
     els.x.addEventListener("click", openX);
     els.reset.addEventListener("click", resetInputs);
+    els.again.addEventListener("click", resetInputs);
+    els.shareTemplate.addEventListener("change", updateSharePreview);
     els.clearImage.addEventListener("click", () => { els.image.value = ""; uploadedImage = null; uploadedImageName = ""; updateAll(); });
     els.tagFilter.addEventListener("change", () => {
       location.href = els.tagFilter.value ? `/tag/${encodeURIComponent(els.tagFilter.value)}` : "/cards";
