@@ -4,4 +4,4 @@ compatibility_date = "2026-06-16"
 [[d1_databases]]
 binding = "DB"
 database_name = "dokuryo-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "5c08816e-5b62-4280-81e9-e464f7a820a2"
