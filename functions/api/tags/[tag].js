@@ -29,6 +29,7 @@ function escapeLike(value) {
 }
 
 function clampNumber(value, min, max, fallback) {
+  if (value === null || value === undefined || value === "") return fallback;
   const number = Number(value);
   if (!Number.isFinite(number)) return fallback;
   return Math.min(max, Math.max(min, Math.round(number)));
