@@ -239,7 +239,6 @@
   <script>
     const SITE_ORIGIN = location.origin;
     const SITE_HOST = location.host || "dokuryo.pages.dev";
-    const DMM_AF_ID = "shiooo03-002";
     const MAX_TAGS = 5;
     const LAST_POST_KEY = "dokuryo_last_post_at";
     const NG_WORDS = ["死ね", "殺す", "バカ", "詐欺", "無料配布"];
@@ -637,14 +636,10 @@
       return `https://book.dmm.com/search/?searchstr=${q}`;
     }
 
-    function createDmmAffiliateUrl(title) {
-      return `https://al.dmm.com/?lurl=${encodeURIComponent(createDmmSearchUrl(title))}&af_id=${encodeURIComponent(DMM_AF_ID)}&ch=toolbar&ch_id=link`;
-    }
-
     function createSearchLinks(title) {
       const q = encodeURIComponent(title || "作品名未入力");
       return [
-        { name: "DMMでこの作品を探す", url: createDmmAffiliateUrl(title) },
+        { name: "DMMでこの作品を探す", url: createDmmSearchUrl(title) },
         { name: "コミックシーモアで探す", url: `https://www.cmoa.jp/search/result/?word=${q}` },
         { name: "Renta!で探す", url: `https://renta.papy.co.jp/renta/sc/frm/search?word=${q}` },
         { name: "ebookjapanで探す", url: `https://ebookjapan.yahoo.co.jp/search/?keyword=${q}` }
@@ -854,7 +849,7 @@
           <div>${data.tags.map((tag) => `<a class="tag-pill" href="/tag/${encodeURIComponent(tag)}">#${escapeHtml(tag)}</a>`).join(" ") || "タグなし"}</div>
         </div>
         <div class="actions">
-          <a class="btn primary" href="${createDmmAffiliateUrl(data.title)}" target="_blank" rel="nofollow sponsored noopener">DMMでこの作品を探す</a>
+          <a class="btn primary" href="${createDmmSearchUrl(data.title)}" target="_blank" rel="noopener">DMMでこの作品を探す</a>
           ${data.tags[0] ? `<a class="btn secondary" href="/tag/${encodeURIComponent(data.tags[0])}">同じタグの読了カードを見る</a>` : `<a class="btn secondary" href="/cards">みんなの読了カードを見る</a>`}
           <a class="btn ghost" href="/#form">自分も読了カードを作る</a>
         </div>

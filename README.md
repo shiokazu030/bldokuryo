@@ -79,15 +79,10 @@ DELETE /api/cards/:id
 GET    /api/tags/:tag?limit=20
 ```
 
-## DMMアフィリエイト
+## DMMリンク
 
-DMMアフィID:
-
-```text
-shiooo03-002
-```
-
-作品名からDMM検索URLを作り、`al.dmm.com` の `lurl` にURLエンコードして渡しています。
+審査中のため、現在はアフィリエイトIDを入れずに通常のDMM検索URLへリンクしています。
+審査通過後に差し替えやすいように、DMM検索URL生成は `createDmmSearchUrl` にまとめています。
 
 ## MVPで入れている荒らし対策
 
