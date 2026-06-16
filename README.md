@@ -12,8 +12,10 @@
 - `functions/api/cards/[id].js`: 個別カード取得・削除
 - `functions/api/tags/[tag].js`: タグ別カード一覧取得
 - `migrations/0001_create_cards.sql`: D1テーブル作成SQL
+- `migrations/0002_seed_sample_cards.sql`: サンプル投稿SQL
 
 画像ファイルはDBに保存しません。公開カードは保存データからcanvasで再生成します。
+DB未設定時は、フロントエンド側のサンプルカードを一覧・個別ページに表示します。
 
 ## Cloudflare Pages設定
 
@@ -59,6 +61,12 @@ npx wrangler d1 migrations apply dokuryo-db --remote
 
 ```text
 migrations/0001_create_cards.sql
+```
+
+サンプル投稿もDBに入れたい場合:
+
+```text
+migrations/0002_seed_sample_cards.sql
 ```
 
 ## API
