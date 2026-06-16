@@ -1,0 +1,3 @@
+/cards /index.html 200
+/card/* /index.html 200
+/tag/* /index.html 200
