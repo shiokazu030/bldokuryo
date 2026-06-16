@@ -115,7 +115,7 @@
         <h1>BL読了<br>カード<br>メーカー</h1>
         <p class="lead">読んだ作品の沼度をカードにして残そう。画像保存だけでも、サイト内に公開して個別URLを作ることもできます。</p>
         <div class="hero-actions">
-          <a class="btn primary" href="/#form">カードを作る</a>
+          <a class="btn primary" href="/create">カードを作る</a>
           <a class="btn ghost" href="/cards">みんなの読了カードを見る</a>
         </div>
       </div>
@@ -128,9 +128,13 @@
       <h2 class="section-title">新着カード</h2>
       <div class="card-grid" id="latestCards"></div>
       <p class="status-text" id="latestStatus">読み込み中です</p>
+      <div class="inline-actions">
+        <a class="btn ghost" href="/cards">もっと見る</a>
+      </div>
     </section>
 
-    <section class="section" id="form">
+    <section class="section" id="createArea">
+    <div id="form">
       <h2 class="section-title">入力フォーム</h2>
       <div class="panel">
         <form class="form-grid" id="cardForm">
@@ -191,9 +195,11 @@
           <p class="status-text" id="formStatus"></p>
         </form>
       </div>
+    </div>
     </section>
 
-    <section class="section" id="preview">
+    <section class="section" id="previewArea">
+    <div id="preview">
       <h2 class="section-title">プレビュー</h2>
       <div class="preview-wrap">
         <div>
@@ -213,12 +219,24 @@
           <div class="search-links" id="searchLinks"></div>
         </aside>
       </div>
+    </div>
     </section>
 
     <section class="section hidden" id="cardsView">
       <h2 class="section-title" id="cardsTitle">みんなの読了カード</h2>
+      <p class="lead" id="cardsDescription">投稿された読了カードを新着順で見られます</p>
+      <div class="panel">
+        <label>タグで絞り込み
+          <select id="tagFilter">
+            <option value="">すべて</option>
+          </select>
+        </label>
+      </div>
       <div class="card-grid" id="cardsGrid"></div>
       <p class="status-text" id="cardsStatus">読み込み中です</p>
+      <div class="inline-actions">
+        <a class="btn primary" href="/create">自分も読了カードを作る</a>
+      </div>
     </section>
 
     <section class="section hidden" id="detailView">
@@ -311,6 +329,7 @@
       cardsGrid: document.getElementById("cardsGrid"),
       cardsStatus: document.getElementById("cardsStatus"),
       cardsTitle: document.getElementById("cardsTitle"),
+      tagFilter: document.getElementById("tagFilter"),
       detailView: document.getElementById("detailView"),
       detailPanel: document.getElementById("detailPanel")
     };
@@ -321,18 +340,27 @@
     let lastPublicId = "";
 
     function setSectionVisibility(mode) {
+      document.getElementById("top").classList.toggle("hidden", mode !== "home" && mode !== "create");
       document.getElementById("latestSection").classList.toggle("hidden", mode !== "home");
+      document.getElementById("createArea").classList.toggle("hidden", mode !== "home" && mode !== "create");
+      document.getElementById("previewArea").classList.toggle("hidden", mode !== "home" && mode !== "create");
       els.cardsView.classList.toggle("hidden", mode !== "cards");
       els.detailView.classList.toggle("hidden", mode !== "detail");
     }
 
     function setupTags() {
       els.tagBox.innerHTML = "";
+      els.tagFilter.innerHTML = `<option value="">すべて</option>`;
       tagOptions.forEach((tag) => {
         const label = document.createElement("label");
         label.className = "tag-check";
         label.innerHTML = `<input type="checkbox" value="${escapeHtml(tag)}"><span>${escapeHtml(tag)}</span>`;
         els.tagBox.appendChild(label);
+
+        const option = document.createElement("option");
+        option.value = tag;
+        option.textContent = tag;
+        els.tagFilter.appendChild(option);
       });
     }
 
@@ -785,7 +813,7 @@
 
     async function loadLatestCards() {
       try {
-        const res = await fetch("/api/cards?limit=6");
+        const res = await fetch("/api/cards?limit=3");
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "読み込みに失敗しました。");
         renderCardList(els.latestCards, json.cards || []);
@@ -799,6 +827,7 @@
     async function loadCardsPage(tagName = "") {
       setSectionVisibility("cards");
       els.cardsTitle.textContent = tagName ? `#${tagName} の読了カード` : "みんなの読了カード";
+      els.tagFilter.value = tagOptions.includes(tagName) ? tagName : "";
       els.cardsStatus.textContent = "読み込み中です";
       const path = tagName ? `/api/tags/${encodeURIComponent(tagName)}?limit=20` : "/api/cards?limit=20";
       try {
@@ -902,6 +931,10 @@
     function route() {
       const path = decodeURIComponent(location.pathname);
       if (path === "/cards") loadCardsPage();
+      else if (path === "/create") {
+        setSectionVisibility("create");
+        location.hash = location.hash || "#form";
+      }
       else if (path.startsWith("/tag/")) loadCardsPage(path.replace("/tag/", ""));
       else if (path.startsWith("/card/")) loadCardDetail(path.replace("/card/", ""));
       else {
@@ -940,6 +973,9 @@
     els.x.addEventListener("click", openX);
     els.reset.addEventListener("click", resetInputs);
     els.clearImage.addEventListener("click", () => { els.image.value = ""; uploadedImage = null; uploadedImageName = ""; updateAll(); });
+    els.tagFilter.addEventListener("change", () => {
+      location.href = els.tagFilter.value ? `/tag/${encodeURIComponent(els.tagFilter.value)}` : "/cards";
+    });
   </script>
 </body>
 </html>
