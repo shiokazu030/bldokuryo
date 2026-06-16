@@ -1,47 +1,100 @@
 # BL読了カードメーカー
 
-商業BLの読了カード画像を作れる、1ファイル完結のWebサイトです。
+読了カードを作成し、公開カードとしてサイト内に保存できるMVPです。
 
-## 公開用ファイル
+タイトルは審査提出済みのため、サイト名は `BL読了カードメーカー` のままにしています。
 
-GitHub Pagesで公開する場合は、以下をGitに入れてください。
+## 構成
+
+- `index.html`: フロントエンド本体
+- `_redirects`: `/cards`, `/card/:id`, `/tag/:tag` のSPA表示用
+- `functions/api/cards/index.js`: 公開カード一覧取得・投稿作成
+- `functions/api/cards/[id].js`: 個別カード取得・削除
+- `functions/api/tags/[tag].js`: タグ別カード一覧取得
+- `migrations/0001_create_cards.sql`: D1テーブル作成SQL
+
+画像ファイルはDBに保存しません。公開カードは保存データからcanvasで再生成します。
+
+## Cloudflare Pages設定
+
+Cloudflare Pagesの設定は以下です。
 
 ```text
-docs/index.html
-README.md
+Framework preset: None
+Build command: 空欄
+Build output directory: /
+Functions directory: functions
 ```
 
-## GitHub Pagesで公開する手順
+すでにPagesプロジェクトをGitHub連携している場合は、pushすると自動デプロイされます。
 
-1. ファイルをコミットします。
+## D1設定
+
+Cloudflare DashboardでD1データベースを作成します。
+
+例:
+
+```text
+Database name: dokuryo-db
+Binding name: DB
+```
+
+Pagesプロジェクトの設定で、D1 database bindingを追加してください。
+
+```text
+Settings > Functions > D1 database bindings
+Variable name: DB
+D1 database: dokuryo-db
+```
+
+## migration適用
+
+Cloudflareのローカル環境でWranglerを使う場合:
 
 ```powershell
-git add docs/index.html README.md
-git commit -m "Add BL reading card maker"
-git push
+npx wrangler d1 migrations apply dokuryo-db --remote
 ```
 
-2. GitHubのリポジトリ画面で以下を設定します。
+またはCloudflare DashboardのD1 SQL画面で、以下のSQLを実行してください。
 
 ```text
-Settings > Pages
-Source: Deploy from a branch
-Branch: main
-Folder: /docs
+migrations/0001_create_cards.sql
 ```
 
-3. 数分後、GitHub PagesのURLで公開されます。
+## API
 
 ```text
-https://ユーザー名.github.io/リポジトリ名/
+GET    /api/cards?limit=20
+POST   /api/cards
+GET    /api/cards/:id
+DELETE /api/cards/:id
+GET    /api/tags/:tag?limit=20
 ```
 
-## 中身
+## DMMアフィリエイト
 
-- HTML / CSS / JavaScriptのみ
-- 外部ライブラリなし
-- canvasで1200 x 1200pxのカード画像を生成
-- PNG保存
-- X共有
-- 作品検索リンク
-- スマホ優先表示
+DMMアフィID:
+
+```text
+shiooo03-002
+```
+
+作品名からDMM検索URLを作り、`al.dmm.com` の `lurl` にURLエンコードして渡しています。
+
+## MVPで入れている荒らし対策
+
+- 作品名80文字まで
+- 感想160文字まで
+- 外部URL入力の拒否
+- 簡単なNGワードフィルター
+- IPハッシュによる30秒連投防止
+- 削除用パスワードによる公開カード削除
+- コメント、いいね、フォロー、通知なし
+
+## 公開URL
+
+Cloudflare Pages:
+
+```text
+https://dokuryo.pages.dev
+```

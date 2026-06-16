@@ -1,0 +1,7 @@
+name = "dokuryo"
+compatibility_date = "2026-06-16"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "dokuryo-db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"

@@ -20,15 +20,8 @@
       --radius: 8px;
     }
 
-    * {
-      box-sizing: border-box;
-      min-width: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
+    * { box-sizing: border-box; min-width: 0; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       color: var(--ink);
@@ -40,419 +33,77 @@
       overflow-x: hidden;
     }
 
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    .page {
-      width: min(100%, 980px);
-      margin: 0 auto;
-      padding: 18px 14px 36px;
-    }
-
-    .top {
-      display: grid;
-      align-content: center;
-      gap: 22px;
-      padding: 34px 0 22px;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      width: fit-content;
-      color: var(--brown);
-      font-weight: 700;
-      font-size: .88rem;
-    }
-
-    .brand-mark {
-      display: inline-grid;
-      place-items: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: var(--pink-soft);
-      color: #b35d75;
-      border: 1px solid rgba(179, 93, 117, .18);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2.45rem, 12vw, 4.35rem);
-      line-height: 1.03;
-      letter-spacing: 0;
-      color: #5b382f;
-      max-width: 8em;
-    }
-
-    .lead {
-      margin: 0;
-      max-width: 36rem;
-      color: var(--muted);
-      line-height: 1.85;
-      font-size: 1rem;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .hero-preview {
-      width: 100%;
-      max-width: 390px;
-      justify-self: center;
-      background: rgba(255, 253, 248, .7);
-      border: 1px solid rgba(236, 211, 199, .75);
-      box-shadow: var(--shadow);
-      padding: 10px;
-      border-radius: var(--radius);
-    }
-
-    .hero-preview img {
-      display: block;
-      width: 100%;
-      border-radius: 6px;
-      background: #fff;
-    }
-
-    .section {
-      padding: 18px 0;
-    }
-
-    .section-title {
-      margin: 0 0 12px;
-      font-size: 1.18rem;
-      color: #5a3b32;
-    }
-
-    .panel {
-      background: rgba(255, 253, 248, .86);
-      border: 1px solid rgba(236, 211, 199, .9);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px;
-    }
-
-    .form-grid {
-      display: grid;
-      gap: 14px;
-    }
-
-    label {
-      display: grid;
-      gap: 7px;
-      font-weight: 700;
-      color: #67473e;
-      font-size: .92rem;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      min-height: 46px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fffefb;
-      color: var(--ink);
-      padding: 11px 12px;
-      outline: none;
-    }
-
-    textarea {
-      min-height: 86px;
-      resize: vertical;
-      line-height: 1.65;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #d994a7;
-      box-shadow: 0 0 0 3px rgba(243, 184, 200, .28);
-    }
-
-    .meta-row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-
-    .tag-box {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      padding-top: 3px;
-    }
-
-    .tag-check input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-      width: 1px;
-      height: 1px;
-      min-height: 1px;
-    }
-
-    .tag-check span {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 36px;
-      padding: 8px 11px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: #fffdf9;
-      color: #78594f;
-      font-weight: 700;
-      font-size: .86rem;
-      user-select: none;
-      white-space: nowrap;
-    }
-
-    .tag-check input:checked + span {
-      color: #6b2f43;
-      background: var(--pink-soft);
-      border-color: #e5aaba;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5);
-    }
-
-    .hint {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: .82rem;
-      line-height: 1.55;
-    }
-
-    .image-picker {
-      display: grid;
-      gap: 10px;
-    }
-
-    .file-row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 9px;
-    }
-
-    input[type="file"] {
-      padding: 9px;
-      background: #fffdf9;
-    }
-
-    .image-note {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      color: var(--muted);
-      font-size: .82rem;
-      line-height: 1.55;
-    }
-
-    .mini-btn {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fffdf9;
-      color: #6a4036;
-      min-height: 34px;
-      padding: 6px 10px;
-      font-weight: 800;
-      cursor: pointer;
-      width: fit-content;
-    }
-
-    .meter-grid {
-      display: grid;
-      gap: 12px;
-    }
-
-    .meter {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 6px 10px;
-      font-weight: 700;
-      color: #67473e;
-    }
-
-    .meter > * {
-      min-width: 0;
-    }
-
-    input[type="range"] {
-      grid-column: 1 / -1;
-      min-height: 30px;
-      padding: 0;
-      accent-color: #d98da2;
-      background: transparent;
-      border: 0;
-      box-shadow: none;
-    }
-
-    .meter output {
-      text-align: right;
-      color: #9d5369;
-    }
-
-    .count {
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font-size: .8rem;
-      margin-top: 5px;
-    }
-
-    .actions {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: var(--radius);
-      min-height: 48px;
-      padding: 12px 15px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
-    }
-
-    .btn:active {
-      transform: translateY(1px);
-    }
-
-    .btn.primary {
-      color: #fff;
-      background: #a86678;
-      box-shadow: 0 12px 28px rgba(168, 102, 120, .25);
-    }
-
-    .btn.secondary {
-      color: #6a4036;
-      background: #ffe9cf;
-      border: 1px solid #edcba7;
-    }
-
-    .btn.ghost {
-      color: #6a4036;
-      background: #fffdf9;
-      border: 1px solid var(--line);
-    }
-
-    .preview-wrap {
-      display: grid;
-      gap: 14px;
-    }
-
-    .canvas-shell {
-      background: rgba(255, 253, 248, .86);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 10px;
-      box-shadow: var(--shadow);
-    }
-
-    canvas {
-      display: block;
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      border-radius: 6px;
-      background: #fff;
-    }
-
-    .ad-note {
-      margin: 0 0 10px;
-      color: var(--muted);
-      font-size: .83rem;
-    }
-
-    .search-links {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 9px;
-    }
-
-    .search-links a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 45px;
-      border-radius: var(--radius);
-      background: #fffdf9;
-      border: 1px solid var(--line);
-      color: #6b473e;
-      text-decoration: none;
-      font-weight: 800;
-    }
-
-    .footer {
-      padding: 18px 0 0;
-      text-align: center;
-      color: var(--muted);
-      font-size: .78rem;
-    }
+    button, input, textarea, select { font: inherit; }
+    a { color: inherit; }
+    .page { width: min(100%, 1040px); margin: 0 auto; padding: 18px 14px 36px; }
+    .top { display: grid; align-content: center; gap: 22px; padding: 34px 0 22px; }
+    .brand { display: inline-flex; align-items: center; gap: 9px; width: fit-content; color: var(--brown); font-weight: 700; font-size: .88rem; }
+    .brand-mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--pink-soft); color: #b35d75; border: 1px solid rgba(179, 93, 117, .18); }
+    h1 { margin: 0; font-size: clamp(2.45rem, 12vw, 4.35rem); line-height: 1.03; letter-spacing: 0; color: #5b382f; max-width: 8em; }
+    .lead { margin: 0; max-width: 36rem; color: var(--muted); line-height: 1.85; font-size: 1rem; }
+    .hero-actions, .inline-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-preview { width: 100%; max-width: 390px; justify-self: center; background: rgba(255, 253, 248, .7); border: 1px solid rgba(236, 211, 199, .75); box-shadow: var(--shadow); padding: 10px; border-radius: var(--radius); }
+    .hero-preview img { display: block; width: 100%; border-radius: 6px; background: #fff; }
+    .section { padding: 18px 0; }
+    .section-title { margin: 0 0 12px; font-size: 1.18rem; color: #5a3b32; }
+    .panel { background: rgba(255, 253, 248, .86); border: 1px solid rgba(236, 211, 199, .9); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; }
+    .form-grid { display: grid; gap: 14px; }
+    label { display: grid; gap: 7px; font-weight: 700; color: #67473e; font-size: .92rem; }
+    input, textarea, select { width: 100%; min-height: 46px; border: 1px solid var(--line); border-radius: var(--radius); background: #fffefb; color: var(--ink); padding: 11px 12px; outline: none; }
+    textarea { min-height: 92px; resize: vertical; line-height: 1.65; }
+    input:focus, textarea:focus, select:focus { border-color: #d994a7; box-shadow: 0 0 0 3px rgba(243, 184, 200, .28); }
+    .meta-row { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    .tag-box { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding-top: 3px; }
+    .tag-check input, .radio-card input { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; min-height: 1px; }
+    .tag-check span { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 8px 11px; border-radius: 999px; border: 1px solid var(--line); background: #fffdf9; color: #78594f; font-weight: 700; font-size: .86rem; user-select: none; white-space: nowrap; }
+    .tag-check input:checked + span { color: #6b2f43; background: var(--pink-soft); border-color: #e5aaba; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5); }
+    .hint, .ad-note, .status-text { margin: 6px 0 0; color: var(--muted); font-size: .82rem; line-height: 1.55; }
+    .image-picker, .publish-options { display: grid; gap: 10px; }
+    input[type="file"] { padding: 9px; background: #fffdf9; }
+    .image-note { display: grid; grid-template-columns: 1fr; gap: 10px; color: var(--muted); font-size: .82rem; line-height: 1.55; }
+    .mini-btn { border: 1px solid var(--line); border-radius: var(--radius); background: #fffdf9; color: #6a4036; min-height: 34px; padding: 6px 10px; font-weight: 800; cursor: pointer; width: fit-content; }
+    .meter-grid { display: grid; gap: 12px; }
+    .meter { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 10px; font-weight: 700; color: #67473e; }
+    input[type="range"] { grid-column: 1 / -1; min-height: 30px; padding: 0; accent-color: #d98da2; background: transparent; border: 0; box-shadow: none; }
+    .meter output { text-align: right; color: #9d5369; }
+    .count { display: flex; justify-content: space-between; color: var(--muted); font-size: .8rem; margin-top: 5px; }
+    .radio-grid { display: grid; grid-template-columns: 1fr; gap: 9px; }
+    .radio-card span { display: block; border: 1px solid var(--line); border-radius: var(--radius); background: #fffdf9; padding: 12px; font-weight: 800; color: #6a4036; }
+    .radio-card input:checked + span { background: var(--pink-soft); border-color: #e5aaba; color: #6b2f43; }
+    .actions { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+    .btn { border: 0; border-radius: var(--radius); min-height: 48px; padding: 12px 15px; font-weight: 800; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; text-align: center; transition: transform .16s ease, box-shadow .16s ease, background .16s ease; }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary { color: #fff; background: #a86678; box-shadow: 0 12px 28px rgba(168, 102, 120, .25); }
+    .btn.secondary { color: #6a4036; background: #ffe9cf; border: 1px solid #edcba7; }
+    .btn.ghost { color: #6a4036; background: #fffdf9; border: 1px solid var(--line); }
+    .btn.danger { color: #fff; background: #8c4a4a; }
+    .preview-wrap { display: grid; gap: 14px; }
+    .canvas-shell { background: rgba(255, 253, 248, .86); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; box-shadow: var(--shadow); }
+    canvas { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 6px; background: #fff; }
+    .search-links { display: grid; grid-template-columns: 1fr; gap: 9px; }
+    .search-links a { display: flex; align-items: center; justify-content: center; min-height: 45px; border-radius: var(--radius); background: #fffdf9; border: 1px solid var(--line); color: #6b473e; text-decoration: none; font-weight: 800; }
+    .card-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .mini-card { display: grid; gap: 9px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255, 253, 248, .9); text-decoration: none; box-shadow: 0 10px 28px rgba(96, 63, 50, .08); }
+    .mini-card strong { color: #5b382f; line-height: 1.45; }
+    .mini-meta { display: flex; flex-wrap: wrap; gap: 7px; color: var(--muted); font-size: .82rem; }
+    .tag-pill { display: inline-flex; align-items: center; min-height: 28px; padding: 5px 9px; border: 1px solid #e7c9d1; border-radius: 999px; background: #fff1f5; color: #7c4055; font-weight: 800; font-size: .78rem; text-decoration: none; }
+    .detail-layout { display: grid; gap: 14px; }
+    .kv { display: grid; gap: 8px; color: #6b473e; line-height: 1.65; }
+    .delete-box { display: grid; gap: 9px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .hidden { display: none !important; }
+    .footer { padding: 18px 0 0; text-align: center; color: var(--muted); font-size: .78rem; }
 
     @media (min-width: 760px) {
-      .page {
-        padding: 28px 24px 48px;
-      }
-
-      .top {
-        grid-template-columns: 1fr .75fr;
-        align-items: center;
-        min-height: 82vh;
-      }
-
-      .hero-copy {
-        display: grid;
-        gap: 18px;
-      }
-
-      .meta-row {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .tag-box {
-        display: flex;
-        flex-wrap: wrap;
-      }
-
-      .image-note {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .meter-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .actions {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .preview-wrap {
-        grid-template-columns: minmax(0, 1fr) 260px;
-        align-items: start;
-      }
-
-      .search-links {
-        grid-template-columns: 1fr;
-      }
+      .page { padding: 28px 24px 48px; }
+      .top { grid-template-columns: 1fr .75fr; align-items: center; min-height: 70vh; }
+      .hero-copy { display: grid; gap: 18px; }
+      .meta-row, .meter-grid, .radio-grid { grid-template-columns: 1fr 1fr; }
+      .tag-box { display: flex; flex-wrap: wrap; }
+      .image-note { display: flex; align-items: center; justify-content: space-between; }
+      .actions { grid-template-columns: repeat(4, 1fr); }
+      .preview-wrap { grid-template-columns: minmax(0, 1fr) 300px; align-items: start; }
+      .card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .detail-layout { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
     }
   </style>
 </head>
@@ -462,10 +113,10 @@
       <div class="hero-copy">
         <div class="brand"><span class="brand-mark">BL</span> 読了カードメーカー</div>
         <h1>BL読了<br>カード<br>メーカー</h1>
-        <p class="lead">作品名、作者名、刺さった要素、読後感を入れるだけ。Xに投稿しやすい1200×1200pxの読了カード画像を、スマホでもさっと作れます。</p>
+        <p class="lead">読んだ作品の沼度をカードにして残そう。画像保存だけでも、サイト内に公開して個別URLを作ることもできます。</p>
         <div class="hero-actions">
-          <a class="btn primary" href="#form" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">カードを作る</a>
-          <a class="btn ghost" href="#preview" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">プレビューを見る</a>
+          <a class="btn primary" href="/#form">カードを作る</a>
+          <a class="btn ghost" href="/cards">みんなの読了カードを見る</a>
         </div>
       </div>
       <div class="hero-preview" aria-hidden="true">
@@ -473,44 +124,37 @@
       </div>
     </section>
 
+    <section class="section" id="latestSection">
+      <h2 class="section-title">新着カード</h2>
+      <div class="card-grid" id="latestCards"></div>
+      <p class="status-text" id="latestStatus">読み込み中です</p>
+    </section>
+
     <section class="section" id="form">
       <h2 class="section-title">入力フォーム</h2>
       <div class="panel">
-        <form class="form-grid">
+        <form class="form-grid" id="cardForm">
           <div class="meta-row">
-            <label>作品名
-              <input id="titleInput" type="text" placeholder="例：きみと春待ち">
+            <label>作品名 必須
+              <input id="titleInput" type="text" maxlength="80" required placeholder="例：きみと春待ち">
             </label>
-            <label>作者名
-              <input id="authorInput" type="text" placeholder="例：桜井ゆめ">
-            </label>
-          </div>
-
-          <div class="meta-row">
-            <label>読了日
-              <input id="dateInput" type="date">
-            </label>
-            <label>ネタバレ範囲
-              <select id="spoilerInput">
-                <option>ネタバレなし</option>
-                <option>ふんわり</option>
-                <option>ネタバレあり</option>
-              </select>
+            <label>作者名 任意
+              <input id="authorInput" type="text" maxlength="60" placeholder="例：桜井ゆめ">
             </label>
           </div>
 
           <div class="image-picker">
-            <label>カード画像（1枚）
+            <label>カード画像（非公開の画像作成用・1枚）
               <input id="imageInput" type="file" accept="image/*">
             </label>
             <div class="image-note">
-              <span id="imageStatus">画像なしでも作れます</span>
+              <span id="imageStatus">公開投稿には画像ファイルは保存されません</span>
               <button class="mini-btn" id="clearImageButton" type="button">画像を外す</button>
             </div>
           </div>
 
           <div>
-            <label>刺さった要素（最大5個）</label>
+            <label>タグ 任意（最大5個）</label>
             <div class="tag-box" id="tagBox"></div>
             <p class="hint" id="tagHint">0 / 5 選択中</p>
           </div>
@@ -520,10 +164,31 @@
             <div class="meter-grid" id="meterGrid"></div>
           </div>
 
-          <label>ひとこと感想
-            <textarea id="commentInput" maxlength="60" placeholder="60文字以内で、読後の熱をそっと残す"></textarea>
-            <span class="count"><span>カード内で自動改行します</span><span id="commentCount">0 / 60</span></span>
+          <label>感想 任意
+            <textarea id="commentInput" maxlength="160" placeholder="160文字以内で、読後の熱をそっと残す"></textarea>
+            <span class="count"><span>URLの入力は投稿時に無効化されます</span><span id="commentCount">0 / 160</span></span>
           </label>
+
+          <div class="publish-options">
+            <label>公開設定</label>
+            <div class="radio-grid">
+              <label class="radio-card"><input type="radio" name="publishMode" value="private" checked><span>非公開で画像だけ作る</span></label>
+              <label class="radio-card"><input type="radio" name="publishMode" value="public"><span>サイト内に公開する</span></label>
+            </div>
+          </div>
+
+          <label>削除用パスワード 任意
+            <input id="deletePasswordInput" type="password" maxlength="80" autocomplete="new-password" placeholder="公開する場合は入力推奨">
+            <span class="hint">公開後に自分で削除する時に使います。未入力でも公開できます。</span>
+          </label>
+
+          <div class="actions">
+            <button class="btn primary" id="createButton" type="submit">カードを作成</button>
+            <button class="btn secondary" id="saveButton" type="button">画像を保存</button>
+            <button class="btn ghost" id="copyButton" type="button">投稿文をコピー</button>
+            <button class="btn ghost" id="resetButton" type="button">入力を整える</button>
+          </div>
+          <p class="status-text" id="formStatus"></p>
         </form>
       </div>
     </section>
@@ -535,10 +200,11 @@
           <div class="canvas-shell">
             <canvas id="cardCanvas" width="1200" height="1200" aria-label="生成されたBL読了カード"></canvas>
           </div>
-          <div class="actions">
-            <button class="btn primary" id="saveButton" type="button">画像を保存</button>
-            <button class="btn secondary" id="shareButton" type="button">Xで共有</button>
-            <button class="btn ghost" id="resetButton" type="button">入力を整える</button>
+          <div class="actions" id="completeActions">
+            <button class="btn primary" id="saveButtonBottom" type="button">画像を保存</button>
+            <button class="btn secondary" id="copyButtonBottom" type="button">投稿文をコピー</button>
+            <button class="btn ghost" id="xButton" type="button">Xを開く</button>
+            <a class="btn ghost hidden" id="publicPageButton" href="#">公開ページを見る</a>
           </div>
         </div>
 
@@ -549,28 +215,46 @@
       </div>
     </section>
 
+    <section class="section hidden" id="cardsView">
+      <h2 class="section-title" id="cardsTitle">みんなの読了カード</h2>
+      <div class="card-grid" id="cardsGrid"></div>
+      <p class="status-text" id="cardsStatus">読み込み中です</p>
+    </section>
+
+    <section class="section hidden" id="detailView">
+      <h2 class="section-title">読了カード</h2>
+      <div class="detail-layout">
+        <div>
+          <div class="canvas-shell">
+            <canvas id="detailCanvas" width="1200" height="1200" aria-label="公開されたBL読了カード"></canvas>
+          </div>
+        </div>
+        <aside class="panel" id="detailPanel"></aside>
+      </div>
+    </section>
+
     <p class="footer">BL読了カードメーカー</p>
   </main>
 
   <script>
-    const tagOptions = [
-      "執着", "両片想い", "すれ違い", "溺愛", "体格差", "年下攻め", "年上受け", "幼なじみ", "ケンカップル", "主従",
-      "共依存", "健気受け", "クール攻め", "重い愛", "甘々", "シリアス", "ハピエン", "メリバ", "ギャップ", "余韻強め"
-    ];
-
+    const SITE_ORIGIN = location.origin;
+    const SITE_HOST = location.host || "dokuryo.pages.dev";
+    const DMM_AF_ID = "shiooo03-002";
+    const MAX_TAGS = 5;
+    const LAST_POST_KEY = "dokuryo_last_post_at";
+    const NG_WORDS = ["死ね", "殺す", "バカ", "詐欺", "無料配布"];
+    const tagOptions = ["重め", "甘々", "泣ける", "執着攻め", "商業BL", "両片想い", "すれ違い", "溺愛", "体格差", "年下攻め", "年上受け", "幼なじみ", "ケンカップル", "主従", "共依存", "健気受け", "クール攻め", "重い愛", "ハピエン", "余韻強め"];
     const meters = [
-      { key: "sweet", label: "甘さ", value: 4 },
-      { key: "heavy", label: "重さ", value: 3 },
-      { key: "spice", label: "えろ度", value: 3 },
-      { key: "after", label: "余韻", value: 4 },
-      { key: "twist", label: "拗らせ度", value: 3 }
+      { key: "sweetness", label: "甘さ", value: 4 },
+      { key: "heaviness", label: "重さ", value: 3 },
+      { key: "numa", label: "沼度", value: 4 },
+      { key: "crying", label: "泣ける", value: 3 },
+      { key: "spice", label: "刺激", value: 3 }
     ];
 
     const els = {
       title: document.getElementById("titleInput"),
       author: document.getElementById("authorInput"),
-      date: document.getElementById("dateInput"),
-      spoiler: document.getElementById("spoilerInput"),
       image: document.getElementById("imageInput"),
       imageStatus: document.getElementById("imageStatus"),
       clearImage: document.getElementById("clearImageButton"),
@@ -579,21 +263,39 @@
       meterGrid: document.getElementById("meterGrid"),
       comment: document.getElementById("commentInput"),
       commentCount: document.getElementById("commentCount"),
+      deletePassword: document.getElementById("deletePasswordInput"),
+      form: document.getElementById("cardForm"),
+      formStatus: document.getElementById("formStatus"),
       canvas: document.getElementById("cardCanvas"),
+      detailCanvas: document.getElementById("detailCanvas"),
       heroImage: document.getElementById("heroImage"),
       links: document.getElementById("searchLinks"),
       save: document.getElementById("saveButton"),
-      share: document.getElementById("shareButton"),
-      reset: document.getElementById("resetButton")
+      saveBottom: document.getElementById("saveButtonBottom"),
+      copy: document.getElementById("copyButton"),
+      copyBottom: document.getElementById("copyButtonBottom"),
+      x: document.getElementById("xButton"),
+      reset: document.getElementById("resetButton"),
+      publicPage: document.getElementById("publicPageButton"),
+      latestCards: document.getElementById("latestCards"),
+      latestStatus: document.getElementById("latestStatus"),
+      cardsView: document.getElementById("cardsView"),
+      cardsGrid: document.getElementById("cardsGrid"),
+      cardsStatus: document.getElementById("cardsStatus"),
+      cardsTitle: document.getElementById("cardsTitle"),
+      detailView: document.getElementById("detailView"),
+      detailPanel: document.getElementById("detailPanel")
     };
 
     let uploadedImage = null;
     let uploadedImageName = "";
+    let lastPublicUrl = "";
+    let lastPublicId = "";
 
-    function setToday() {
-      const now = new Date();
-      const offset = now.getTimezoneOffset() * 60000;
-      els.date.value = new Date(now.getTime() - offset).toISOString().slice(0, 10);
+    function setSectionVisibility(mode) {
+      document.getElementById("latestSection").classList.toggle("hidden", mode !== "home");
+      els.cardsView.classList.toggle("hidden", mode !== "cards");
+      els.detailView.classList.toggle("hidden", mode !== "detail");
     }
 
     function setupTags() {
@@ -601,7 +303,7 @@
       tagOptions.forEach((tag) => {
         const label = document.createElement("label");
         label.className = "tag-check";
-        label.innerHTML = `<input type="checkbox" value="${tag}"><span>${tag}</span>`;
+        label.innerHTML = `<input type="checkbox" value="${escapeHtml(tag)}"><span>${escapeHtml(tag)}</span>`;
         els.tagBox.appendChild(label);
       });
     }
@@ -613,11 +315,15 @@
         row.className = "meter";
         row.innerHTML = `
           <span>${meter.label}</span>
-          <input id="${meter.key}Input" type="range" min="1" max="5" step="1" value="${meter.value}" aria-label="${meter.label}">
           <output id="${meter.key}Output">${meter.value}</output>
+          <input id="${meter.key}Input" type="range" min="1" max="5" step="1" value="${meter.value}" aria-label="${meter.label}">
         `;
         els.meterGrid.appendChild(row);
       });
+    }
+
+    function selectedPublishMode() {
+      return document.querySelector("input[name='publishMode']:checked").value;
     }
 
     function getSelectedTags() {
@@ -632,15 +338,79 @@
     }
 
     function getCardData() {
+      const values = getMeterValues();
       return {
         title: els.title.value.trim() || "作品名未入力",
         author: els.author.value.trim(),
-        date: els.date.value ? els.date.value.replaceAll("-", ".") : "",
-        spoiler: els.spoiler.value,
+        comment: els.comment.value.trim(),
         tags: getSelectedTags(),
-        meters: getMeterValues(),
-        comment: els.comment.value.trim()
+        meters: values,
+        sweetness: values[0].value,
+        heaviness: values[1].value,
+        numa: values[2].value,
+        crying: values[3].value,
+        spice: values[4].value,
+        createdAt: new Date().toISOString(),
+        publicUrl: lastPublicUrl
       };
+    }
+
+    function cardFromApi(row) {
+      return {
+        id: row.id,
+        title: row.title,
+        author: row.author || "",
+        comment: row.comment || "",
+        tags: Array.isArray(row.tags) ? row.tags : [],
+        createdAt: row.created_at,
+        publicUrl: `${SITE_ORIGIN}/card/${row.id}`,
+        sweetness: row.sweetness,
+        heaviness: row.heaviness,
+        numa: row.numa,
+        crying: row.crying,
+        spice: row.spice,
+        meters: [
+          { key: "sweetness", label: "甘さ", value: row.sweetness },
+          { key: "heaviness", label: "重さ", value: row.heaviness },
+          { key: "numa", label: "沼度", value: row.numa },
+          { key: "crying", label: "泣ける", value: row.crying },
+          { key: "spice", label: "刺激", value: row.spice }
+        ]
+      };
+    }
+
+    function clampRating(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return 3;
+      return Math.min(5, Math.max(1, Math.round(n)));
+    }
+
+    function hasUrl(text) {
+      return /https?:\/\/|www\.|[a-z0-9-]+\.(com|net|org|jp|dev|io|site|xyz)\b/i.test(text || "");
+    }
+
+    function hasNgWord(text) {
+      return NG_WORDS.some((word) => (text || "").includes(word));
+    }
+
+    function validateForPublish(data) {
+      if (!els.title.value.trim()) return "作品名は必須です。";
+      if (data.title.length > 80) return "作品名は80文字以内にしてください。";
+      if (data.comment.length > 160) return "感想は160文字以内にしてください。";
+      const combined = `${data.title} ${data.author} ${data.comment} ${data.tags.join(" ")}`;
+      if (hasUrl(combined)) return "外部URLは投稿できません。";
+      if (hasNgWord(combined)) return "投稿できない言葉が含まれています。";
+      const last = Number(localStorage.getItem(LAST_POST_KEY) || 0);
+      if (Date.now() - last < 30000) return "連続投稿を防ぐため、少し待ってから投稿してください。";
+      return "";
+    }
+
+    function escapeHtml(value) {
+      return String(value || "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+
+    function stars(value) {
+      return "★".repeat(clampRating(value)) + "☆".repeat(5 - clampRating(value));
     }
 
     function roundedRect(ctx, x, y, w, h, r) {
@@ -656,52 +426,18 @@
     function drawImageCover(ctx, image, x, y, w, h, r) {
       const imageRatio = image.width / image.height;
       const frameRatio = w / h;
-      let sw = image.width;
-      let sh = image.height;
-      let sx = 0;
-      let sy = 0;
-
-      if (imageRatio > frameRatio) {
-        sw = image.height * frameRatio;
-        sx = (image.width - sw) / 2;
-      } else {
-        sh = image.width / frameRatio;
-        sy = (image.height - sh) / 2;
-      }
-
+      let sw = image.width, sh = image.height, sx = 0, sy = 0;
+      if (imageRatio > frameRatio) { sw = image.height * frameRatio; sx = (image.width - sw) / 2; }
+      else { sh = image.width / frameRatio; sy = (image.height - sh) / 2; }
       ctx.save();
       roundedRect(ctx, x, y, w, h, r);
       ctx.clip();
       ctx.drawImage(image, sx, sy, sw, sh, x, y, w, h);
       ctx.restore();
-
       roundedRect(ctx, x, y, w, h, r);
       ctx.strokeStyle = "#e4bfc8";
       ctx.lineWidth = 5;
       ctx.stroke();
-    }
-
-    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
-      const chars = Array.from(text || "");
-      const lines = [];
-      let line = "";
-      chars.forEach((char) => {
-        const test = line + char;
-        if (ctx.measureText(test).width > maxWidth && line) {
-          lines.push(line);
-          line = char;
-        } else {
-          line = test;
-        }
-      });
-      if (line) lines.push(line);
-      const visible = typeof maxLines === "number" ? lines.slice(0, maxLines) : lines;
-      visible.forEach((l, index) => {
-        let output = l;
-        if (maxLines && index === maxLines - 1 && lines.length > maxLines) output = l.slice(0, Math.max(0, l.length - 1)) + "…";
-        ctx.fillText(output, x, y + index * lineHeight);
-      });
-      return visible.length * lineHeight;
     }
 
     function wrapTextLines(ctx, text, maxWidth) {
@@ -710,29 +446,15 @@
       let line = "";
       chars.forEach((char) => {
         const test = line + char;
-        if (ctx.measureText(test).width > maxWidth && line) {
-          lines.push(line);
-          line = char;
-        } else {
-          line = test;
-        }
+        if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = char; }
+        else line = test;
       });
       if (line) lines.push(line);
       return lines;
     }
 
     function fitWrappedText(ctx, text, x, y, options) {
-      const {
-        maxWidth,
-        maxLines,
-        maxFont,
-        minFont,
-        weight,
-        color,
-        family = "'Yu Gothic', sans-serif",
-        lineRatio = 1.18
-      } = options;
-
+      const { maxWidth, maxLines, maxFont, minFont, weight, color, family = "'Yu Gothic', sans-serif", lineRatio = 1.18 } = options;
       let fontSize = maxFont;
       let lines = [];
       while (fontSize >= minFont) {
@@ -741,19 +463,16 @@
         if (lines.length <= maxLines) break;
         fontSize -= 3;
       }
-
       ctx.fillStyle = color;
       ctx.font = `${weight} ${fontSize}px ${family}`;
       const lineHeight = Math.round(fontSize * lineRatio);
       const visible = lines.slice(0, maxLines);
       visible.forEach((line, index) => {
         let output = line;
-        if (index === maxLines - 1 && lines.length > maxLines) {
-          output = line.slice(0, Math.max(0, line.length - 1)) + "…";
-        }
+        if (index === maxLines - 1 && lines.length > maxLines) output = line.slice(0, Math.max(0, line.length - 1)) + "…";
         ctx.fillText(output, x, y + index * lineHeight);
       });
-      return { lines: visible.length, fontSize, height: visible.length * lineHeight };
+      return { height: visible.length * lineHeight, fontSize };
     }
 
     function fitSingleLineText(ctx, text, x, y, options) {
@@ -766,9 +485,7 @@
         fontSize -= 2;
       }
       ctx.font = `${weight} ${fontSize}px ${family}`;
-      while (ctx.measureText(output).width > maxWidth && output.length > 2) {
-        output = output.slice(0, -2) + "…";
-      }
+      while (ctx.measureText(output).width > maxWidth && output.length > 2) output = output.slice(0, -2) + "…";
       ctx.fillStyle = color;
       ctx.fillText(output, x, y);
     }
@@ -788,7 +505,6 @@
       const axes = meterValues;
       const sides = axes.length;
       const start = -Math.PI / 2;
-
       ctx.save();
       ctx.strokeStyle = "#e7cfc4";
       ctx.lineWidth = 2;
@@ -800,237 +516,125 @@
           const angle = start + i * Math.PI * 2 / sides;
           const x = cx + Math.cos(angle) * r;
           const y = cy + Math.sin(angle) * r;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
         }
         ctx.closePath();
         if (level === 5) ctx.fill();
         ctx.stroke();
       }
-
       axes.forEach((axis, i) => {
         const angle = start + i * Math.PI * 2 / sides;
         const x = cx + Math.cos(angle) * radius;
         const y = cy + Math.sin(angle) * radius;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-
-        const labelX = cx + Math.cos(angle) * (radius + 64);
-        const labelY = cy + Math.sin(angle) * (radius + 52);
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x, y); ctx.stroke();
         ctx.fillStyle = "#6d4a40";
         ctx.font = "700 24px 'Yu Gothic', sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(axis.label, labelX, labelY);
+        ctx.fillText(axis.label, cx + Math.cos(angle) * (radius + 64), cy + Math.sin(angle) * (radius + 52));
       });
-
       ctx.beginPath();
       axes.forEach((axis, i) => {
         const angle = start + i * Math.PI * 2 / sides;
-        const r = radius * axis.value / 5;
+        const r = radius * clampRating(axis.value) / 5;
         const x = cx + Math.cos(angle) * r;
         const y = cy + Math.sin(angle) * r;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
       });
       ctx.closePath();
       ctx.fillStyle = "rgba(217, 141, 162, .34)";
       ctx.strokeStyle = "#c66f88";
       ctx.lineWidth = 5;
-      ctx.fill();
-      ctx.stroke();
-
-      axes.forEach((axis, i) => {
-        const angle = start + i * Math.PI * 2 / sides;
-        const r = radius * axis.value / 5;
-        const x = cx + Math.cos(angle) * r;
-        const y = cy + Math.sin(angle) * r;
-        ctx.beginPath();
-        ctx.arc(x, y, 8, 0, Math.PI * 2);
-        ctx.fillStyle = "#fffdf8";
-        ctx.fill();
-        ctx.strokeStyle = "#c66f88";
-        ctx.lineWidth = 4;
-        ctx.stroke();
-      });
+      ctx.fill(); ctx.stroke();
       ctx.restore();
     }
 
-    function drawCard() {
-      const data = getCardData();
-      const ctx = els.canvas.getContext("2d");
-      const w = els.canvas.width;
-      const h = els.canvas.height;
-
+    function drawCard(targetCanvas, data, options = {}) {
+      const ctx = targetCanvas.getContext("2d");
+      const w = targetCanvas.width;
+      const h = targetCanvas.height;
+      const localImage = options.allowImage ? uploadedImage : null;
       ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = "#fff8f4";
-      ctx.fillRect(0, 0, w, h);
-
       const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, "#fffdf8");
-      grad.addColorStop(.52, "#fff1df");
-      grad.addColorStop(1, "#fde4eb");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
+      grad.addColorStop(0, "#fffdf8"); grad.addColorStop(.52, "#fff1df"); grad.addColorStop(1, "#fde4eb");
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
       ctx.fillStyle = "rgba(255,255,255,.48)";
-      for (let i = 0; i < 26; i++) {
-        const x = 58 + (i * 137) % 1100;
-        const y = 40 + (i * 211) % 1110;
-        ctx.beginPath();
-        ctx.arc(x, y, 2 + (i % 4), 0, Math.PI * 2);
-        ctx.fill();
-      }
-
+      for (let i = 0; i < 26; i++) { ctx.beginPath(); ctx.arc(58 + (i * 137) % 1100, 40 + (i * 211) % 1110, 2 + (i % 4), 0, Math.PI * 2); ctx.fill(); }
       roundedRect(ctx, 72, 72, 1056, 1056, 34);
-      ctx.fillStyle = "rgba(255, 253, 248, .88)";
-      ctx.fill();
-      ctx.strokeStyle = "#e9cfc4";
-      ctx.lineWidth = 4;
-      ctx.stroke();
+      ctx.fillStyle = "rgba(255, 253, 248, .88)"; ctx.fill();
+      ctx.strokeStyle = "#e9cfc4"; ctx.lineWidth = 4; ctx.stroke();
+      ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = "#a35f74"; ctx.font = "700 34px 'Yu Gothic', sans-serif"; ctx.fillText("BL読了カード", 120, 150);
 
-      ctx.textAlign = "left";
-      ctx.textBaseline = "alphabetic";
-      ctx.fillStyle = "#a35f74";
-      ctx.font = "700 34px 'Yu Gothic', sans-serif";
-      ctx.fillText("BL読了カード", 120, 150);
-
-      let titleX = 120;
-      let titleWidth = 585;
-      let titleY = 250;
-      let titleMaxLines = 3;
-      let titleMaxFont = 64;
-      let titleMinFont = 38;
-      let authorY = 490;
-      let metaX = 124;
-      let metaWidth = 560;
-      if (uploadedImage) {
-        roundedRect(ctx, 118, 206, 248, 334, 26);
-        ctx.fillStyle = "#fffdf8";
-        ctx.fill();
-        drawImageCover(ctx, uploadedImage, 132, 220, 220, 306, 20);
-        titleX = 392;
-        titleWidth = 300;
-        titleY = 246;
-        titleMaxLines = 3;
-        titleMaxFont = 48;
-        titleMinFont = 28;
-        authorY = 510;
-        metaX = 392;
-        metaWidth = 300;
+      let titleX = 120, titleWidth = 585, titleY = 250, titleMaxFont = 64, titleMinFont = 38, authorY = 490, metaX = 124, metaWidth = 560;
+      if (localImage) {
+        roundedRect(ctx, 118, 206, 248, 334, 26); ctx.fillStyle = "#fffdf8"; ctx.fill();
+        drawImageCover(ctx, localImage, 132, 220, 220, 306, 20);
+        titleX = 392; titleWidth = 300; titleY = 246; titleMaxFont = 48; titleMinFont = 28; authorY = 510; metaX = 392; metaWidth = 300;
       }
+      fitWrappedText(ctx, `『${data.title || "作品名未入力"}』`, titleX, titleY, { maxWidth: titleWidth, maxLines: 3, maxFont: titleMaxFont, minFont: titleMinFont, weight: 800, color: "#5b382f" });
+      if (data.author) fitSingleLineText(ctx, `${data.author} 先生`, metaX, authorY, { maxWidth: metaWidth, maxFont: localImage ? 26 : 32, minFont: 20, weight: 700, color: "#7b5b50" });
+      ctx.fillStyle = "#8c6b60"; ctx.font = "700 28px 'Yu Gothic', sans-serif";
+      ctx.fillText(`作成日  ${formatDate(data.createdAt)}`, metaX, 548);
 
-      fitWrappedText(ctx, `『${data.title}』`, titleX, titleY, {
-        maxWidth: titleWidth,
-        maxLines: titleMaxLines,
-        maxFont: titleMaxFont,
-        minFont: titleMinFont,
-        weight: 800,
-        color: "#5b382f"
-      });
-
-      if (data.author) {
-        fitSingleLineText(ctx, `${data.author} 先生`, metaX, authorY, {
-          maxWidth: metaWidth,
-          maxFont: uploadedImage ? 26 : 32,
-          minFont: 20,
-          weight: 700,
-          color: "#7b5b50"
-        });
-      }
-
-      ctx.fillStyle = "#8c6b60";
-      ctx.font = "700 28px 'Yu Gothic', sans-serif";
-      if (data.date) ctx.fillText(`読了日  ${data.date}`, metaX, 548);
-
-      roundedRect(ctx, 120, 594, 584, 138, 24);
-      ctx.fillStyle = "#fff3e3";
-      ctx.fill();
-      ctx.strokeStyle = "#ecd3c7";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.fillStyle = "#6b473e";
-      ctx.font = "700 25px 'Yu Gothic', sans-serif";
-      ctx.fillText("刺さった要素", 146, 638);
+      roundedRect(ctx, 120, 594, 584, 138, 24); ctx.fillStyle = "#fff3e3"; ctx.fill(); ctx.strokeStyle = "#ecd3c7"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = "#6b473e"; ctx.font = "700 25px 'Yu Gothic', sans-serif"; ctx.fillText("タグ", 146, 638);
       ctx.font = "700 26px 'Yu Gothic', sans-serif";
-      const tagText = data.tags.length ? data.tags.map((tag) => `#${tag}`).join("  ") : "まだ選んでいません";
-      drawWrappedText(ctx, tagText, 146, 682, 530, 36, 2);
+      fitWrappedText(ctx, data.tags.length ? data.tags.map((tag) => `#${tag}`).join("  ") : "タグなし", 146, 682, { maxWidth: 530, maxLines: 2, maxFont: 26, minFont: 18, weight: 700, color: "#6b473e", lineRatio: 1.35 });
 
-      roundedRect(ctx, 120, 770, 584, 172, 24);
-      ctx.fillStyle = "#fffdf8";
-      ctx.fill();
-      ctx.strokeStyle = "#ecd3c7";
-      ctx.stroke();
-      ctx.fillStyle = "#6b473e";
-      ctx.font = "700 25px 'Yu Gothic', sans-serif";
-      ctx.fillText("ひとこと感想", 146, 816);
-      ctx.fillStyle = "#5d4038";
-      ctx.font = "700 34px 'Yu Gothic', sans-serif";
-      drawWrappedText(ctx, data.comment || "読了の余韻をここに。", 146, 870, 530, 48, 2);
+      roundedRect(ctx, 120, 770, 584, 172, 24); ctx.fillStyle = "#fffdf8"; ctx.fill(); ctx.strokeStyle = "#ecd3c7"; ctx.stroke();
+      ctx.fillStyle = "#6b473e"; ctx.font = "700 25px 'Yu Gothic', sans-serif"; ctx.fillText("感想", 146, 816);
+      fitWrappedText(ctx, data.comment || "読了の余韻をここに。", 146, 870, { maxWidth: 530, maxLines: 2, maxFont: 34, minFont: 22, weight: 700, color: "#5d4038", lineRatio: 1.42 });
 
-      const starBaseX = 756;
-      const starBaseY = 760;
-      const starItems = data.meters.slice(0, 4);
-      starItems.forEach((item, index) => {
-        drawStars(ctx, item.label, item.value, starBaseX, starBaseY + index * 56);
-      });
-
-      roundedRect(ctx, 742, 120, 320, 70, 35);
-      ctx.fillStyle = "#fce5eb";
-      ctx.fill();
-      ctx.fillStyle = "#8e4d63";
-      ctx.font = "700 26px 'Yu Gothic', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(data.spoiler, 902, 164);
-
+      data.meters.slice(0, 4).forEach((item, index) => drawStars(ctx, item.label, clampRating(item.value), 756, 760 + index * 56));
+      roundedRect(ctx, 742, 120, 320, 70, 35); ctx.fillStyle = "#fce5eb"; ctx.fill();
+      ctx.fillStyle = "#8e4d63"; ctx.font = "700 26px 'Yu Gothic', sans-serif"; ctx.textAlign = "center"; ctx.fillText(`沼度 ${stars(data.numa).slice(0, 5)}`, 902, 164);
       drawRadarChart(ctx, data.meters, 910, 452, 198);
-
-      ctx.textAlign = "left";
-      roundedRect(ctx, 120, 984, 928, 62, 31);
-      ctx.fillStyle = "rgba(159, 175, 149, .16)";
-      ctx.fill();
-      ctx.fillStyle = "#7a5a50";
-      ctx.font = "700 23px 'Yu Gothic', sans-serif";
-      ctx.fillText("甘さ・重さ・えろ度・余韻・拗らせ度を5角形チャートで記録", 154, 1024);
-
-      ctx.textAlign = "center";
-      ctx.fillStyle = "#a07d72";
-      ctx.font = "700 22px 'Yu Gothic', sans-serif";
-      ctx.fillText("BL読了カードメーカー", w / 2, 1090);
-
-      els.heroImage.src = els.canvas.toDataURL("image/png");
+      ctx.textAlign = "left"; roundedRect(ctx, 120, 984, 928, 62, 31); ctx.fillStyle = "rgba(159, 175, 149, .16)"; ctx.fill();
+      ctx.fillStyle = "#7a5a50"; ctx.font = "700 23px 'Yu Gothic', sans-serif"; ctx.fillText("甘さ・重さ・沼度・泣ける・刺激を5角形チャートで記録", 154, 1024);
+      ctx.textAlign = "center"; ctx.fillStyle = "#a07d72"; ctx.font = "700 22px 'Yu Gothic', sans-serif";
+      ctx.fillText(data.publicUrl ? data.publicUrl.replace(/^https?:\/\//, "") : SITE_HOST, w / 2, 1090);
+      if (targetCanvas === els.canvas) els.heroImage.src = els.canvas.toDataURL("image/png");
     }
 
-    function createSearchLinks(title, author) {
-      const query = encodeURIComponent([title || "作品名未入力", author].filter(Boolean).join(" "));
+    function createDmmSearchUrl(title) {
+      const q = encodeURIComponent(title || "");
+      return `https://book.dmm.com/search/?searchstr=${q}`;
+    }
+
+    function createDmmAffiliateUrl(title) {
+      return `https://al.dmm.com/?lurl=${encodeURIComponent(createDmmSearchUrl(title))}&af_id=${encodeURIComponent(DMM_AF_ID)}&ch=toolbar&ch_id=link`;
+    }
+
+    function createSearchLinks(title) {
+      const q = encodeURIComponent(title || "作品名未入力");
       return [
-        { name: "DMMブックスで探す", url: `https://book.dmm.com/search/?searchstr=${query}` },
-        { name: "コミックシーモアで探す", url: `https://www.cmoa.jp/search/result/?word=${query}` },
-        { name: "Renta!で探す", url: `https://renta.papy.co.jp/renta/sc/frm/search?word=${query}` },
-        { name: "ebookjapanで探す", url: `https://ebookjapan.yahoo.co.jp/search/?keyword=${query}` }
+        { name: "DMMでこの作品を探す", url: createDmmAffiliateUrl(title) },
+        { name: "コミックシーモアで探す", url: `https://www.cmoa.jp/search/result/?word=${q}` },
+        { name: "Renta!で探す", url: `https://renta.papy.co.jp/renta/sc/frm/search?word=${q}` },
+        { name: "ebookjapanで探す", url: `https://ebookjapan.yahoo.co.jp/search/?keyword=${q}` }
       ];
     }
 
     function renderSearchLinks() {
       const data = getCardData();
       els.links.innerHTML = "";
-      createSearchLinks(data.title, data.author).forEach((link) => {
+      createSearchLinks(data.title).forEach((link) => {
         const a = document.createElement("a");
-        a.href = link.url;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.textContent = link.name;
+        a.href = link.url; a.target = "_blank"; a.rel = "nofollow sponsored noopener"; a.textContent = link.name;
         els.links.appendChild(a);
       });
     }
 
+    function formatDate(value) {
+      if (!value) return new Date().toISOString().slice(0, 10).replaceAll("-", ".");
+      return new Date(value).toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replaceAll("/", ".");
+    }
+
     function updateTagLimit(changedInput) {
       const selected = getSelectedTags();
-      if (selected.length > 5 && changedInput) changedInput.checked = false;
-      const count = getSelectedTags().length;
-      els.tagHint.textContent = `${count} / 5 選択中`;
+      if (selected.length > MAX_TAGS && changedInput) changedInput.checked = false;
+      els.tagHint.textContent = `${getSelectedTags().length} / ${MAX_TAGS} 選択中`;
     }
 
     function updateMeterOutputs() {
@@ -1043,70 +647,233 @@
 
     function updateAll() {
       updateMeterOutputs();
-      els.commentCount.textContent = `${els.comment.value.length} / 60`;
-      els.imageStatus.textContent = uploadedImage ? `${uploadedImageName} を使用中` : "画像なしでも作れます";
+      els.commentCount.textContent = `${els.comment.value.length} / 160`;
+      els.imageStatus.textContent = uploadedImage ? `${uploadedImageName} を使用中（公開投稿には保存されません）` : "公開投稿には画像ファイルは保存されません";
       renderSearchLinks();
-      drawCard();
+      drawCard(els.canvas, getCardData(), { allowImage: true });
     }
 
     function loadSelectedImage(file) {
-      if (!file) {
-        uploadedImage = null;
-        uploadedImageName = "";
-        updateAll();
-        return;
-      }
-
+      if (!file) { uploadedImage = null; uploadedImageName = ""; updateAll(); return; }
       const reader = new FileReader();
       reader.onload = () => {
         const image = new Image();
-        image.onload = () => {
-          uploadedImage = image;
-          uploadedImageName = file.name;
-          updateAll();
-        };
+        image.onload = () => { uploadedImage = image; uploadedImageName = file.name; updateAll(); };
         image.src = reader.result;
       };
       reader.readAsDataURL(file);
     }
 
     function saveImage() {
-      drawCard();
+      drawCard(els.canvas, getCardData(), { allowImage: true });
       const link = document.createElement("a");
-      const safeTitle = (els.title.value.trim() || "bl-reading-card").replace(/[\\/:*?"<>|]/g, "");
-      link.download = `${safeTitle}-BL読了カード.png`;
+      link.download = `${(els.title.value.trim() || "bl-reading-card").replace(/[\\/:*?"<>|]/g, "")}-BL読了カード.png`;
       link.href = els.canvas.toDataURL("image/png");
       link.click();
     }
 
-    function shareToX() {
+    function buildPostText(data) {
+      return `『${data.title}』読了📚\n\n甘さ：${stars(data.sweetness)}\n重さ：${stars(data.heaviness)}\n沼度：${stars(data.numa)}\n泣ける：${stars(data.crying)}\n刺激：${stars(data.spice)}\n\n${data.comment || ""}\n\n読了カードはこちら👇\n${data.publicUrl || SITE_ORIGIN}\n\n#読了カード #商業BL #BL好きさんと繋がりたい`;
+    }
+
+    async function copyPostText() {
+      const text = buildPostText(getCardData());
+      await navigator.clipboard.writeText(text);
+      els.formStatus.textContent = "投稿文をコピーしました。画像を保存してXで添付してください。";
+    }
+
+    function openX() {
+      window.open("https://x.com/compose/post", "_blank", "noopener");
+    }
+
+    async function submitCard(event) {
+      event.preventDefault();
       const data = getCardData();
-      const tags = data.tags.length ? data.tags.join("、") : "未選択";
-      const text = `『${data.title}』読了カード作った\n\n刺さった要素：\n${tags}\n\n#商業BL #BL読了カード`;
-      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+      if (selectedPublishMode() === "private") {
+        lastPublicUrl = "";
+        lastPublicId = "";
+        els.publicPage.classList.add("hidden");
+        els.formStatus.textContent = "非公開カードを作成しました。画像保存や投稿文コピーができます。";
+        updateAll();
+        location.hash = "#preview";
+        return;
+      }
+
+      const validation = validateForPublish(data);
+      if (validation) { els.formStatus.textContent = validation; return; }
+
+      els.formStatus.textContent = "公開投稿を保存しています...";
+      const payload = {
+        title: data.title,
+        author: data.author,
+        comment: data.comment,
+        sweetness: data.sweetness,
+        heaviness: data.heaviness,
+        numa: data.numa,
+        crying: data.crying,
+        spice: data.spice,
+        tags: data.tags,
+        delete_password: els.deletePassword.value
+      };
+
+      try {
+        const res = await fetch("/api/cards", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "保存に失敗しました。");
+        lastPublicId = json.card.id;
+        lastPublicUrl = `${SITE_ORIGIN}/card/${json.card.id}`;
+        localStorage.setItem(LAST_POST_KEY, String(Date.now()));
+        els.publicPage.href = lastPublicUrl;
+        els.publicPage.classList.remove("hidden");
+        els.formStatus.textContent = "公開しました。投稿文をコピーしてXに画像を添付できます。";
+        updateAll();
+        await loadLatestCards();
+        location.hash = "#preview";
+      } catch (error) {
+        els.formStatus.textContent = error.message;
+      }
+    }
+
+    function renderCardList(target, rows) {
+      target.innerHTML = "";
+      if (!rows.length) {
+        target.innerHTML = `<div class="panel">まだ公開カードがありません。</div>`;
+        return;
+      }
+      rows.forEach((row) => {
+        const card = document.createElement("a");
+        card.className = "mini-card";
+        card.href = `/card/${encodeURIComponent(row.id)}`;
+        card.innerHTML = `
+          <strong>${escapeHtml(row.title)}</strong>
+          <div class="mini-meta"><span>沼度 ${stars(row.numa)}</span><span>${escapeHtml(formatDate(row.created_at))}</span></div>
+          <div class="mini-meta">${(row.tags || []).slice(0, 4).map((tag) => `<span class="tag-pill">#${escapeHtml(tag)}</span>`).join("")}</div>
+        `;
+        target.appendChild(card);
+      });
+    }
+
+    async function loadLatestCards() {
+      try {
+        const res = await fetch("/api/cards?limit=6");
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "読み込みに失敗しました。");
+        renderCardList(els.latestCards, json.cards || []);
+        els.latestStatus.textContent = "";
+      } catch {
+        els.latestStatus.textContent = "D1設定後に公開カードが表示されます。";
+      }
+    }
+
+    async function loadCardsPage(tagName = "") {
+      setSectionVisibility("cards");
+      els.cardsTitle.textContent = tagName ? `#${tagName} の読了カード` : "みんなの読了カード";
+      els.cardsStatus.textContent = "読み込み中です";
+      const path = tagName ? `/api/tags/${encodeURIComponent(tagName)}?limit=20` : "/api/cards?limit=20";
+      try {
+        const res = await fetch(path);
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "読み込みに失敗しました。");
+        renderCardList(els.cardsGrid, json.cards || []);
+        els.cardsStatus.textContent = "";
+      } catch (error) {
+        els.cardsStatus.textContent = error.message;
+      }
+    }
+
+    async function loadCardDetail(id) {
+      setSectionVisibility("detail");
+      els.detailPanel.innerHTML = `<p class="status-text">読み込み中です</p>`;
+      try {
+        const res = await fetch(`/api/cards/${encodeURIComponent(id)}`);
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "カードが見つかりません。");
+        const data = cardFromApi(json.card);
+        drawCard(els.detailCanvas, data, { allowImage: false });
+        renderDetailPanel(data);
+      } catch (error) {
+        els.detailPanel.innerHTML = `<p class="status-text">${escapeHtml(error.message)}</p><a class="btn primary" href="/#form">自分も読了カードを作る</a>`;
+      }
+    }
+
+    function renderDetailPanel(data) {
+      els.detailPanel.innerHTML = `
+        <div class="kv">
+          <strong>${escapeHtml(data.title)}</strong>
+          ${data.author ? `<span>${escapeHtml(data.author)} 先生</span>` : ""}
+          ${data.comment ? `<p>${escapeHtml(data.comment)}</p>` : ""}
+          <span>作成日 ${escapeHtml(formatDate(data.createdAt))}</span>
+          <span>甘さ ${stars(data.sweetness)}</span>
+          <span>重さ ${stars(data.heaviness)}</span>
+          <span>沼度 ${stars(data.numa)}</span>
+          <span>泣ける ${stars(data.crying)}</span>
+          <span>刺激 ${stars(data.spice)}</span>
+          <div>${data.tags.map((tag) => `<a class="tag-pill" href="/tag/${encodeURIComponent(tag)}">#${escapeHtml(tag)}</a>`).join(" ") || "タグなし"}</div>
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="${createDmmAffiliateUrl(data.title)}" target="_blank" rel="nofollow sponsored noopener">DMMでこの作品を探す</a>
+          ${data.tags[0] ? `<a class="btn secondary" href="/tag/${encodeURIComponent(data.tags[0])}">同じタグの読了カードを見る</a>` : `<a class="btn secondary" href="/cards">みんなの読了カードを見る</a>`}
+          <a class="btn ghost" href="/#form">自分も読了カードを作る</a>
+        </div>
+        <div class="delete-box">
+          <label>このカードを削除
+            <input id="detailDeletePassword" type="password" placeholder="削除用パスワード">
+          </label>
+          <button class="btn danger" id="detailDeleteButton" type="button">削除する</button>
+          <p class="status-text" id="detailDeleteStatus"></p>
+        </div>
+      `;
+      document.getElementById("detailDeleteButton").addEventListener("click", () => deleteCard(data.id));
+    }
+
+    async function deleteCard(id) {
+      const password = document.getElementById("detailDeletePassword").value;
+      const status = document.getElementById("detailDeleteStatus");
+      if (!password) { status.textContent = "削除用パスワードを入力してください。"; return; }
+      try {
+        const res = await fetch(`/api/cards/${encodeURIComponent(id)}`, { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ delete_password: password }) });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "削除できませんでした。");
+        status.textContent = "削除しました。";
+        setTimeout(() => location.href = "/cards", 800);
+      } catch (error) {
+        status.textContent = error.message;
+      }
     }
 
     function resetInputs() {
       els.title.value = "";
       els.author.value = "";
       els.comment.value = "";
+      els.deletePassword.value = "";
       els.image.value = "";
       uploadedImage = null;
       uploadedImageName = "";
-      els.spoiler.value = "ネタバレなし";
-      setToday();
+      lastPublicUrl = "";
+      lastPublicId = "";
+      document.querySelector("input[name='publishMode'][value='private']").checked = true;
       els.tagBox.querySelectorAll("input").forEach((input) => input.checked = false);
-      meters.forEach((meter) => {
-        document.getElementById(`${meter.key}Input`).value = meter.value;
-      });
+      meters.forEach((meter) => document.getElementById(`${meter.key}Input`).value = meter.value);
+      els.publicPage.classList.add("hidden");
+      els.formStatus.textContent = "";
       updateTagLimit();
       updateAll();
       location.hash = "#form";
     }
 
+    function route() {
+      const path = decodeURIComponent(location.pathname);
+      if (path === "/cards") loadCardsPage();
+      else if (path.startsWith("/tag/")) loadCardsPage(path.replace("/tag/", ""));
+      else if (path.startsWith("/card/")) loadCardDetail(path.replace("/card/", ""));
+      else {
+        setSectionVisibility("home");
+        loadLatestCards();
+      }
+    }
+
     setupTags();
     setupMeters();
-    setToday();
     els.title.value = "恋の温度は夜にほどける";
     els.author.value = "浅月めぐ";
     els.comment.value = "甘さの奥にある重さが刺さって、最後の余韻まで大好き。";
@@ -1116,30 +883,25 @@
     });
     updateTagLimit();
     updateAll();
+    route();
 
     document.addEventListener("input", (event) => {
       if (event.target.closest("#tagBox")) updateTagLimit(event.target);
       updateAll();
     });
-
     document.addEventListener("change", (event) => {
-      if (event.target === els.image) {
-        loadSelectedImage(event.target.files[0]);
-        return;
-      }
+      if (event.target === els.image) { loadSelectedImage(event.target.files[0]); return; }
       if (event.target.closest("#tagBox")) updateTagLimit(event.target);
       updateAll();
     });
-
+    els.form.addEventListener("submit", submitCard);
     els.save.addEventListener("click", saveImage);
-    els.share.addEventListener("click", shareToX);
+    els.saveBottom.addEventListener("click", saveImage);
+    els.copy.addEventListener("click", copyPostText);
+    els.copyBottom.addEventListener("click", copyPostText);
+    els.x.addEventListener("click", openX);
     els.reset.addEventListener("click", resetInputs);
-    els.clearImage.addEventListener("click", () => {
-      els.image.value = "";
-      uploadedImage = null;
-      uploadedImageName = "";
-      updateAll();
-    });
+    els.clearImage.addEventListener("click", () => { els.image.value = ""; uploadedImage = null; uploadedImageName = ""; updateAll(); });
   </script>
 </body>
 </html>
