@@ -929,7 +929,8 @@
     }
 
     function route() {
-      const path = decodeURIComponent(location.pathname);
+      const rawPath = decodeURIComponent(location.pathname);
+      const path = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : rawPath;
       if (path === "/cards") loadCardsPage();
       else if (path === "/create") {
         setSectionVisibility("create");
