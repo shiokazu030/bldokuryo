@@ -2,7 +2,7 @@ export async function onRequestGet(context) {
   const db = getDb(context);
   if (!db) return json({ error: "D1 database is not configured." }, 500);
 
-  const tag = String(context.params.tag || "").trim().slice(0, 40);
+  const tag = decodeURIComponent(String(context.params.tag || "")).trim().slice(0, 40);
   const url = new URL(context.request.url);
   const limit = clampNumber(url.searchParams.get("limit"), 1, 50, 20);
   const offset = clampNumber(url.searchParams.get("offset"), 0, 5000, 0);
