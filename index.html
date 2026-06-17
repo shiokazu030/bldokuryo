@@ -127,6 +127,7 @@
       <a class="brand" href="/"><span class="brand-mark">BL</span> BL読了カードメーカー</a>
       <nav class="nav" aria-label="主要メニュー">
         <a href="/cards">みんなのカード</a>
+        <a href="/admin-picks">管理人おすすめ</a>
         <a href="/create">読了カードを作る</a>
       </nav>
     </header>
@@ -168,6 +169,9 @@
       </div>
       <p class="lead">初めて来た人にも作品の雰囲気が伝わるように、紹介用カードを別枠で置いています。</p>
       <div class="feed-list" id="adminPickCards"></div>
+      <div class="inline-actions">
+        <a class="btn ghost" href="/admin-picks">おすすめをもっと見る</a>
+      </div>
     </section>
 
     <section class="section" id="tagCloudSection">
@@ -289,6 +293,16 @@
       </div>
     </section>
 
+    <section class="section hidden" id="adminPicksView">
+      <h2 class="section-title">管理人のおすすめ</h2>
+      <p class="lead">実在作品をもとにした紹介メモです。読了感想ではなく、好きな人に刺さりそうな要素を整理しています。</p>
+      <div class="feed-list" id="adminPicksGrid"></div>
+      <div class="inline-actions">
+        <a class="btn primary" href="/create">自分も読了カードを作る</a>
+        <a class="btn ghost" href="/cards">みんなのカードを見る</a>
+      </div>
+    </section>
+
     <section class="section hidden" id="detailView">
       <h2 class="section-title" id="detailTitle">読了カード</h2>
       <div class="detail-layout">
@@ -325,7 +339,7 @@
     const MAX_TAGS = 5;
     const LAST_POST_KEY = "dokuryo_last_post_at";
     const NG_WORDS = ["死ね", "殺す", "バカ", "詐欺", "無料配布"];
-    const tagOptions = ["BL", "商業BL", "二次創作", "執着攻め", "年下攻め", "オメガバース", "Dom/Sub", "泣ける", "甘々", "地雷注意", "重め", "両片想い", "すれ違い", "溺愛", "体格差", "年上受け", "幼なじみ", "ケンカップル", "主従", "共依存", "健気受け", "クール攻め", "重い愛", "ハピエン", "余韻強め"];
+    const tagOptions = ["BL", "商業BL", "二次創作", "執着攻め", "年下攻め", "オメガバース", "Dom/Sub", "泣ける", "甘々", "地雷注意", "重め", "両片想い", "すれ違い", "溺愛", "体格差", "年上受け", "幼なじみ", "ケンカップル", "主従", "共依存", "健気受け", "クール攻め", "重い愛", "ハピエン", "余韻強め", "青春", "同居", "ギャップ"];
     const meters = [
       { key: "sweetness", label: "甘さ", value: 4 },
       { key: "heaviness", label: "重さ", value: 3 },
@@ -366,36 +380,56 @@
       }
     ];
     const adminPickCards = [
-      {
-        id: "admin-pick-001",
-        title: "夜明け前、君だけが甘い",
-        author: "架空作品サンプル",
-        comment: "静かな関係性から少しずつ熱が上がるタイプ。甘さと不器用さの両方が好きな人向け。",
-        sweetness: 5, heaviness: 2, numa: 4, crying: 2, spice: 3,
-        tags: ["BL", "商業BL", "甘々", "両片想い"],
-        created_at: "2026-06-17T08:00:00.000Z",
-        source: "admin"
-      },
-      {
-        id: "admin-pick-002",
-        title: "きみをほどく合鍵",
-        author: "架空作品サンプル",
-        comment: "執着と救いのバランスを楽しみたい日に。重めだけど読後はやさしく残る紹介カードです。",
-        sweetness: 3, heaviness: 5, numa: 5, crying: 3, spice: 3,
-        tags: ["BL", "執着攻め", "重め", "余韻強め"],
-        created_at: "2026-06-17T07:40:00.000Z",
-        source: "admin"
-      },
-      {
-        id: "admin-pick-003",
-        title: "放課後ドロップス",
-        author: "架空作品サンプル",
-        comment: "軽く読めて会話のテンポが楽しい枠。初めて読了カードを見る人にも伝わりやすい雰囲気。",
-        sweetness: 4, heaviness: 1, numa: 3, crying: 1, spice: 2,
-        tags: ["BL", "甘々", "幼なじみ", "ハピエン"],
-        created_at: "2026-06-17T07:20:00.000Z",
-        source: "admin"
-      }
+      { id: "admin-real-001", title: "40までにしたい10のこと", author: "マミタ", comment: "大人のリーマンBLや年下攻めが気になる人向けの紹介メモ。日常の距離感から恋が動くタイプを探す入口に。", sweetness: 4, heaviness: 2, numa: 5, crying: 2, spice: 3, tags: ["商業BL", "年下攻め", "甘々", "ハピエン"], created_at: "2026-06-17T08:50:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-002", title: "夜明けの唄", author: "ユノイチカ", comment: "壮大な世界観と一途な関係性を追いたい人向け。ファンタジーBLや余韻の強い長編を探す時の候補に。", sweetness: 3, heaviness: 5, numa: 5, crying: 4, spice: 2, tags: ["商業BL", "重め", "余韻強め", "泣ける"], created_at: "2026-06-17T08:49:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-003", title: "体感予報", author: "鯛野ニッケ", comment: "同居、契約、支配的な空気感に惹かれる人向けの紹介メモ。甘さと緊張感の両方を拾いたい時に。", sweetness: 4, heaviness: 3, numa: 5, crying: 2, spice: 4, tags: ["商業BL", "重め", "甘々", "余韻強め"], created_at: "2026-06-17T08:48:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-004", title: "30歳まで童貞だと魔法使いになれるらしい", author: "豊田悠", comment: "やさしい恋愛ものや実写化で入りやすいBLを探す人向け。初心者にもすすめやすい空気感の候補。", sweetness: 5, heaviness: 1, numa: 4, crying: 2, spice: 1, tags: ["商業BL", "甘々", "ハピエン", "BL"], created_at: "2026-06-17T08:47:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-005", title: "抱かれたい男1位に脅されています。", author: "桜日梯子", comment: "芸能界もの、ライバル関係、強いキャラクター同士の掛け合いが気になる人向けの定番候補。", sweetness: 4, heaviness: 2, numa: 5, crying: 2, spice: 4, tags: ["商業BL", "ケンカップル", "甘々", "BL"], created_at: "2026-06-17T08:46:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-006", title: "嫌いでいさせて", author: "ひじき", comment: "オメガバースや家族要素のある関係性が気になる人向け。守りたい気持ちと恋愛の熱を拾う紹介メモ。", sweetness: 4, heaviness: 4, numa: 5, crying: 4, spice: 3, tags: ["商業BL", "オメガバース", "泣ける", "重め"], created_at: "2026-06-17T08:45:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-007", title: "ギヴン", author: "キヅナツキ", comment: "音楽、青春、喪失と再生の空気が好きな人向け。BL以外の読者にも届きやすい作品候補。", sweetness: 3, heaviness: 4, numa: 5, crying: 5, spice: 1, tags: ["BL", "商業BL", "泣ける", "余韻強め"], created_at: "2026-06-17T08:44:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-008", title: "ララの結婚", author: "ためこう", comment: "異国風の世界観や婚姻もの、強めの関係性が気になる人向け。絵の華やかさも入口になりそう。", sweetness: 3, heaviness: 4, numa: 5, crying: 3, spice: 4, tags: ["商業BL", "重め", "余韻強め", "BL"], created_at: "2026-06-17T08:43:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-009", title: "囀る鳥は羽ばたかない", author: "ヨネダコウ", comment: "重厚な人間関係、裏社会、痛みのある余韻を求める人向け。軽さより深く沈む読書体験の候補。", sweetness: 2, heaviness: 5, numa: 5, crying: 4, spice: 4, tags: ["商業BL", "重め", "余韻強め", "地雷注意"], created_at: "2026-06-17T08:42:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-010", title: "25時、赤坂で", author: "夏野寛子", comment: "俳優同士の距離感や仕事と恋の混ざり方が気になる人向け。静かな熱を追いたい時の候補に。", sweetness: 4, heaviness: 3, numa: 5, crying: 3, spice: 3, tags: ["商業BL", "余韻強め", "甘々", "BL"], created_at: "2026-06-17T08:41:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-011", title: "コスメティック・プレイラバー", author: "楢島さち", comment: "美容部員、仕事仲間、華やかな職業ものが気になる人向け。テンポよく読める商業BL候補。", sweetness: 4, heaviness: 2, numa: 4, crying: 1, spice: 3, tags: ["商業BL", "甘々", "ハピエン", "BL"], created_at: "2026-06-17T08:40:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-012", title: "アフター・ミッドナイト・スキン", author: "にむまひろ", comment: "大人同士の駆け引きや色気のある関係性を探す人向け。刺激強めの候補として置きたい1作。", sweetness: 3, heaviness: 3, numa: 5, crying: 2, spice: 5, tags: ["商業BL", "重め", "余韻強め", "BL"], created_at: "2026-06-17T08:39:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-013", title: "ナカまであいして", author: "百瀬あん", comment: "テンポのいい掛け合い、甘さ、人気作らしい読みやすさを探す人向け。明るめBLの候補に。", sweetness: 5, heaviness: 1, numa: 4, crying: 1, spice: 4, tags: ["商業BL", "甘々", "ハピエン", "BL"], created_at: "2026-06-17T08:38:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-014", title: "愛しのXLサイズ", author: "重い実", comment: "ほのぼのした空気と強い個性の組み合わせを探す人向け。笑えて甘い枠として置きやすい候補。", sweetness: 5, heaviness: 1, numa: 4, crying: 1, spice: 4, tags: ["商業BL", "甘々", "ハピエン", "BL"], created_at: "2026-06-17T08:37:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-015", title: "セラピーゲーム", author: "日ノ原巡", comment: "じれったさと甘さ、関係の変化を楽しみたい人向け。シリーズものの入口としても使いやすい候補。", sweetness: 4, heaviness: 3, numa: 5, crying: 3, spice: 3, tags: ["商業BL", "すれ違い", "甘々", "ハピエン"], created_at: "2026-06-17T08:36:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-016", title: "ブルースカイコンプレックス", author: "市川けい", comment: "長く関係性を追いたい人向けの青春BL候補。日常の空気と成長をじっくり見たい時に。", sweetness: 4, heaviness: 2, numa: 5, crying: 2, spice: 2, tags: ["商業BL", "青春", "余韻強め", "BL"], created_at: "2026-06-17T08:35:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-017", title: "サヨナラゲーム", author: "南月ゆう", comment: "不器用な距離感や幼なじみ感を探す人向け。静かに甘さが育つタイプの候補として。", sweetness: 4, heaviness: 2, numa: 4, crying: 2, spice: 2, tags: ["商業BL", "幼なじみ", "甘々", "ハピエン"], created_at: "2026-06-17T08:34:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-018", title: "花鳥風月", author: "志水ゆき", comment: "複数カップルや長く続く関係性を追うのが好きな人向け。しっとりした余韻を探す候補。", sweetness: 3, heaviness: 4, numa: 5, crying: 3, spice: 3, tags: ["商業BL", "重め", "余韻強め", "泣ける"], created_at: "2026-06-17T08:33:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-019", title: "明日はどっちだ！", author: "山本小鉄子", comment: "幼なじみやケンカップル寄りの明るい関係性が気になる人向け。読みやすい定番候補。", sweetness: 4, heaviness: 1, numa: 4, crying: 1, spice: 2, tags: ["商業BL", "幼なじみ", "ケンカップル", "甘々"], created_at: "2026-06-17T08:32:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-020", title: "ほんと野獣", author: "山本小鉄子", comment: "職業ギャップやテンポのいいラブコメを探す人向け。明るく追いやすいシリーズ候補。", sweetness: 4, heaviness: 1, numa: 4, crying: 1, spice: 3, tags: ["商業BL", "ギャップ", "甘々", "ハピエン"], created_at: "2026-06-17T08:31:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-021", title: "タカラのびいどろ", author: "鈴丸みんた", comment: "青春、透明感、ゆっくり近づく距離感が好きな人向け。やわらかい入口として置きたい候補。", sweetness: 4, heaviness: 2, numa: 4, crying: 3, spice: 1, tags: ["商業BL", "青春", "甘々", "余韻強め"], created_at: "2026-06-17T08:30:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-022", title: "どうしても触れたくない", author: "ヨネダコウ", comment: "大人の恋、過去の傷、静かな再生が気になる人向け。余韻重視の読者に届きやすい候補。", sweetness: 3, heaviness: 4, numa: 5, crying: 4, spice: 2, tags: ["商業BL", "泣ける", "重め", "余韻強め"], created_at: "2026-06-17T08:29:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-023", title: "ワンルームエンジェル", author: "はらだ", comment: "BLの枠を越えた余韻や人生の痛みを求める人向け。軽い甘さより読後感を重視する候補。", sweetness: 2, heaviness: 5, numa: 5, crying: 5, spice: 1, tags: ["商業BL", "泣ける", "重め", "余韻強め"], created_at: "2026-06-17T08:28:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-024", title: "幼馴染じゃ我慢できない", author: "百瀬あん", comment: "幼なじみから恋に進む甘さを探す人向け。王道感と読みやすさを重視したい時の候補。", sweetness: 5, heaviness: 1, numa: 4, crying: 1, spice: 3, tags: ["商業BL", "幼なじみ", "甘々", "ハピエン"], created_at: "2026-06-17T08:27:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-025", title: "スモークブルーの雨のち晴れ", author: "波真田かもめ", comment: "大人の再会や生活感のある関係性が気になる人向け。落ち着いたBLを探す時の候補。", sweetness: 3, heaviness: 3, numa: 4, crying: 3, spice: 2, tags: ["商業BL", "余韻強め", "重め", "BL"], created_at: "2026-06-17T08:26:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-026", title: "オールドファッションカップケーキ", author: "佐岸左岸", comment: "大人の生活、年齢、日常のさみしさと甘さが気になる人向け。落ち着いた入口に。", sweetness: 4, heaviness: 2, numa: 5, crying: 2, spice: 1, tags: ["商業BL", "甘々", "余韻強め", "BL"], created_at: "2026-06-17T08:25:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-027", title: "ひだまりが聴こえる", author: "文乃ゆき", comment: "やさしさ、支え合い、ゆっくり近づく関係性を探す人向け。静かな感動枠の候補。", sweetness: 4, heaviness: 3, numa: 4, crying: 4, spice: 1, tags: ["商業BL", "泣ける", "余韻強め", "ハピエン"], created_at: "2026-06-17T08:24:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-028", title: "君には届かない。", author: "みか", comment: "青春のもだもだや片想いの空気が好きな人向け。BL初心者にも入りやすい候補として。", sweetness: 4, heaviness: 2, numa: 4, crying: 2, spice: 1, tags: ["BL", "青春", "両片想い", "甘々"], created_at: "2026-06-17T08:23:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-029", title: "佐々木と宮野", author: "春園ショウ", comment: "やさしい青春BLやゆっくり育つ恋を探す人向け。穏やかにおすすめしやすい候補。", sweetness: 5, heaviness: 1, numa: 4, crying: 1, spice: 1, tags: ["BL", "青春", "甘々", "ハピエン"], created_at: "2026-06-17T08:22:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-030", title: "僕らの食卓", author: "三田織", comment: "食卓、家族、やさしい再生の雰囲気が気になる人向け。温度の低すぎない癒やし枠。", sweetness: 4, heaviness: 2, numa: 4, crying: 3, spice: 1, tags: ["商業BL", "甘々", "泣ける", "ハピエン"], created_at: "2026-06-17T08:21:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-031", title: "同級生", author: "中村明日美子", comment: "名作青春BLを押さえたい人向け。透明感、音楽、学生同士の距離感が好きなら候補に。", sweetness: 4, heaviness: 2, numa: 5, crying: 3, spice: 1, tags: ["商業BL", "青春", "両片想い", "余韻強め"], created_at: "2026-06-17T08:20:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-032", title: "エスケープジャーニー", author: "おげれつたなか", comment: "青春の痛みやすれ違い、再接近する関係性が気になる人向け。重さも甘さもある候補。", sweetness: 3, heaviness: 4, numa: 5, crying: 4, spice: 3, tags: ["商業BL", "すれ違い", "重め", "泣ける"], created_at: "2026-06-17T08:19:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-033", title: "テンカウント", author: "宝井理人", comment: "心理的な距離、カウンセリング的な関係性、じわじわ進む恋が気になる人向け。", sweetness: 3, heaviness: 4, numa: 5, crying: 3, spice: 3, tags: ["商業BL", "重め", "余韻強め", "BL"], created_at: "2026-06-17T08:18:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-034", title: "SUPER LOVERS", author: "あべ美幸", comment: "家族、同居、長く続く関係性を追いたい人向け。シリーズをじっくり読みたい時の候補。", sweetness: 3, heaviness: 3, numa: 4, crying: 2, spice: 2, tags: ["BL", "同居", "余韻強め", "商業BL"], created_at: "2026-06-17T08:17:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-035", title: "世界一初恋", author: "中村春菊", comment: "出版業界、王道ラブコメ、長期シリーズを探す人向け。定番BLの入口として置きたい候補。", sweetness: 4, heaviness: 2, numa: 4, crying: 1, spice: 2, tags: ["商業BL", "甘々", "ハピエン", "BL"], created_at: "2026-06-17T08:16:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-036", title: "純情ロマンチカ", author: "中村春菊", comment: "長く愛される王道シリーズを押さえたい人向け。複数カップルの楽しさを拾える候補。", sweetness: 4, heaviness: 2, numa: 4, crying: 1, spice: 2, tags: ["商業BL", "甘々", "ハピエン", "BL"], created_at: "2026-06-17T08:15:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-037", title: "是-ZE-", author: "志水ゆき", comment: "和風要素や複雑な関係性、長編の余韻を探す人向け。しっかり浸りたい時の候補。", sweetness: 3, heaviness: 5, numa: 5, crying: 4, spice: 3, tags: ["商業BL", "重め", "泣ける", "余韻強め"], created_at: "2026-06-17T08:14:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-038", title: "憂鬱な朝", author: "日高ショーコ", comment: "主従、身分差、歴史ものの空気が気になる人向け。重厚な関係性を探す候補として。", sweetness: 2, heaviness: 5, numa: 5, crying: 4, spice: 2, tags: ["商業BL", "主従", "重め", "余韻強め"], created_at: "2026-06-17T08:13:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-039", title: "花は咲くか", author: "日高ショーコ", comment: "年齢差、静かな日常、じっくり進む恋が好きな人向け。落ち着いた読後感の候補。", sweetness: 3, heaviness: 3, numa: 4, crying: 2, spice: 1, tags: ["商業BL", "年上受け", "余韻強め", "BL"], created_at: "2026-06-17T08:12:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-040", title: "Life 線上の僕ら", author: "常倉三矢", comment: "人生の時間ごと恋を見たい人向け。短くても強く残る余韻を探す時の候補。", sweetness: 4, heaviness: 4, numa: 5, crying: 5, spice: 1, tags: ["商業BL", "泣ける", "余韻強め", "ハピエン"], created_at: "2026-06-17T08:11:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-041", title: "海辺のエトランゼ", author: "紀伊カンナ", comment: "海辺、再会、やわらかい絵柄と心の距離感が気になる人向け。静かな入口に。", sweetness: 4, heaviness: 2, numa: 4, crying: 3, spice: 1, tags: ["商業BL", "甘々", "余韻強め", "BL"], created_at: "2026-06-17T08:10:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-042", title: "春風のエトランゼ", author: "紀伊カンナ", comment: "続きものとして関係性を長く見たい人向け。生活と恋の変化を追う候補として。", sweetness: 4, heaviness: 2, numa: 4, crying: 2, spice: 1, tags: ["商業BL", "甘々", "ハピエン", "BL"], created_at: "2026-06-17T08:09:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-043", title: "恋するインテリジェンス", author: "丹下道", comment: "スーツ、組織もの、濃い設定の大人BLを探す人向け。情報量の多さも楽しみたい時に。", sweetness: 3, heaviness: 3, numa: 5, crying: 2, spice: 5, tags: ["商業BL", "重め", "ギャップ", "BL"], created_at: "2026-06-17T08:08:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-044", title: "飴色パラドックス", author: "夏目イサク", comment: "記者同士のバディ感やケンカップルの空気が好きな人向け。明るく追える候補。", sweetness: 4, heaviness: 2, numa: 4, crying: 1, spice: 2, tags: ["商業BL", "ケンカップル", "甘々", "ハピエン"], created_at: "2026-06-17T08:07:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-045", title: "ファインダーの標的", author: "やまねあやの", comment: "危険な駆け引きや強い攻め、海外色のある関係性が気になる人向け。刺激強めの候補。", sweetness: 2, heaviness: 4, numa: 5, crying: 2, spice: 5, tags: ["商業BL", "重め", "地雷注意", "余韻強め"], created_at: "2026-06-17T08:06:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-046", title: "酷くしないで", author: "ねこ田米蔵", comment: "長期シリーズで甘さと刺激の両方を追いたい人向け。関係性の積み上げを楽しむ候補。", sweetness: 4, heaviness: 2, numa: 4, crying: 1, spice: 4, tags: ["商業BL", "甘々", "ハピエン", "BL"], created_at: "2026-06-17T08:05:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-047", title: "被写界深度", author: "苑生", comment: "写真、青春、繊細なすれ違いを探す人向け。静かに刺さる余韻重視の候補。", sweetness: 3, heaviness: 4, numa: 5, crying: 4, spice: 1, tags: ["商業BL", "すれ違い", "泣ける", "余韻強め"], created_at: "2026-06-17T08:04:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-048", title: "VOID", author: "座裏屋蘭丸", comment: "SF的な設定や強いビジュアル、濃い関係性が気になる人向け。世界観重視の候補。", sweetness: 2, heaviness: 5, numa: 5, crying: 4, spice: 5, tags: ["商業BL", "重め", "余韻強め", "地雷注意"], created_at: "2026-06-17T08:03:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-049", title: "シャングリラの鳥", author: "座裏屋蘭丸", comment: "異国感、色気、関係性の緊張感を探す人向け。濃い世界観に浸りたい時の候補。", sweetness: 2, heaviness: 4, numa: 5, crying: 3, spice: 5, tags: ["商業BL", "重め", "余韻強め", "BL"], created_at: "2026-06-17T08:02:00.000Z", source: "admin", noteType: "紹介メモ" },
+      { id: "admin-real-050", title: "ラムスプリンガの情景", author: "吾妻香夜", comment: "旅、信仰、人生の選択と恋の余韻が気になる人向け。読後感で選びたい時の候補。", sweetness: 3, heaviness: 4, numa: 5, crying: 4, spice: 2, tags: ["商業BL", "泣ける", "余韻強め", "重め"], created_at: "2026-06-17T08:01:00.000Z", source: "admin", noteType: "紹介メモ" }
     ];
 
     const els = {
@@ -407,6 +441,7 @@
       createArea: document.getElementById("createArea"),
       previewArea: document.getElementById("previewArea"),
       cardsView: document.getElementById("cardsView"),
+      adminPicksView: document.getElementById("adminPicksView"),
       detailView: document.getElementById("detailView"),
       workView: document.getElementById("workView"),
       title: document.getElementById("titleInput"),
@@ -443,6 +478,7 @@
       cardsGrid: document.getElementById("cardsGrid"),
       cardsStatus: document.getElementById("cardsStatus"),
       cardsTitle: document.getElementById("cardsTitle"),
+      adminPicksGrid: document.getElementById("adminPicksGrid"),
       tagFilter: document.getElementById("tagFilter"),
       detailTitle: document.getElementById("detailTitle"),
       detailPanel: document.getElementById("detailPanel"),
@@ -468,6 +504,7 @@
       els.createArea.classList.toggle("hidden", mode !== "create");
       els.previewArea.classList.toggle("hidden", mode !== "create");
       els.cardsView.classList.toggle("hidden", mode !== "cards");
+      els.adminPicksView.classList.toggle("hidden", mode !== "admin-picks");
       els.detailView.classList.toggle("hidden", mode !== "detail");
       els.workView.classList.toggle("hidden", mode !== "work");
     }
@@ -1028,14 +1065,14 @@
         const popularRows = await fetchCards(10, "popular");
         renderCardList(els.latestCards, rows.slice(0, 5));
         renderCardList(els.popularCards, popularRows.slice(0, 3));
-        renderCardList(els.adminPickCards, getAdminPickCards());
+        renderCardList(els.adminPickCards, getAdminPickCards().slice(0, 6));
         els.latestStatus.textContent = "";
         els.popularStatus.textContent = "詳細ページの閲覧数をもとに並べています。";
       } catch {
         const rows = getSampleCards();
         renderCardList(els.latestCards, rows);
         renderCardList(els.popularCards, [...rows].sort((a, b) => b.numa - a.numa));
-        renderCardList(els.adminPickCards, getAdminPickCards());
+        renderCardList(els.adminPickCards, getAdminPickCards().slice(0, 6));
         els.latestStatus.textContent = "サンプルカードを表示しています。";
         els.popularStatus.textContent = "サンプルカードを表示しています。";
       }
@@ -1052,12 +1089,19 @@
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "読み込みに失敗しました。");
         const rows = json.cards || [];
-        renderCardList(els.cardsGrid, rows.length ? rows : getSampleCards(tagName).slice(0, 20), { long: true });
-        els.cardsStatus.textContent = rows.length ? "" : "サンプルカードを表示しています。";
+        const adminMatches = tagName ? getAdminPickCards().filter((card) => card.tags.includes(tagName)) : [];
+        renderCardList(els.cardsGrid, rows.length ? [...rows, ...adminMatches].slice(0, 20) : [...getSampleCards(tagName), ...adminMatches].slice(0, 20), { long: true });
+        els.cardsStatus.textContent = rows.length ? "" : "サンプルカードと管理人おすすめを表示しています。";
       } catch {
-        renderCardList(els.cardsGrid, getSampleCards(tagName).slice(0, 20), { long: true });
-        els.cardsStatus.textContent = "サンプルカードを表示しています。";
+        const adminMatches = tagName ? getAdminPickCards().filter((card) => card.tags.includes(tagName)) : getAdminPickCards();
+        renderCardList(els.cardsGrid, [...getSampleCards(tagName), ...adminMatches].slice(0, 20), { long: true });
+        els.cardsStatus.textContent = "サンプルカードと管理人おすすめを表示しています。";
       }
+    }
+
+    function loadAdminPicksPage() {
+      setSectionVisibility("admin-picks");
+      renderCardList(els.adminPicksGrid, getAdminPickCards(), { long: true });
     }
 
     async function loadCardDetail(id) {
@@ -1217,6 +1261,7 @@
       const rawPath = decodeURIComponent(location.pathname);
       const path = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : rawPath;
       if (path === "/cards") loadCardsPage();
+      else if (path === "/admin-picks") loadAdminPicksPage();
       else if (path === "/create") prepareCreatePage();
       else if (path.startsWith("/tag/")) loadCardsPage(path.replace("/tag/", ""));
       else if (path.startsWith("/card/")) loadCardDetail(path.replace("/card/", ""));
