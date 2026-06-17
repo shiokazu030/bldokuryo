@@ -46,6 +46,22 @@ export async function onRequestDelete(context) {
   return json({ ok: true });
 }
 
+export async function onRequestPost(context) {
+  const db = getDb(context);
+  if (!db) return json({ error: "D1 database is not configured." }, 500);
+
+  const id = context.params.id;
+  const url = new URL(context.request.url);
+  const action = url.searchParams.get("action");
+  if (action !== "share") return json({ error: "Unknown action." }, 400);
+
+  await db.prepare(
+    `UPDATE cards SET share_count = COALESCE(share_count, 0) + 1 WHERE id = ? AND is_public = 1`
+  ).bind(id).run();
+
+  return json({ ok: true });
+}
+
 function getDb(context) {
   return context.env.DB || context.env.DOKURYO_DB || null;
 }

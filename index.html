@@ -99,8 +99,19 @@
     .feed-author, .mini-meta { display: flex; flex-wrap: wrap; gap: 7px; color: var(--muted); font-size: .82rem; }
     .feed-comment { margin: 0; color: #5d4038; line-height: 1.65; }
     .sample-label { width: fit-content; color: #8e4d63; background: #fce5eb; border: 1px solid #e5aaba; border-radius: 999px; padding: 4px 8px; font-size: .74rem; font-weight: 800; }
+    .rank-label { width: fit-content; color: #6c5035; background: #fff1d6; border: 1px solid #edcba7; border-radius: 999px; padding: 4px 8px; font-size: .74rem; font-weight: 900; }
     .tag-pill { display: inline-flex; align-items: center; min-height: 28px; padding: 5px 9px; border: 1px solid #e7c9d1; border-radius: 999px; background: #fff1f5; color: #7c4055; font-weight: 800; font-size: .78rem; text-decoration: none; }
     .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+    .category-strip { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 14px; }
+    .category-chip { display: inline-flex; align-items: center; min-height: 34px; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); background: #fffdf9; color: #6a4036; font-weight: 800; font-size: .82rem; text-decoration: none; }
+    .category-chip.active { background: var(--pink-soft); border-color: #e5aaba; color: #7c4055; }
+    .work-summary { display: grid; gap: 10px; margin: 0 0 14px; }
+    .work-summary strong { color: #5b382f; }
+    .work-stats { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: .86rem; }
+    .suggest-panel { display: grid; gap: 8px; margin-top: 8px; padding: 10px; border: 1px dashed var(--line); border-radius: var(--radius); background: rgba(255,253,248,.7); }
+    .suggest-panel.hidden { display: none; }
+    .suggest-list { display: flex; gap: 7px; flex-wrap: wrap; }
+    .suggest-btn { border: 1px solid #e7c9d1; background: #fff1f5; color: #7c4055; border-radius: 999px; min-height: 30px; padding: 5px 9px; font-weight: 800; font-size: .78rem; cursor: pointer; }
     .detail-layout { display: grid; gap: 14px; }
     .kv { display: grid; gap: 8px; color: #6b473e; line-height: 1.65; }
     .delete-box, .purchase-slot { display: grid; gap: 9px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
@@ -168,6 +179,7 @@
         <h2 class="section-title">管理人のおすすめ</h2>
       </div>
       <p class="lead">初めて来た人にも作品の雰囲気が伝わるように、紹介用カードを別枠で置いています。</p>
+      <div class="category-strip" id="homeAdminCategoryStrip"></div>
       <div class="feed-list" id="adminPickCards"></div>
       <div class="inline-actions">
         <a class="btn ghost" href="/admin-picks">おすすめをもっと見る</a>
@@ -185,11 +197,17 @@
         <form class="form-grid" id="cardForm">
           <div class="meta-row">
             <label>作品名 必須
-              <input id="titleInput" type="text" maxlength="80" required placeholder="例：きみと春待ち">
+              <input id="titleInput" type="text" maxlength="80" required list="workSuggestionList" placeholder="例：きみと春待ち">
+              <datalist id="workSuggestionList"></datalist>
+              <span class="hint">同じ作品をまとめやすくするため、候補が出たら近い作品名を選ぶのがおすすめです。</span>
             </label>
             <label>作者名・サークル名 任意
               <input id="authorInput" type="text" maxlength="60" placeholder="例：桜野ゆめ">
             </label>
+          </div>
+          <div class="suggest-panel hidden" id="workSuggestPanel">
+            <span class="hint">近い作品候補があります。選ぶと同じ作品ページにまとまりやすくなります。</span>
+            <div class="suggest-list" id="workSuggestList"></div>
           </div>
 
           <div class="image-picker">
@@ -296,6 +314,7 @@
     <section class="section hidden" id="adminPicksView">
       <h2 class="section-title">管理人のおすすめ</h2>
       <p class="lead">実在作品をもとにした紹介メモです。読了感想ではなく、好きな人に刺さりそうな要素を整理しています。</p>
+      <div class="category-strip" id="adminCategoryStrip"></div>
       <div class="feed-list" id="adminPicksGrid"></div>
       <div class="inline-actions">
         <a class="btn primary" href="/create">自分も読了カードを作る</a>
@@ -336,10 +355,26 @@
     const SITE_NAME = "BL読了カードメーカー";
     const ENABLE_AFFILIATE_LINKS = false;
     const DMM_AFFILIATE_ID = "";
+    const ENABLE_PURCHASE_PLACEHOLDER = true;
+    const AFFILIATE_SEARCH_PROVIDERS = {
+      dmm: {
+        enabled: ENABLE_AFFILIATE_LINKS,
+        affiliateId: DMM_AFFILIATE_ID
+      }
+    };
     const MAX_TAGS = 5;
     const LAST_POST_KEY = "dokuryo_last_post_at";
     const NG_WORDS = ["死ね", "殺す", "バカ", "詐欺", "無料配布"];
     const tagOptions = ["BL", "商業BL", "二次創作", "執着攻め", "年下攻め", "オメガバース", "Dom/Sub", "泣ける", "甘々", "地雷注意", "重め", "両片想い", "すれ違い", "溺愛", "体格差", "年上受け", "幼なじみ", "ケンカップル", "主従", "共依存", "健気受け", "クール攻め", "重い愛", "ハピエン", "余韻強め", "青春", "同居", "ギャップ"];
+    const adminCategories = [
+      { key: "", label: "すべて", match: () => true },
+      { key: "beginner", label: "初心者向け", match: (card) => card.sweetness >= 4 && card.heaviness <= 2 },
+      { key: "sweet", label: "甘々", match: (card) => card.tags.includes("甘々") || card.sweetness >= 5 },
+      { key: "crying", label: "泣ける", match: (card) => card.tags.includes("泣ける") || card.crying >= 4 },
+      { key: "heavy", label: "重め", match: (card) => card.tags.includes("重め") || card.heaviness >= 4 },
+      { key: "youth", label: "青春", match: (card) => card.tags.includes("青春") },
+      { key: "spicy", label: "刺激強め", match: (card) => card.spice >= 4 }
+    ];
     const meters = [
       { key: "sweetness", label: "甘さ", value: 4 },
       { key: "heaviness", label: "重さ", value: 3 },
@@ -445,6 +480,9 @@
       detailView: document.getElementById("detailView"),
       workView: document.getElementById("workView"),
       title: document.getElementById("titleInput"),
+      workSuggestionList: document.getElementById("workSuggestionList"),
+      workSuggestPanel: document.getElementById("workSuggestPanel"),
+      workSuggestList: document.getElementById("workSuggestList"),
       author: document.getElementById("authorInput"),
       image: document.getElementById("imageInput"),
       imageStatus: document.getElementById("imageStatus"),
@@ -475,9 +513,11 @@
       popularCards: document.getElementById("popularCards"),
       popularStatus: document.getElementById("popularStatus"),
       adminPickCards: document.getElementById("adminPickCards"),
+      homeAdminCategoryStrip: document.getElementById("homeAdminCategoryStrip"),
       cardsGrid: document.getElementById("cardsGrid"),
       cardsStatus: document.getElementById("cardsStatus"),
       cardsTitle: document.getElementById("cardsTitle"),
+      adminCategoryStrip: document.getElementById("adminCategoryStrip"),
       adminPicksGrid: document.getElementById("adminPicksGrid"),
       tagFilter: document.getElementById("tagFilter"),
       detailTitle: document.getElementById("detailTitle"),
@@ -530,6 +570,48 @@
         link.textContent = `#${tag}`;
         els.tagCloud.appendChild(link);
       });
+    }
+
+    function setupWorkSuggestions() {
+      const seen = new Set();
+      const options = [...sampleCards, ...adminPickCards]
+        .filter((card) => card.title && !seen.has(normalizeWorkKey(card.title)) && seen.add(normalizeWorkKey(card.title)))
+        .sort((a, b) => a.title.localeCompare(b.title, "ja"));
+      els.workSuggestionList.innerHTML = options
+        .map((card) => `<option value="${escapeHtml(card.title)}">${escapeHtml(card.author || "")}</option>`)
+        .join("");
+    }
+
+    function findWorkSuggestions(query) {
+      const key = normalizeWorkKey(query);
+      if (!key || key.length < 2) return [];
+      return getKnownCards()
+        .filter((card) => {
+          const candidate = workKeyOf(card);
+          return candidate.includes(key) || key.includes(candidate);
+        })
+        .slice(0, 4);
+    }
+
+    function updateWorkSuggestions() {
+      const suggestions = findWorkSuggestions(els.title.value.trim());
+      if (!suggestions.length || suggestions.some((card) => card.title === els.title.value.trim())) {
+        els.workSuggestPanel.classList.add("hidden");
+        els.workSuggestList.innerHTML = "";
+        return;
+      }
+      els.workSuggestPanel.classList.remove("hidden");
+      els.workSuggestList.innerHTML = suggestions.map((card) => (
+        `<button class="suggest-btn" type="button" data-title="${escapeHtml(card.title)}" data-author="${escapeHtml(card.author || "")}">${escapeHtml(card.title)}</button>`
+      )).join("");
+    }
+
+    function renderCategoryStrip(target, activeKey = "", basePath = "/admin-picks") {
+      target.innerHTML = adminCategories.map((category) => {
+        const href = category.key ? `${basePath}?category=${encodeURIComponent(category.key)}` : basePath;
+        const active = category.key === activeKey ? " active" : "";
+        return `<a class="category-chip${active}" href="${href}">${escapeHtml(category.label)}</a>`;
+      }).join("");
     }
 
     function setupMeters() {
@@ -598,6 +680,7 @@
         crying: row.crying,
         spice: row.spice,
         source: row.source || "user",
+        noteType: row.noteType || row.note_type || "",
         view_count: Number(row.view_count || 0),
         share_count: Number(row.share_count || 0)
       };
@@ -619,6 +702,29 @@
 
     function getAdminPickCards() {
       return adminPickCards.map(cardFromApi);
+    }
+
+    function getKnownCards() {
+      const known = new Map();
+      [...getSampleCards(), ...getAdminPickCards()].forEach((card) => {
+        const key = workKeyOf(card);
+        if (key && !known.has(key)) known.set(key, card);
+      });
+      return Array.from(known.values());
+    }
+
+    function filterAdminPicksByCategory(categoryKey) {
+      const category = adminCategories.find((item) => item.key === categoryKey) || adminCategories[0];
+      return getAdminPickCards().filter(category.match);
+    }
+
+    function topTags(cards, limit = 8) {
+      const counts = new Map();
+      cards.forEach((card) => card.tags.forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1)));
+      return Array.from(counts.entries())
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ja"))
+        .slice(0, limit)
+        .map(([tag]) => tag);
     }
 
     function clampRating(value) {
@@ -838,7 +944,7 @@
     }
 
     function buildDmmAffiliateUrl(workTitle) {
-      if (!ENABLE_AFFILIATE_LINKS || !DMM_AFFILIATE_ID || !workTitle) return "";
+      if (!AFFILIATE_SEARCH_PROVIDERS.dmm.enabled || !AFFILIATE_SEARCH_PROVIDERS.dmm.affiliateId || !workTitle) return "";
       return "";
     }
 
@@ -846,8 +952,10 @@
       const url = buildDmmAffiliateUrl(workTitle);
       if (url) {
         target.innerHTML = `<p class="hint">このページには広告リンクが含まれます。</p><a class="btn secondary" href="${url}" target="_blank" rel="sponsored noopener">購入ページを見る</a>`;
+      } else if (ENABLE_PURCHASE_PLACEHOLDER) {
+        target.innerHTML = `<p class="hint">購入リンク準備中です。審査完了後にこの作品の検索・購入導線を追加できます。</p>`;
       } else {
-        target.innerHTML = `<p class="hint">購入リンク準備中です。審査完了後にここへ作品検索・購入導線を追加できます。</p>`;
+        target.innerHTML = "";
       }
     }
 
@@ -881,6 +989,7 @@
 
     function updateAll() {
       updateMeterOutputs();
+      updateWorkSuggestions();
       els.commentCount.textContent = `${els.comment.value.length} / 160`;
       els.imageStatus.textContent = uploadedImage ? `${uploadedImageName} を使用中（公開投稿には保存されません）` : "公開投稿には画像ファイル自体は保存されません";
       drawCard(els.canvas, getCardData(), { allowImage: true });
@@ -934,8 +1043,15 @@
     }
 
     function openX() {
-      const text = buildPostText(getCardData(), els.shareTemplate.value);
+      const data = getCardData();
+      if (lastPublicId) recordShare(lastPublicId);
+      const text = buildPostText(data, els.shareTemplate.value);
       window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+    }
+
+    function recordShare(id) {
+      if (!id || String(id).startsWith("sample-") || String(id).startsWith("admin-")) return;
+      fetch(`/api/cards/${encodeURIComponent(id)}?action=share`, { method: "POST" }).catch(() => {});
     }
 
     async function submitCard(event) {
@@ -1016,7 +1132,7 @@
         target.innerHTML = `<div class="empty">まだ公開カードがありません。最初の1枚を作ってみてください。</div>`;
         return;
       }
-      rows.forEach((row) => {
+      rows.forEach((row, index) => {
         const data = cardFromApi(row);
         const article = document.createElement("article");
         article.className = "feed-card";
@@ -1033,11 +1149,12 @@
           : (data.source === "sample" || String(data.id).startsWith("sample-") ? "サンプル" : "");
         article.innerHTML = `
           <div class="feed-body">
+            ${options.showRank ? `<span class="rank-label">人気 ${index + 1}位</span>` : ""}
             ${label ? `<span class="sample-label">${escapeHtml(label)}</span>` : ""}
             <a class="feed-title" href="/card/${encodeURIComponent(data.id)}">${escapeHtml(data.title)}</a>
             ${data.author ? `<div class="feed-author">${escapeHtml(data.author)}</div>` : ""}
             <p class="feed-comment">${escapeHtml(truncate(data.comment || "感想はまだありません。", options.long ? 120 : 78))}</p>
-            <div class="mini-meta"><span>沼度 ${stars(data.numa)}</span><span>${escapeHtml(formatDate(data.createdAt))}</span>${data.view_count ? `<span>閲覧 ${data.view_count}</span>` : ""}</div>
+            <div class="mini-meta"><span>沼度 ${stars(data.numa)}</span><span>${escapeHtml(formatDate(data.createdAt))}</span>${data.view_count ? `<span>閲覧 ${data.view_count}</span>` : ""}${data.noteType ? `<span>${escapeHtml(data.noteType)}</span>` : ""}</div>
             <div class="mini-meta">${tags || `<span class="tag-pill">タグなし</span>`}</div>
             <div class="inline-actions">
               <a class="btn primary small" href="/card/${encodeURIComponent(data.id)}">詳細を見る</a>
@@ -1064,14 +1181,16 @@
         const rows = await fetchCards(20);
         const popularRows = await fetchCards(10, "popular");
         renderCardList(els.latestCards, rows.slice(0, 5));
-        renderCardList(els.popularCards, popularRows.slice(0, 3));
+        renderCardList(els.popularCards, popularRows.slice(0, 5), { showRank: true });
+        renderCategoryStrip(els.homeAdminCategoryStrip);
         renderCardList(els.adminPickCards, getAdminPickCards().slice(0, 6));
         els.latestStatus.textContent = "";
         els.popularStatus.textContent = "詳細ページの閲覧数をもとに並べています。";
       } catch {
         const rows = getSampleCards();
         renderCardList(els.latestCards, rows);
-        renderCardList(els.popularCards, [...rows].sort((a, b) => b.numa - a.numa));
+        renderCardList(els.popularCards, [...rows].sort((a, b) => b.numa - a.numa), { showRank: true });
+        renderCategoryStrip(els.homeAdminCategoryStrip);
         renderCardList(els.adminPickCards, getAdminPickCards().slice(0, 6));
         els.latestStatus.textContent = "サンプルカードを表示しています。";
         els.popularStatus.textContent = "サンプルカードを表示しています。";
@@ -1101,7 +1220,10 @@
 
     function loadAdminPicksPage() {
       setSectionVisibility("admin-picks");
-      renderCardList(els.adminPicksGrid, getAdminPickCards(), { long: true });
+      const categoryKey = new URLSearchParams(location.search).get("category") || "";
+      renderCategoryStrip(els.adminCategoryStrip, categoryKey);
+      const rows = filterAdminPicksByCategory(categoryKey);
+      renderCardList(els.adminPicksGrid, rows, { long: true });
     }
 
     async function loadCardDetail(id) {
@@ -1145,7 +1267,7 @@
           <div>${data.tags.map((tag) => `<a class="tag-pill" href="/tag/${encodeURIComponent(tag)}">#${escapeHtml(tag)}</a>`).join(" ") || "タグなし"}</div>
         </div>
         <div class="actions">
-          <a class="btn primary" href="https://x.com/intent/tweet?text=${encodeURIComponent(xText)}" target="_blank" rel="noopener">Xで共有する</a>
+          <a class="btn primary" data-share-id="${escapeHtml(data.id)}" href="https://x.com/intent/tweet?text=${encodeURIComponent(xText)}" target="_blank" rel="noopener">Xで共有する</a>
           <a class="btn secondary" href="/work/${workSlug(data)}">同じ作品のカードを見る</a>
           <a class="btn ghost" href="/create">自分も読了カードを作る</a>
         </div>
@@ -1195,16 +1317,39 @@
         const filtered = rows.filter((row) => workKeyOf(row) === key);
         const displayTitle = filtered[0]?.title || "作品ページ";
         els.workTitle.textContent = displayTitle;
+        els.workDescription.innerHTML = renderWorkSummary(displayTitle, filtered, key);
         renderPurchaseSlot(els.workPurchaseSlot, displayTitle);
         renderCardList(els.workCards, filtered, { long: true });
-        els.workStatus.textContent = filtered.length ? `作品キー: ${key}` : "この作品のカードはまだありません。";
+        els.workStatus.textContent = filtered.length ? "同じ作品名としてまとまったカードを表示しています。" : "この作品のカードはまだありません。";
       } catch {
         const fallback = [...getSampleCards(), ...getAdminPickCards()].filter((row) => workKeyOf(row) === key);
         els.workTitle.textContent = fallback[0]?.title || "作品ページ";
+        els.workDescription.innerHTML = renderWorkSummary(fallback[0]?.title || key, fallback, key);
         renderPurchaseSlot(els.workPurchaseSlot, fallback[0]?.title || key);
         renderCardList(els.workCards, fallback, { long: true });
         els.workStatus.textContent = "サンプルカードを表示しています。";
       }
+    }
+
+    function renderWorkSummary(title, cards, key) {
+      const author = cards.find((card) => card.author)?.author || "";
+      const tags = topTags(cards, 8);
+      const sourceCount = cards.filter((card) => card.source === "user").length;
+      const adminCount = cards.filter((card) => card.source === "admin").length;
+      return `
+        <span class="work-summary">
+          <strong>${escapeHtml(title)}</strong>
+          ${author ? `<span>${escapeHtml(author)}</span>` : ""}
+          <span>同じ作品としてまとまった読了カードを新着順で見られます。表記ゆれ対策として、空白・記号・巻数表記を落とした作品キーでまとめています。</span>
+          <span class="work-stats">
+            <span>カード ${cards.length}件</span>
+            ${sourceCount ? `<span>投稿 ${sourceCount}件</span>` : ""}
+            ${adminCount ? `<span>紹介メモ ${adminCount}件</span>` : ""}
+            <span>作品キー ${escapeHtml(key)}</span>
+          </span>
+          ${tags.length ? `<span>${tags.map((tag) => `<a class="tag-pill" href="/tag/${encodeURIComponent(tag)}">#${escapeHtml(tag)}</a>`).join(" ")}</span>` : ""}
+        </span>
+      `;
     }
 
     async function deleteCard(id) {
@@ -1279,6 +1424,7 @@
     }
 
     setupTags();
+    setupWorkSuggestions();
     setupMeters();
     updateTagLimit();
     updateAll();
@@ -1294,6 +1440,15 @@
       updateAll();
     });
     document.addEventListener("click", (event) => {
+      const suggestion = event.target.closest(".suggest-btn");
+      if (suggestion) {
+        els.title.value = suggestion.dataset.title || "";
+        if (!els.author.value && suggestion.dataset.author) els.author.value = suggestion.dataset.author;
+        updateAll();
+        return;
+      }
+      const shareLink = event.target.closest("[data-share-id]");
+      if (shareLink) recordShare(shareLink.dataset.shareId);
       const link = event.target.closest("a[href^='/']");
       if (!link || link.target || link.hasAttribute("download")) return;
       const url = new URL(link.href);

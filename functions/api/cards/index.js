@@ -14,7 +14,7 @@ export async function onRequestGet(context) {
   const offset = clampNumber(url.searchParams.get("offset"), 0, 5000, 0);
   const sort = String(url.searchParams.get("sort") || "new");
   const orderBy = sort === "popular"
-    ? "view_count DESC, numa DESC, created_at DESC"
+    ? "(COALESCE(view_count, 0) + COALESCE(share_count, 0) * 3) DESC, view_count DESC, numa DESC, created_at DESC"
     : "created_at DESC";
 
   const result = await db.prepare(
