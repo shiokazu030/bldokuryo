@@ -355,7 +355,7 @@
     const SITE_NAME = "BL読了カードメーカー";
     const ENABLE_AFFILIATE_LINKS = false;
     const DMM_AFFILIATE_ID = "";
-    const ENABLE_PURCHASE_PLACEHOLDER = true;
+    const ENABLE_PURCHASE_PLACEHOLDER = false;
     const AFFILIATE_SEARCH_PROVIDERS = {
       dmm: {
         enabled: ENABLE_AFFILIATE_LINKS,
@@ -953,7 +953,7 @@
       if (url) {
         target.innerHTML = `<p class="hint">このページには広告リンクが含まれます。</p><a class="btn secondary" href="${url}" target="_blank" rel="sponsored noopener">購入ページを見る</a>`;
       } else if (ENABLE_PURCHASE_PLACEHOLDER) {
-        target.innerHTML = `<p class="hint">購入リンク準備中です。審査完了後にこの作品の検索・購入導線を追加できます。</p>`;
+        target.innerHTML = `<p class="hint">関連リンクは準備中です。</p>`;
       } else {
         target.innerHTML = "";
       }
