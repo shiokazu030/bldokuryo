@@ -1149,6 +1149,12 @@
       }
     }
 
+    function navigate(path) {
+      history.pushState({}, "", path);
+      route();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     setupTags();
     setupMeters();
     updateTagLimit();
@@ -1163,6 +1169,14 @@
       if (event.target === els.image) { loadSelectedImage(event.target.files[0]); return; }
       if (event.target.closest("#tagBox")) updateTagLimit(event.target);
       updateAll();
+    });
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest("a[href^='/']");
+      if (!link || link.target || link.hasAttribute("download")) return;
+      const url = new URL(link.href);
+      if (url.origin !== location.origin) return;
+      event.preventDefault();
+      navigate(`${url.pathname}${url.search}${url.hash}`);
     });
     window.addEventListener("popstate", route);
     els.form.addEventListener("submit", submitCard);
