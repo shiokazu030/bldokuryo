@@ -12,12 +12,16 @@ export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const limit = clampNumber(url.searchParams.get("limit"), 1, 50, 20);
   const offset = clampNumber(url.searchParams.get("offset"), 0, 5000, 0);
+  const sort = String(url.searchParams.get("sort") || "new");
+  const orderBy = sort === "popular"
+    ? "view_count DESC, numa DESC, created_at DESC"
+    : "created_at DESC";
 
   const result = await db.prepare(
-    `SELECT id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, created_at
+    `SELECT id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, work_key, source, view_count, share_count, created_at
      FROM cards
      WHERE is_public = 1
-     ORDER BY created_at DESC
+     ORDER BY ${orderBy}
      LIMIT ? OFFSET ?`
   ).bind(limit, offset).all();
 
@@ -52,11 +56,12 @@ export async function onRequestPost(context) {
   const deletePasswordHash = payload.delete_password ? await sha256(`delete:${payload.delete_password}`) : null;
   const ipHash = await sha256(`ip:${ip}`);
   const createdAt = new Date().toISOString();
+  const workKey = normalizeWorkKey(payload.title);
 
   await db.prepare(
     `INSERT INTO cards
-      (id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, delete_password_hash, created_at, is_public, ip_hash)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)`
+      (id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, work_key, source, view_count, share_count, delete_password_hash, created_at, is_public, ip_hash)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'user', 0, 0, ?, ?, 1, ?)`
   ).bind(
     id,
     payload.title,
@@ -68,6 +73,7 @@ export async function onRequestPost(context) {
     payload.crying,
     payload.spice,
     JSON.stringify(payload.tags),
+    workKey,
     deletePasswordHash,
     createdAt,
     ipHash
@@ -85,6 +91,10 @@ export async function onRequestPost(context) {
       crying: payload.crying,
       spice: payload.spice,
       tags: JSON.stringify(payload.tags),
+      work_key: workKey,
+      source: "user",
+      view_count: 0,
+      share_count: 0,
       created_at: createdAt
     })
   }, 201);
@@ -125,6 +135,17 @@ function rating(value) {
   return Math.min(5, Math.max(1, Math.round(number)));
 }
 
+function normalizeWorkKey(value) {
+  return String(value || "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[『』「」【】\\[\\]（）()〈〉《》]/g, "")
+    .replace(/第?[0-9０-９一二三四五六七八九十]+(巻|話|冊|上|下|前編|後編)/g, "")
+    .replace(/[\s\u3000・･~〜ー―‐\-_,，、.。!！?？:：;；/／\\]+/g, "")
+    .trim()
+    .slice(0, 80);
+}
+
 function clampNumber(value, min, max, fallback) {
   if (value === null || value === undefined || value === "") return fallback;
   const number = Number(value);
@@ -142,6 +163,10 @@ function normalizeCardRow(row) {
   return {
     ...row,
     tags,
+    work_key: row.work_key || normalizeWorkKey(row.title),
+    source: row.source || "user",
+    view_count: Number(row.view_count || 0),
+    share_count: Number(row.share_count || 0),
     sweetness: rating(row.sweetness),
     heaviness: rating(row.heaviness),
     numa: rating(row.numa),

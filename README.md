@@ -13,6 +13,7 @@
 - `functions/api/tags/[tag].js`: タグ別カード一覧取得
 - `migrations/0001_create_cards.sql`: D1テーブル作成SQL
 - `migrations/0002_seed_sample_cards.sql`: サンプル投稿SQL
+- `migrations/0003_add_discovery_fields.sql`: 作品まとめ・人気順用の追加SQL
 
 画像ファイルはDBに保存しません。公開カードは保存データからcanvasで再生成します。
 DB未設定時は、フロントエンド側のサンプルカードを一覧・個別ページに表示します。
@@ -73,11 +74,23 @@ migrations/0002_seed_sample_cards.sql
 
 ```text
 GET    /api/cards?limit=20
+GET    /api/cards?limit=20&sort=popular
 POST   /api/cards
 GET    /api/cards/:id
 DELETE /api/cards/:id
 GET    /api/tags/:tag?limit=20
 ```
+
+## 作品まとめ・ランキング
+
+同じ作品なのに表記ゆれで別ページになりすぎないよう、カード保存時に `work_key` を作っています。
+空白、句読点、かっこ、巻数らしき表記を落として、`/work/:work_key` にまとめます。
+
+人気カードはまず `view_count` を使います。
+`/card/:id` が表示されるたびに閲覧数を加算し、`/api/cards?sort=popular` で人気順を取得できます。
+
+トップには一般投稿とは別に「管理人のおすすめ」枠を置いています。
+実在作品を追加する場合は、読んでいない断定レビューではなく、紹介コメント・おすすめメモとして扱う想定です。
 
 ## DMMリンク
 

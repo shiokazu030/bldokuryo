@@ -159,7 +159,15 @@
         <h2 class="section-title">人気の読了カード</h2>
       </div>
       <div class="feed-list" id="popularCards"></div>
-      <p class="status-text" id="popularStatus">まずは新着順で表示しています</p>
+      <p class="status-text" id="popularStatus">詳細ページの閲覧数をもとに並べています</p>
+    </section>
+
+    <section class="section" id="adminPickSection">
+      <div class="section-head">
+        <h2 class="section-title">管理人のおすすめ</h2>
+      </div>
+      <p class="lead">初めて来た人にも作品の雰囲気が伝わるように、紹介用カードを別枠で置いています。</p>
+      <div class="feed-list" id="adminPickCards"></div>
     </section>
 
     <section class="section" id="tagCloudSection">
@@ -357,11 +365,44 @@
         source: "sample"
       }
     ];
+    const adminPickCards = [
+      {
+        id: "admin-pick-001",
+        title: "夜明け前、君だけが甘い",
+        author: "架空作品サンプル",
+        comment: "静かな関係性から少しずつ熱が上がるタイプ。甘さと不器用さの両方が好きな人向け。",
+        sweetness: 5, heaviness: 2, numa: 4, crying: 2, spice: 3,
+        tags: ["BL", "商業BL", "甘々", "両片想い"],
+        created_at: "2026-06-17T08:00:00.000Z",
+        source: "admin"
+      },
+      {
+        id: "admin-pick-002",
+        title: "きみをほどく合鍵",
+        author: "架空作品サンプル",
+        comment: "執着と救いのバランスを楽しみたい日に。重めだけど読後はやさしく残る紹介カードです。",
+        sweetness: 3, heaviness: 5, numa: 5, crying: 3, spice: 3,
+        tags: ["BL", "執着攻め", "重め", "余韻強め"],
+        created_at: "2026-06-17T07:40:00.000Z",
+        source: "admin"
+      },
+      {
+        id: "admin-pick-003",
+        title: "放課後ドロップス",
+        author: "架空作品サンプル",
+        comment: "軽く読めて会話のテンポが楽しい枠。初めて読了カードを見る人にも伝わりやすい雰囲気。",
+        sweetness: 4, heaviness: 1, numa: 3, crying: 1, spice: 2,
+        tags: ["BL", "甘々", "幼なじみ", "ハピエン"],
+        created_at: "2026-06-17T07:20:00.000Z",
+        source: "admin"
+      }
+    ];
 
     const els = {
       top: document.getElementById("top"),
       latestSection: document.getElementById("latestSection"),
       popularSection: document.getElementById("popularSection"),
+      adminPickSection: document.getElementById("adminPickSection"),
       tagCloudSection: document.getElementById("tagCloudSection"),
       createArea: document.getElementById("createArea"),
       previewArea: document.getElementById("previewArea"),
@@ -398,6 +439,7 @@
       latestStatus: document.getElementById("latestStatus"),
       popularCards: document.getElementById("popularCards"),
       popularStatus: document.getElementById("popularStatus"),
+      adminPickCards: document.getElementById("adminPickCards"),
       cardsGrid: document.getElementById("cardsGrid"),
       cardsStatus: document.getElementById("cardsStatus"),
       cardsTitle: document.getElementById("cardsTitle"),
@@ -421,6 +463,7 @@
       els.top.classList.toggle("hidden", !home);
       els.latestSection.classList.toggle("hidden", !home);
       els.popularSection.classList.toggle("hidden", !home);
+      els.adminPickSection.classList.toggle("hidden", !home);
       els.tagCloudSection.classList.toggle("hidden", !home);
       els.createArea.classList.toggle("hidden", mode !== "create");
       els.previewArea.classList.toggle("hidden", mode !== "create");
@@ -511,12 +554,15 @@
         createdAt: row.created_at,
         created_at: row.created_at,
         publicUrl: `${SITE_ORIGIN}/card/${row.id}`,
+        work_key: row.work_key || normalizeWorkKey(row.title),
         sweetness: row.sweetness,
         heaviness: row.heaviness,
         numa: row.numa,
         crying: row.crying,
         spice: row.spice,
-        source: row.source || "user"
+        source: row.source || "user",
+        view_count: Number(row.view_count || 0),
+        share_count: Number(row.share_count || 0)
       };
       card.meters = [
         { key: "sweetness", label: "甘さ", value: card.sweetness },
@@ -532,6 +578,10 @@
       const cards = sampleCards.map(cardFromApi);
       if (!tagName) return cards;
       return cards.filter((card) => card.tags.includes(tagName));
+    }
+
+    function getAdminPickCards() {
+      return adminPickCards.map(cardFromApi);
     }
 
     function clampRating(value) {
@@ -904,8 +954,23 @@
       return value.length > length ? `${value.slice(0, length - 1)}…` : value;
     }
 
-    function workSlug(title) {
-      return encodeURIComponent(String(title || "作品名未入力").trim());
+    function normalizeWorkKey(value) {
+      return String(value || "")
+        .normalize("NFKC")
+        .toLowerCase()
+        .replace(/[『』「」【】\[\]（）()〈〉《》]/g, "")
+        .replace(/第?[0-9０-９一二三四五六七八九十]+(巻|話|冊|上|下|前編|後編)/g, "")
+        .replace(/[\s\u3000・･~〜ー―‐\-_,，、.。!！?？:：;；/／\\]+/g, "")
+        .trim()
+        .slice(0, 80);
+    }
+
+    function workKeyOf(card) {
+      return card.work_key || normalizeWorkKey(card.title);
+    }
+
+    function workSlug(card) {
+      return encodeURIComponent(workKeyOf(card));
     }
 
     function renderCardList(target, rows, options = {}) {
@@ -926,17 +991,20 @@
         imageBox.href = `/card/${encodeURIComponent(data.id)}`;
         imageBox.appendChild(canvas);
         const tags = data.tags.slice(0, 5).map((tag) => `<a class="tag-pill" href="/tag/${encodeURIComponent(tag)}">#${escapeHtml(tag)}</a>`).join("");
+        const label = data.source === "admin"
+          ? "管理人おすすめ"
+          : (data.source === "sample" || String(data.id).startsWith("sample-") ? "サンプル" : "");
         article.innerHTML = `
           <div class="feed-body">
-            ${data.source === "sample" || String(data.id).startsWith("sample-") ? `<span class="sample-label">サンプル</span>` : ""}
+            ${label ? `<span class="sample-label">${escapeHtml(label)}</span>` : ""}
             <a class="feed-title" href="/card/${encodeURIComponent(data.id)}">${escapeHtml(data.title)}</a>
             ${data.author ? `<div class="feed-author">${escapeHtml(data.author)}</div>` : ""}
             <p class="feed-comment">${escapeHtml(truncate(data.comment || "感想はまだありません。", options.long ? 120 : 78))}</p>
-            <div class="mini-meta"><span>沼度 ${stars(data.numa)}</span><span>${escapeHtml(formatDate(data.createdAt))}</span></div>
+            <div class="mini-meta"><span>沼度 ${stars(data.numa)}</span><span>${escapeHtml(formatDate(data.createdAt))}</span>${data.view_count ? `<span>閲覧 ${data.view_count}</span>` : ""}</div>
             <div class="mini-meta">${tags || `<span class="tag-pill">タグなし</span>`}</div>
             <div class="inline-actions">
               <a class="btn primary small" href="/card/${encodeURIComponent(data.id)}">詳細を見る</a>
-              <a class="btn ghost small" href="/work/${workSlug(data.title)}">同じ作品のカードを見る</a>
+              <a class="btn ghost small" href="/work/${workSlug(data)}">同じ作品のカードを見る</a>
             </div>
           </div>
         `;
@@ -946,8 +1014,8 @@
       });
     }
 
-    async function fetchCards(limit = 20) {
-      const res = await fetch(`/api/cards?limit=${limit}`);
+    async function fetchCards(limit = 20, sort = "new") {
+      const res = await fetch(`/api/cards?limit=${limit}&sort=${encodeURIComponent(sort)}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "読み込みに失敗しました。");
       const rows = json.cards || [];
@@ -957,14 +1025,17 @@
     async function loadHomeCards() {
       try {
         const rows = await fetchCards(20);
+        const popularRows = await fetchCards(10, "popular");
         renderCardList(els.latestCards, rows.slice(0, 5));
-        renderCardList(els.popularCards, [...rows].sort((a, b) => Number(b.numa || 0) - Number(a.numa || 0)).slice(0, 3));
+        renderCardList(els.popularCards, popularRows.slice(0, 3));
+        renderCardList(els.adminPickCards, getAdminPickCards());
         els.latestStatus.textContent = "";
-        els.popularStatus.textContent = "今は沼度が高いカードを仮表示しています。";
+        els.popularStatus.textContent = "詳細ページの閲覧数をもとに並べています。";
       } catch {
         const rows = getSampleCards();
         renderCardList(els.latestCards, rows);
         renderCardList(els.popularCards, [...rows].sort((a, b) => b.numa - a.numa));
+        renderCardList(els.adminPickCards, getAdminPickCards());
         els.latestStatus.textContent = "サンプルカードを表示しています。";
         els.popularStatus.textContent = "サンプルカードを表示しています。";
       }
@@ -1001,11 +1072,11 @@
         renderDetailPanel(data);
         loadSameWorkCards(data);
       } catch (error) {
-        const sample = getSampleCards().find((card) => card.id === id);
-        if (sample) {
-          drawCard(els.detailCanvas, sample, { allowImage: false });
-          renderDetailPanel(sample);
-          loadSameWorkCards(sample);
+        const localCard = [...getSampleCards(), ...getAdminPickCards()].find((card) => card.id === id);
+        if (localCard) {
+          drawCard(els.detailCanvas, localCard, { allowImage: false });
+          renderDetailPanel(localCard);
+          loadSameWorkCards(localCard);
           return;
         }
         els.detailPanel.innerHTML = `<p class="status-text">${escapeHtml(error.message)}</p><a class="btn primary" href="/create">自分も読了カードを作る</a>`;
@@ -1031,7 +1102,7 @@
         </div>
         <div class="actions">
           <a class="btn primary" href="https://x.com/intent/tweet?text=${encodeURIComponent(xText)}" target="_blank" rel="noopener">Xで共有する</a>
-          <a class="btn secondary" href="/work/${workSlug(data.title)}">同じ作品のカードを見る</a>
+          <a class="btn secondary" href="/work/${workSlug(data)}">同じ作品のカードを見る</a>
           <a class="btn ghost" href="/create">自分も読了カードを作る</a>
         </div>
         <div class="purchase-slot" id="detailPurchaseSlot"></div>
@@ -1055,8 +1126,9 @@
       const box = document.getElementById("sameWorkCards");
       if (!box) return;
       try {
-        const rows = await fetchCards(50);
-        const filtered = rows.filter((row) => row.title === data.title && row.id !== data.id).slice(0, 3);
+        const rows = [...await fetchCards(50), ...getAdminPickCards()];
+        const key = workKeyOf(data);
+        const filtered = rows.filter((row) => workKeyOf(row) === key && row.id !== data.id).slice(0, 3);
         if (!filtered.length) {
           box.innerHTML = `<p class="hint">まだ他のカードはありません。</p>`;
           return;
@@ -1068,19 +1140,25 @@
     }
 
     async function loadWorkPage(slug) {
-      const title = decodeURIComponent(slug || "");
+      const key = decodeURIComponent(slug || "");
       setSectionVisibility("work");
-      els.workTitle.textContent = title || "作品ページ";
+      els.workTitle.textContent = "作品ページ";
       els.workDescription.textContent = "この作品に投稿された読了カード一覧です。";
-      renderPurchaseSlot(els.workPurchaseSlot, title);
+      renderPurchaseSlot(els.workPurchaseSlot, key);
       els.workStatus.textContent = "読み込み中です";
       try {
-        const rows = await fetchCards(50);
-        const filtered = rows.filter((row) => row.title === title);
-        renderCardList(els.workCards, filtered.length ? filtered : getSampleCards().filter((row) => row.title === title), { long: true });
-        els.workStatus.textContent = filtered.length ? "" : "該当カードがない場合はサンプルまたは空状態を表示しています。";
+        const rows = [...await fetchCards(50), ...getAdminPickCards()];
+        const filtered = rows.filter((row) => workKeyOf(row) === key);
+        const displayTitle = filtered[0]?.title || "作品ページ";
+        els.workTitle.textContent = displayTitle;
+        renderPurchaseSlot(els.workPurchaseSlot, displayTitle);
+        renderCardList(els.workCards, filtered, { long: true });
+        els.workStatus.textContent = filtered.length ? `作品キー: ${key}` : "この作品のカードはまだありません。";
       } catch {
-        renderCardList(els.workCards, getSampleCards().filter((row) => row.title === title), { long: true });
+        const fallback = [...getSampleCards(), ...getAdminPickCards()].filter((row) => workKeyOf(row) === key);
+        els.workTitle.textContent = fallback[0]?.title || "作品ページ";
+        renderPurchaseSlot(els.workPurchaseSlot, fallback[0]?.title || key);
+        renderCardList(els.workCards, fallback, { long: true });
         els.workStatus.textContent = "サンプルカードを表示しています。";
       }
     }
