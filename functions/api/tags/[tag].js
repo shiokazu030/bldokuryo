@@ -10,7 +10,7 @@ export async function onRequestGet(context) {
   if (!tag) return json({ error: "タグが指定されていません。" }, 400);
 
   const result = await db.prepare(
-    `SELECT id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, work_key, source, view_count, share_count, created_at
+    `SELECT id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, dlsite_work_id, work_key, source, view_count, share_count, created_at
      FROM cards
      WHERE is_public = 1 AND tags LIKE ?
      ORDER BY created_at DESC
@@ -52,6 +52,11 @@ function normalizeWorkKey(value) {
     .slice(0, 80);
 }
 
+function normalizeDlsiteWorkId(value) {
+  const id = String(value || "").trim().toUpperCase();
+  return /^RJ\d+$/i.test(id) ? id : "";
+}
+
 function normalizeCardRow(row) {
   let tags = [];
   try {
@@ -62,6 +67,12 @@ function normalizeCardRow(row) {
   return {
     ...row,
     tags,
+    dlsite_work_id: normalizeDlsiteWorkId(row.dlsite_work_id),
+    dlsiteWorkId: normalizeDlsiteWorkId(row.dlsite_work_id),
+    affiliate: {
+      dmmKeyword: [row.title, row.author].filter(Boolean).join(" "),
+      dlsiteWorkId: normalizeDlsiteWorkId(row.dlsite_work_id)
+    },
     work_key: row.work_key || normalizeWorkKey(row.title),
     source: row.source || "user",
     view_count: Number(row.view_count || 0),

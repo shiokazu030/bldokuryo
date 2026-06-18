@@ -2,7 +2,7 @@
 
 読了カードを作成し、公開カードとしてサイト内に保存できるMVPです。
 
-タイトルは審査提出済みのため、サイト名は `BL読了カードメーカー` のままにしています。
+サイト名は `BL読了カードメーカー` のままにしています。
 
 ## 構成
 
@@ -14,6 +14,7 @@
 - `migrations/0001_create_cards.sql`: D1テーブル作成SQL
 - `migrations/0002_seed_sample_cards.sql`: サンプル投稿SQL
 - `migrations/0003_add_discovery_fields.sql`: 作品まとめ・人気順用の追加SQL
+- `migrations/0004_add_affiliate_fields.sql`: DLsite作品ID用の追加SQL
 
 画像ファイルはDBに保存しません。公開カードは保存データからcanvasで再生成します。
 DB未設定時は、フロントエンド側のサンプルカードを一覧・個別ページに表示します。
@@ -105,30 +106,38 @@ GET    /api/tags/:tag?limit=20
 
 DMMレビュー本文は転載せず、作品名・作者名・ジャンル感をもとに独自の短い紹介文にしています。
 
-### 審査待ち中に強化している導線
+### 回遊を強化している導線
 
 - `/admin-picks` は「初心者向け」「甘々」「泣ける」「重め」「青春」「刺激強め」で絞り込めます。
 - 作成画面の作品名入力には既存作品候補を出し、同じ作品ページにまとまりやすくしています。
 - `/work/:work_key` では同じ作品にまとまったカード数、投稿数、紹介メモ数、よく使われるタグを表示します。
 - 人気順は `view_count + share_count * 3` を使う形にして、将来的にX共有が多いカードも上がりやすくしています。
 
-## DMMリンク
+## 作品リンク
 
-審査中のため、現在はアフィリエイトリンクもDMM検索リンクも表示していません。
-審査通過後に差し替えやすいように、フロントエンド側に以下の設定だけ用意しています。
+DMMブックスをメイン導線にし、DLsiteは作品IDがある場合だけ表示します。
+X共有文には作品リンクを直接入れず、カード詳細ページURLを共有します。
 
 ```js
-const ENABLE_AFFILIATE_LINKS = false;
-const DMM_AFFILIATE_ID = "";
-const ENABLE_PURCHASE_PLACEHOLDER = false;
-function buildDmmAffiliateUrl(workTitle) {
-  if (!ENABLE_AFFILIATE_LINKS || !DMM_AFFILIATE_ID || !workTitle) return "";
-  return "";
+const ENABLE_AFFILIATE_LINKS = true;
+const DMM_AFFILIATE_ID = "shiooo03-023";
+const DLSITE_AFFILIATE_ID = "shio033";
+
+function createDmmAffiliateUrl(keyword) {
+  const q = encodeURIComponent(keyword || "");
+  const targetUrl = `https://book.dmm.com/search/?searchstr=${q}`;
+  return `https://al.dmm.com/?lurl=${encodeURIComponent(targetUrl)}&af_id=${DMM_AFFILIATE_ID}&ch=toolbar&ch_id=link`;
+}
+
+function createDlsiteAffiliateUrl(workId) {
+  if (!workId) return "";
+  const id = String(workId).trim();
+  if (!/^RJ\d+/i.test(id)) return "";
+  return `https://dlaf.jp/home-touch/dlaf/=/t/p/link/work/aid/${DLSITE_AFFILIATE_ID}/id/${id}.html`;
 }
 ```
 
-`ENABLE_AFFILIATE_LINKS` が `false` の間は、購入導線を表示しません。
-アフィリエイト審査が通るまでは `DMM_AFFILIATE_ID` を空のままにしてください。
+管理人おすすめにDLsite作品IDを入れたい場合は、`adminPickCards` の各データに `dlsiteWorkId: "RJ..."` を追加します。
 
 ## MVPで入れている荒らし対策
 

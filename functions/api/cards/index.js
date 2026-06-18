@@ -18,7 +18,7 @@ export async function onRequestGet(context) {
     : "created_at DESC";
 
   const result = await db.prepare(
-    `SELECT id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, work_key, source, view_count, share_count, created_at
+    `SELECT id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, dlsite_work_id, work_key, source, view_count, share_count, created_at
      FROM cards
      WHERE is_public = 1
      ORDER BY ${orderBy}
@@ -60,8 +60,8 @@ export async function onRequestPost(context) {
 
   await db.prepare(
     `INSERT INTO cards
-      (id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, work_key, source, view_count, share_count, delete_password_hash, created_at, is_public, ip_hash)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'user', 0, 0, ?, ?, 1, ?)`
+      (id, title, author, comment, sweetness, heaviness, numa, crying, spice, tags, dlsite_work_id, work_key, source, view_count, share_count, delete_password_hash, created_at, is_public, ip_hash)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'user', 0, 0, ?, ?, 1, ?)`
   ).bind(
     id,
     payload.title,
@@ -73,6 +73,7 @@ export async function onRequestPost(context) {
     payload.crying,
     payload.spice,
     JSON.stringify(payload.tags),
+    payload.dlsite_work_id,
     workKey,
     deletePasswordHash,
     createdAt,
@@ -91,6 +92,7 @@ export async function onRequestPost(context) {
       crying: payload.crying,
       spice: payload.spice,
       tags: JSON.stringify(payload.tags),
+      dlsite_work_id: payload.dlsite_work_id,
       work_key: workKey,
       source: "user",
       view_count: 0,
@@ -117,6 +119,7 @@ function sanitizePayload(body) {
     tags: Array.isArray(body.tags)
       ? body.tags.map((tag) => String(tag || "").trim()).filter((tag) => tag && ALLOWED_TAGS.has(tag)).slice(0, 5)
       : [],
+    dlsite_work_id: normalizeDlsiteWorkId(body.dlsite_work_id || body.dlsiteWorkId || body.affiliate?.dlsiteWorkId || ""),
     delete_password: String(body.delete_password || "").slice(0, 80)
   };
 }
@@ -146,6 +149,11 @@ function normalizeWorkKey(value) {
     .slice(0, 80);
 }
 
+function normalizeDlsiteWorkId(value) {
+  const id = String(value || "").trim().toUpperCase();
+  return /^RJ\d+$/i.test(id) ? id : "";
+}
+
 function clampNumber(value, min, max, fallback) {
   if (value === null || value === undefined || value === "") return fallback;
   const number = Number(value);
@@ -163,6 +171,12 @@ function normalizeCardRow(row) {
   return {
     ...row,
     tags,
+    dlsite_work_id: normalizeDlsiteWorkId(row.dlsite_work_id),
+    dlsiteWorkId: normalizeDlsiteWorkId(row.dlsite_work_id),
+    affiliate: {
+      dmmKeyword: [row.title, row.author].filter(Boolean).join(" "),
+      dlsiteWorkId: normalizeDlsiteWorkId(row.dlsite_work_id)
+    },
     work_key: row.work_key || normalizeWorkKey(row.title),
     source: row.source || "user",
     view_count: Number(row.view_count || 0),

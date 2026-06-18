@@ -115,6 +115,9 @@
     .detail-layout { display: grid; gap: 14px; }
     .kv { display: grid; gap: 8px; color: #6b473e; line-height: 1.65; }
     .delete-box, .purchase-slot { display: grid; gap: 9px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .link-area { display: grid; gap: 10px; background: #fff8f4; border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; }
+    .link-area-title { margin: 0; color: #5b382f; font-weight: 900; }
+    .pr-note { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
     .empty { padding: 18px; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); background: rgba(255,253,248,.7); }
     .hidden { display: none !important; }
     .footer { padding: 18px 0 0; text-align: center; color: var(--muted); font-size: .78rem; }
@@ -176,9 +179,10 @@
 
     <section class="section" id="adminPickSection">
       <div class="section-head">
-        <h2 class="section-title">管理人のおすすめ</h2>
+      <h2 class="section-title">管理人のおすすめ</h2>
       </div>
       <p class="lead">初めて来た人にも作品の雰囲気が伝わるように、紹介用カードを別枠で置いています。</p>
+      <p class="pr-note">※一部リンクにはPRを含みます。</p>
       <div class="category-strip" id="homeAdminCategoryStrip"></div>
       <div class="feed-list" id="adminPickCards"></div>
       <div class="inline-actions">
@@ -205,6 +209,10 @@
               <input id="authorInput" type="text" maxlength="60" placeholder="例：桜野ゆめ">
             </label>
           </div>
+          <label>DLsite作品ID 任意
+            <input id="dlsiteWorkIdInput" type="text" maxlength="24" placeholder="例：RJ01644019">
+            <span class="hint">RJから始まる作品IDがある場合だけ、DLsiteへの作品リンクを表示できます。</span>
+          </label>
           <div class="suggest-panel hidden" id="workSuggestPanel">
             <span class="hint">近い作品候補があります。選ぶと同じ作品ページにまとまりやすくなります。</span>
             <div class="suggest-list" id="workSuggestList"></div>
@@ -314,6 +322,7 @@
     <section class="section hidden" id="adminPicksView">
       <h2 class="section-title">管理人のおすすめ</h2>
       <p class="lead">実在作品をもとにした紹介メモです。読了感想ではなく、好きな人に刺さりそうな要素を整理しています。</p>
+      <p class="pr-note">※一部リンクにはPRを含みます。</p>
       <div class="category-strip" id="adminCategoryStrip"></div>
       <div class="feed-list" id="adminPicksGrid"></div>
       <div class="inline-actions">
@@ -353,13 +362,17 @@
     const SITE_ORIGIN = location.origin;
     const SITE_HOST = location.host || "dokuryo.pages.dev";
     const SITE_NAME = "BL読了カードメーカー";
-    const ENABLE_AFFILIATE_LINKS = false;
-    const DMM_AFFILIATE_ID = "";
-    const ENABLE_PURCHASE_PLACEHOLDER = false;
+    const ENABLE_AFFILIATE_LINKS = true;
+    const DMM_AFFILIATE_ID = "shiooo03-023";
+    const DLSITE_AFFILIATE_ID = "shio033";
     const AFFILIATE_SEARCH_PROVIDERS = {
       dmm: {
         enabled: ENABLE_AFFILIATE_LINKS,
         affiliateId: DMM_AFFILIATE_ID
+      },
+      dlsite: {
+        enabled: ENABLE_AFFILIATE_LINKS,
+        affiliateId: DLSITE_AFFILIATE_ID
       }
     };
     const MAX_TAGS = 5;
@@ -484,6 +497,7 @@
       workSuggestPanel: document.getElementById("workSuggestPanel"),
       workSuggestList: document.getElementById("workSuggestList"),
       author: document.getElementById("authorInput"),
+      dlsiteWorkId: document.getElementById("dlsiteWorkIdInput"),
       image: document.getElementById("imageInput"),
       imageStatus: document.getElementById("imageStatus"),
       clearImage: document.getElementById("clearImageButton"),
@@ -645,10 +659,13 @@
 
     function getCardData() {
       const values = getMeterValues();
+      const dlsiteWorkId = normalizeDlsiteWorkId(els.dlsiteWorkId.value);
+      const title = els.title.value.trim() || "作品名未入力";
+      const author = els.author.value.trim();
       return {
         id: lastPublicId,
-        title: els.title.value.trim() || "作品名未入力",
-        author: els.author.value.trim(),
+        title,
+        author,
         comment: els.comment.value.trim(),
         tags: getSelectedTags(),
         meters: values,
@@ -659,6 +676,11 @@
         spice: values[4].value,
         createdAt: new Date().toISOString(),
         publicUrl: lastPublicUrl,
+        dlsiteWorkId,
+        affiliate: {
+          dmmKeyword: buildAffiliateKeyword({ title, author }),
+          dlsiteWorkId
+        },
         source: "user"
       };
     }
@@ -679,6 +701,11 @@
         numa: row.numa,
         crying: row.crying,
         spice: row.spice,
+        dlsiteWorkId: normalizeDlsiteWorkId(row.dlsiteWorkId || row.dlsite_work_id || row.affiliate?.dlsiteWorkId || ""),
+        affiliate: {
+          dmmKeyword: row.affiliate?.dmmKeyword || buildAffiliateKeyword({ title: row.title, author: row.author || "" }),
+          dlsiteWorkId: normalizeDlsiteWorkId(row.dlsiteWorkId || row.dlsite_work_id || row.affiliate?.dlsiteWorkId || "")
+        },
         source: row.source || "user",
         noteType: row.noteType || row.note_type || "",
         view_count: Number(row.view_count || 0),
@@ -739,6 +766,15 @@
 
     function hasNgWord(text) {
       return NG_WORDS.some((word) => (text || "").includes(word));
+    }
+
+    function normalizeDlsiteWorkId(value) {
+      const id = String(value || "").trim().toUpperCase();
+      return /^RJ\d+$/i.test(id) ? id : "";
+    }
+
+    function buildAffiliateKeyword(data) {
+      return [data?.title, data?.author].filter(Boolean).join(" ").trim();
     }
 
     function validateForPublish(data) {
@@ -943,20 +979,41 @@
       ctx.fillText(data.publicUrl ? data.publicUrl.replace(/^https?:\/\//, "") : SITE_HOST, w / 2, 1090);
     }
 
-    function buildDmmAffiliateUrl(workTitle) {
-      if (!AFFILIATE_SEARCH_PROVIDERS.dmm.enabled || !AFFILIATE_SEARCH_PROVIDERS.dmm.affiliateId || !workTitle) return "";
-      return "";
+    function createDmmAffiliateUrl(keyword) {
+      if (!AFFILIATE_SEARCH_PROVIDERS.dmm.enabled || !AFFILIATE_SEARCH_PROVIDERS.dmm.affiliateId) return "";
+      const q = encodeURIComponent(keyword || "");
+      if (!q) return "";
+      const targetUrl = `https://book.dmm.com/search/?searchstr=${q}`;
+      return `https://al.dmm.com/?lurl=${encodeURIComponent(targetUrl)}&af_id=${encodeURIComponent(AFFILIATE_SEARCH_PROVIDERS.dmm.affiliateId)}&ch=toolbar&ch_id=link`;
     }
 
-    function renderPurchaseSlot(target, workTitle) {
-      const url = buildDmmAffiliateUrl(workTitle);
-      if (url) {
-        target.innerHTML = `<p class="hint">このページには広告リンクが含まれます。</p><a class="btn secondary" href="${url}" target="_blank" rel="sponsored noopener">購入ページを見る</a>`;
-      } else if (ENABLE_PURCHASE_PLACEHOLDER) {
-        target.innerHTML = `<p class="hint">関連リンクは準備中です。</p>`;
-      } else {
+    function createDlsiteAffiliateUrl(workId) {
+      if (!AFFILIATE_SEARCH_PROVIDERS.dlsite.enabled || !AFFILIATE_SEARCH_PROVIDERS.dlsite.affiliateId) return "";
+      const id = normalizeDlsiteWorkId(workId);
+      if (!id) return "";
+      return `https://dlaf.jp/home-touch/dlaf/=/t/p/link/work/aid/${encodeURIComponent(AFFILIATE_SEARCH_PROVIDERS.dlsite.affiliateId)}/id/${id}.html`;
+    }
+
+    function renderPurchaseSlot(target, dataOrTitle) {
+      const data = typeof dataOrTitle === "string" ? { title: dataOrTitle, author: "", dlsiteWorkId: "" } : (dataOrTitle || {});
+      const keyword = data.affiliate?.dmmKeyword || buildAffiliateKeyword(data);
+      const dmmUrl = createDmmAffiliateUrl(keyword);
+      const dlsiteUrl = createDlsiteAffiliateUrl(data.affiliate?.dlsiteWorkId || data.dlsiteWorkId);
+      if (!dmmUrl && !dlsiteUrl) {
         target.innerHTML = "";
+        return;
       }
+      target.innerHTML = `
+        <div class="link-area">
+          <p class="link-area-title">この作品が気になったら📚</p>
+          <p class="hint">この作品が気になったら、作品ページを探せるようにしています📚</p>
+          <div class="inline-actions">
+            ${dmmUrl ? `<a class="btn secondary" href="${dmmUrl}" target="_blank" rel="sponsored noopener">DMMブックスで探す</a>` : ""}
+            ${dlsiteUrl ? `<a class="btn ghost" href="${dlsiteUrl}" target="_blank" rel="sponsored noopener">DLsiteで見る</a>` : ""}
+          </div>
+          <p class="pr-note">※一部リンクにはPRを含みます。</p>
+        </div>
+      `;
     }
 
     function formatDate(value) {
@@ -1081,6 +1138,7 @@
         crying: data.crying,
         spice: data.spice,
         tags: data.tags,
+        dlsite_work_id: data.dlsiteWorkId,
         delete_password: els.deletePassword.value
       };
 
@@ -1284,7 +1342,7 @@
           <div id="sameWorkCards" class="feed-list"></div>
         </div>
       `;
-      renderPurchaseSlot(document.getElementById("detailPurchaseSlot"), data.title);
+      renderPurchaseSlot(document.getElementById("detailPurchaseSlot"), data);
       document.getElementById("detailDeleteButton").addEventListener("click", () => deleteCard(data.id));
     }
 
@@ -1310,7 +1368,7 @@
       setSectionVisibility("work");
       els.workTitle.textContent = "作品ページ";
       els.workDescription.textContent = "この作品に投稿された読了カード一覧です。";
-      renderPurchaseSlot(els.workPurchaseSlot, key);
+      renderPurchaseSlot(els.workPurchaseSlot, { title: key });
       els.workStatus.textContent = "読み込み中です";
       try {
         const rows = [...await fetchCards(50), ...getAdminPickCards()];
@@ -1318,14 +1376,14 @@
         const displayTitle = filtered[0]?.title || "作品ページ";
         els.workTitle.textContent = displayTitle;
         els.workDescription.innerHTML = renderWorkSummary(displayTitle, filtered, key);
-        renderPurchaseSlot(els.workPurchaseSlot, displayTitle);
+        renderPurchaseSlot(els.workPurchaseSlot, filtered[0] || { title: displayTitle });
         renderCardList(els.workCards, filtered, { long: true });
         els.workStatus.textContent = filtered.length ? "同じ作品名としてまとまったカードを表示しています。" : "この作品のカードはまだありません。";
       } catch {
         const fallback = [...getSampleCards(), ...getAdminPickCards()].filter((row) => workKeyOf(row) === key);
         els.workTitle.textContent = fallback[0]?.title || "作品ページ";
         els.workDescription.innerHTML = renderWorkSummary(fallback[0]?.title || key, fallback, key);
-        renderPurchaseSlot(els.workPurchaseSlot, fallback[0]?.title || key);
+        renderPurchaseSlot(els.workPurchaseSlot, fallback[0] || { title: key });
         renderCardList(els.workCards, fallback, { long: true });
         els.workStatus.textContent = "サンプルカードを表示しています。";
       }
@@ -1370,6 +1428,7 @@
     function resetInputs() {
       els.title.value = "";
       els.author.value = "";
+      els.dlsiteWorkId.value = "";
       els.comment.value = "";
       els.deletePassword.value = "";
       els.image.value = "";
