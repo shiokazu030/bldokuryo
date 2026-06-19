@@ -119,7 +119,7 @@ function sanitizePayload(body) {
     tags: Array.isArray(body.tags)
       ? body.tags.map((tag) => String(tag || "").trim()).filter((tag) => tag && ALLOWED_TAGS.has(tag)).slice(0, 5)
       : [],
-    dlsite_work_id: normalizeDlsiteWorkId(body.dlsite_work_id || body.dlsiteWorkId || body.affiliate?.dlsiteWorkId || ""),
+    dlsite_work_id: "",
     delete_password: String(body.delete_password || "").slice(0, 80)
   };
 }
