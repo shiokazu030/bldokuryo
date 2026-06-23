@@ -119,6 +119,13 @@
     .link-area-title { margin: 0; color: #5b382f; font-weight: 900; }
     .pr-note { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
     .empty { padding: 18px; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); background: rgba(255,253,248,.7); }
+    .profile-template-grid { display: grid; grid-template-columns: 1fr; gap: 9px; }
+    .profile-template { border: 1px solid var(--line); border-radius: var(--radius); background: #fffdf9; padding: 12px; cursor: pointer; }
+    .profile-template input { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; min-height: 1px; }
+    .profile-template span { display: flex; align-items: center; gap: 9px; font-weight: 900; color: #6a4036; }
+    .profile-template input:checked + span { color: #8e4d63; }
+    .profile-swatch { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(106, 64, 54, .2); flex: 0 0 auto; }
+    .profile-canvas-shell canvas { aspect-ratio: 16 / 9; }
     .hidden { display: none !important; }
     .footer { padding: 18px 0 0; text-align: center; color: var(--muted); font-size: .78rem; }
 
@@ -130,6 +137,7 @@
       .image-note { display: flex; align-items: center; justify-content: space-between; }
       .actions { grid-template-columns: repeat(4, 1fr); }
       .preview-wrap { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
+      .profile-template-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .feed-card { grid-template-columns: 230px minmax(0, 1fr); align-items: start; }
       .detail-layout { grid-template-columns: minmax(0, 1fr) 360px; align-items: start; }
     }
@@ -142,6 +150,7 @@
       <nav class="nav" aria-label="主要メニュー">
         <a href="/cards">みんなのカード</a>
         <a href="/admin-picks">管理人おすすめ</a>
+        <a href="/profile">自己紹介カード</a>
         <a href="/create">読了カードを作る</a>
       </nav>
     </header>
@@ -153,6 +162,7 @@
         <div class="hero-actions">
           <a class="btn primary" href="/create">読了カードを作る</a>
           <a class="btn ghost" href="/cards">みんなの読了カードを見る</a>
+          <a class="btn ghost" href="/profile">自己紹介カードを作る</a>
         </div>
       </div>
       <div class="panel">
@@ -248,7 +258,7 @@
 
           <div class="actions">
             <button class="btn primary" id="createButton" type="submit">カードを作成</button>
-            <button class="btn secondary" id="saveButton" type="button">画像を保存/共有</button>
+            <button class="btn secondary" id="saveButton" type="button">画像を保存</button>
             <button class="btn ghost" id="copyButton" type="button">投稿文をコピー</button>
             <button class="btn ghost" id="resetButton" type="button">入力を整える</button>
           </div>
@@ -266,7 +276,7 @@
           </div>
           <div class="actions" id="completeActions">
             <button class="btn primary" id="xButton" type="button">Xに投稿する</button>
-            <button class="btn secondary" id="saveButtonBottom" type="button">画像を保存/共有</button>
+            <button class="btn secondary" id="saveButtonBottom" type="button">画像を保存</button>
             <button class="btn secondary" id="publishButton" type="button">サイトに投稿する</button>
             <a class="btn ghost hidden" id="publicPageButton" href="#">カード詳細ページを見る</a>
             <button class="btn ghost" id="againButton" type="button">もう1枚作る</button>
@@ -287,7 +297,107 @@
           </label>
           <div class="share-preview" id="sharePreview"></div>
           <button class="btn secondary" id="copyButtonBottom" type="button">投稿文をコピー</button>
-          <p class="hint">スマホでは「画像を保存/共有」から保存メニューを開けます。Xの仕様上、このボタンだけでは画像添付まではできません。</p>
+          <p class="hint">画像を保存してからXで添付してください。Xの仕様上、このボタンだけでは画像添付まではできません。</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section hidden" id="profileArea">
+      <h2 class="section-title">腐女子腐男子自己紹介カード</h2>
+      <p class="lead">読了カードとは別の、SNSでつながるための自己紹介カードです。画像保存と投稿文コピーだけのシンプルなメーカーです。</p>
+      <div class="preview-wrap">
+        <div class="panel">
+          <form class="form-grid" id="profileForm">
+            <div>
+              <label>テンプレ
+                <div class="profile-template-grid" id="profileTemplateBox"></div>
+              </label>
+            </div>
+
+            <div class="image-picker">
+              <label>カードに入れる画像 任意
+                <input id="profileImageInput" type="file" accept="image/*">
+              </label>
+              <div class="image-note">
+                <span id="profileImageStatus">画像は自己紹介カード画像の作成・保存用です</span>
+                <button class="mini-btn" id="profileClearImageButton" type="button">画像を外す</button>
+              </div>
+            </div>
+
+            <div class="meta-row">
+              <label>名前
+                <input id="profileNameInput" type="text" maxlength="30" placeholder="例：しお">
+              </label>
+              <label>X ID
+                <input id="profileXInput" type="text" maxlength="40" placeholder="例：@bl_reading">
+              </label>
+            </div>
+
+            <div class="meta-row">
+              <label>性別
+                <select id="profileGenderInput">
+                  <option value="">未設定</option>
+                  <option value="♀">♀</option>
+                  <option value="♂">♂</option>
+                  <option value="秘密">秘密</option>
+                </select>
+              </label>
+              <label>腐歴
+                <input id="profileHistoryInput" type="text" maxlength="24" placeholder="例：8年">
+              </label>
+            </div>
+
+            <div class="meta-row">
+              <label>年齢
+                <input id="profileAgeInput" type="text" maxlength="24" placeholder="例：25↑ / 成人済">
+              </label>
+              <label>紙派？電子派？
+                <input id="profileStyleInput" type="text" maxlength="30" placeholder="例：紙派・電子派どっちも">
+              </label>
+            </div>
+
+            <label>腐ったきっかけ
+              <textarea id="profileTriggerInput" maxlength="90" placeholder="例：学生時代に読んだBL漫画で沼落ち"></textarea>
+            </label>
+            <label>好きな作品・属性
+              <textarea id="profileFavoriteInput" maxlength="110" placeholder="例：青春 / 主従 / 年下攻め / 商業BL"></textarea>
+            </label>
+            <label>好きなCP
+              <textarea id="profileCpInput" maxlength="90" placeholder="例：固定気味 / 雑食 / 書ききれません"></textarea>
+            </label>
+            <label>地雷・自衛
+              <textarea id="profileLandmineInput" maxlength="80" placeholder="例：特になし / 自衛します"></textarea>
+            </label>
+            <label>どんな人と繋がりたい？
+              <textarea id="profileConnectInput" maxlength="90" placeholder="例：感想を言い合える人 / 読了カード作る人"></textarea>
+            </label>
+            <label>ひとこと
+              <textarea id="profileMessageInput" maxlength="120" placeholder="例：いいねいただけたらお迎えに行きます"></textarea>
+            </label>
+
+            <div class="actions">
+              <button class="btn secondary" id="profileSaveButton" type="button">画像を保存</button>
+              <button class="btn ghost" id="profileCopyButton" type="button">投稿文をコピー</button>
+              <a class="btn primary" href="/create">読了カードへ</a>
+              <button class="btn ghost" id="profileResetButton" type="button">見本を入れる</button>
+            </div>
+            <p class="status-text" id="profileStatus"></p>
+          </form>
+        </div>
+
+        <aside class="panel complete-panel">
+          <div>
+            <p class="complete-title">自己紹介カードプレビュー</p>
+            <p class="hint">横長1200x675pxで保存します。読了カードとは別物として、SNSの固定ポストやタグ投稿に使いやすい比率です。</p>
+          </div>
+          <div class="canvas-shell profile-canvas-shell">
+            <canvas id="profileCanvas" width="1200" height="675" aria-label="生成された腐女子腐男子自己紹介カード"></canvas>
+          </div>
+          <div class="link-area">
+            <p class="link-area-title">読了カードとゆるく連携</p>
+            <p class="hint">自己紹介でつながって、刺さった作品は読了カードに残す流れを作れます。</p>
+            <a class="btn secondary" href="/create">BL読了カードを作る</a>
+          </div>
         </aside>
       </div>
     </section>
@@ -385,6 +495,28 @@
       { key: "crying", label: "泣ける", value: 3 },
       { key: "spice", label: "刺激", value: 3 }
     ];
+    const PROFILE_STORAGE_KEY = "bl_dokuryo_profile_card_v1";
+    const profileTemplates = [
+      { id: "dusty-rose", label: "くすみピンク", bg: "#e9caca", panel: "#fff6f6", ink: "#171111", muted: "#5f4d4d", line: "#d9bfc0", accent: "#4d9ed8" },
+      { id: "night-read", label: "夜ふかし読了", bg: "#302a36", panel: "#fff4ed", ink: "#21181c", muted: "#6a5458", line: "#e5cbc1", accent: "#c86f8e" },
+      { id: "paper-mint", label: "紙の本ミント", bg: "#d8eadf", panel: "#fffdf7", ink: "#18251e", muted: "#52675c", line: "#bfd6c8", accent: "#4f9b75" },
+      { id: "cp-lavender", label: "薄紫CP語り", bg: "#ddd4eb", panel: "#fff8ff", ink: "#211827", muted: "#65586d", line: "#cbbdde", accent: "#8464b5" }
+    ];
+    const profileDefaults = {
+      template: "dusty-rose",
+      name: "",
+      xId: "",
+      gender: "",
+      history: "",
+      age: "",
+      style: "",
+      trigger: "",
+      favorite: "",
+      cp: "",
+      landmine: "",
+      connect: "",
+      message: ""
+    };
     const sampleCards = [
       {
         id: "sample-001",
@@ -478,6 +610,7 @@
       tagCloudSection: document.getElementById("tagCloudSection"),
       createArea: document.getElementById("createArea"),
       previewArea: document.getElementById("previewArea"),
+      profileArea: document.getElementById("profileArea"),
       cardsView: document.getElementById("cardsView"),
       adminPicksView: document.getElementById("adminPicksView"),
       detailView: document.getElementById("detailView"),
@@ -512,6 +645,28 @@
       publicPage: document.getElementById("publicPageButton"),
       shareTemplate: document.getElementById("shareTemplate"),
       sharePreview: document.getElementById("sharePreview"),
+      profileForm: document.getElementById("profileForm"),
+      profileTemplateBox: document.getElementById("profileTemplateBox"),
+      profileImage: document.getElementById("profileImageInput"),
+      profileImageStatus: document.getElementById("profileImageStatus"),
+      profileClearImage: document.getElementById("profileClearImageButton"),
+      profileName: document.getElementById("profileNameInput"),
+      profileX: document.getElementById("profileXInput"),
+      profileGender: document.getElementById("profileGenderInput"),
+      profileHistory: document.getElementById("profileHistoryInput"),
+      profileAge: document.getElementById("profileAgeInput"),
+      profileStyle: document.getElementById("profileStyleInput"),
+      profileTrigger: document.getElementById("profileTriggerInput"),
+      profileFavorite: document.getElementById("profileFavoriteInput"),
+      profileCp: document.getElementById("profileCpInput"),
+      profileLandmine: document.getElementById("profileLandmineInput"),
+      profileConnect: document.getElementById("profileConnectInput"),
+      profileMessage: document.getElementById("profileMessageInput"),
+      profileSave: document.getElementById("profileSaveButton"),
+      profileCopy: document.getElementById("profileCopyButton"),
+      profileReset: document.getElementById("profileResetButton"),
+      profileStatus: document.getElementById("profileStatus"),
+      profileCanvas: document.getElementById("profileCanvas"),
       latestCards: document.getElementById("latestCards"),
       latestStatus: document.getElementById("latestStatus"),
       popularCards: document.getElementById("popularCards"),
@@ -535,6 +690,8 @@
 
     let uploadedImage = null;
     let uploadedImageName = "";
+    let profileUploadedImage = null;
+    let profileUploadedImageName = "";
     let lastPublicUrl = "";
     let lastPublicId = "";
 
@@ -547,6 +704,7 @@
       els.tagCloudSection.classList.toggle("hidden", !home);
       els.createArea.classList.toggle("hidden", mode !== "create");
       els.previewArea.classList.toggle("hidden", mode !== "create");
+      els.profileArea.classList.toggle("hidden", mode !== "profile");
       els.cardsView.classList.toggle("hidden", mode !== "cards");
       els.adminPicksView.classList.toggle("hidden", mode !== "admin-picks");
       els.detailView.classList.toggle("hidden", mode !== "detail");
@@ -573,6 +731,19 @@
         link.href = `/tag/${encodeURIComponent(tag)}`;
         link.textContent = `#${tag}`;
         els.tagCloud.appendChild(link);
+      });
+    }
+
+    function setupProfileTemplates() {
+      els.profileTemplateBox.innerHTML = "";
+      profileTemplates.forEach((template) => {
+        const label = document.createElement("label");
+        label.className = "profile-template";
+        label.innerHTML = `
+          <input type="radio" name="profileTemplate" value="${escapeHtml(template.id)}"${template.id === profileDefaults.template ? " checked" : ""}>
+          <span><i class="profile-swatch" style="background:${template.bg}"></i>${escapeHtml(template.label)}</span>
+        `;
+        els.profileTemplateBox.appendChild(label);
       });
     }
 
@@ -965,6 +1136,157 @@
       ctx.fillText(data.publicUrl ? data.publicUrl.replace(/^https?:\/\//, "") : SITE_HOST, w / 2, 1090);
     }
 
+    function getProfileData() {
+      const selectedTemplate = els.profileTemplateBox.querySelector("input[name='profileTemplate']:checked");
+      return {
+        template: selectedTemplate?.value || profileDefaults.template,
+        name: els.profileName.value.trim(),
+        xId: els.profileX.value.trim(),
+        gender: els.profileGender.value.trim(),
+        history: els.profileHistory.value.trim(),
+        age: els.profileAge.value.trim(),
+        style: els.profileStyle.value.trim(),
+        trigger: els.profileTrigger.value.trim(),
+        favorite: els.profileFavorite.value.trim(),
+        cp: els.profileCp.value.trim(),
+        landmine: els.profileLandmine.value.trim(),
+        connect: els.profileConnect.value.trim(),
+        message: els.profileMessage.value.trim()
+      };
+    }
+
+    function setProfileData(data) {
+      const next = { ...profileDefaults, ...(data || {}) };
+      const templateInput = els.profileTemplateBox.querySelector(`input[value="${CSS.escape(next.template)}"]`);
+      if (templateInput) templateInput.checked = true;
+      els.profileName.value = next.name;
+      els.profileX.value = next.xId;
+      els.profileGender.value = next.gender;
+      els.profileHistory.value = next.history;
+      els.profileAge.value = next.age;
+      els.profileStyle.value = next.style;
+      els.profileTrigger.value = next.trigger;
+      els.profileFavorite.value = next.favorite;
+      els.profileCp.value = next.cp;
+      els.profileLandmine.value = next.landmine;
+      els.profileConnect.value = next.connect;
+      els.profileMessage.value = next.message;
+    }
+
+    function profileTheme(id) {
+      return profileTemplates.find((template) => template.id === id) || profileTemplates[0];
+    }
+
+    function profileValue(value, fallback = "特になし") {
+      return value && value.trim() ? value.trim() : fallback;
+    }
+
+    function drawProfileBox(ctx, theme, x, y, w, h, label, value, options = {}) {
+      roundedRect(ctx, x, y, w, h, 10);
+      ctx.fillStyle = theme.panel;
+      ctx.fill();
+      ctx.strokeStyle = theme.line;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = theme.ink;
+      ctx.font = "700 22px 'Yu Gothic', sans-serif";
+      ctx.fillText(label, x + 14, y + 32);
+      const maxLines = options.lines || 2;
+      const maxFont = options.large ? 32 : 28;
+      fitWrappedText(ctx, profileValue(value), x + 18, y + 72, {
+        maxWidth: w - 36,
+        maxLines,
+        maxFont,
+        minFont: 18,
+        weight: 700,
+        color: theme.ink,
+        lineRatio: 1.28
+      });
+    }
+
+    function drawProfileMini(ctx, theme, x, y, w, h, label, value) {
+      roundedRect(ctx, x, y, w, h, 10);
+      ctx.fillStyle = theme.panel;
+      ctx.fill();
+      ctx.strokeStyle = theme.line;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.textAlign = "left";
+      ctx.fillStyle = theme.ink;
+      ctx.font = "700 21px 'Yu Gothic', sans-serif";
+      ctx.fillText(label, x + 14, y + 28);
+      ctx.textAlign = "center";
+      fitSingleLineText(ctx, profileValue(value, "-"), x + w / 2, y + 76, {
+        maxWidth: w - 32,
+        maxFont: 31,
+        minFont: 18,
+        weight: 700,
+        color: theme.ink
+      });
+      ctx.textAlign = "left";
+    }
+
+    function drawProfileCard() {
+      const data = getProfileData();
+      const theme = profileTheme(data.template);
+      const canvas = els.profileCanvas;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = theme.bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      roundedRect(ctx, 44, 38, 330, 56, 9);
+      ctx.fillStyle = theme.panel;
+      ctx.fill();
+      ctx.strokeStyle = theme.line;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = theme.ink;
+      ctx.font = "700 25px 'Yu Gothic', sans-serif";
+      ctx.fillText("腐女子腐男子自己紹介カード", 58, 75);
+
+      const imageX = 66, imageY = 130, imageW = 288, imageH = 288;
+      roundedRect(ctx, imageX, imageY, imageW, imageH, 4);
+      ctx.fillStyle = theme.panel;
+      ctx.fill();
+      ctx.strokeStyle = theme.line;
+      ctx.stroke();
+      if (profileUploadedImage) {
+        drawImageCover(ctx, profileUploadedImage, imageX, imageY, imageW, imageH, 4);
+      } else {
+        ctx.textAlign = "center";
+        ctx.fillStyle = theme.accent;
+        ctx.font = "700 30px 'Yu Gothic', sans-serif";
+        ctx.fillText("画像", imageX + imageW / 2, imageY + imageH / 2 + 10);
+        ctx.textAlign = "left";
+      }
+
+      drawProfileMini(ctx, theme, 46, 446, 155, 103, "名前", data.name);
+      drawProfileMini(ctx, theme, 222, 446, 155, 103, "性別", data.gender || "♀・♂");
+      drawProfileMini(ctx, theme, 46, 572, 155, 103, "腐歴", data.history);
+      drawProfileMini(ctx, theme, 222, 572, 155, 103, "年齢", data.age);
+
+      drawProfileBox(ctx, theme, 436, 38, 333, 106, "腐ったきっかけ", data.trigger, { lines: 2 });
+      drawProfileBox(ctx, theme, 436, 174, 333, 106, "好きな作品・属性", data.favorite, { lines: 2 });
+      drawProfileBox(ctx, theme, 436, 310, 333, 106, "好きなCP", data.cp, { lines: 2 });
+      drawProfileBox(ctx, theme, 436, 446, 333, 103, "紙派？電子派？", data.style, { lines: 1 });
+      drawProfileBox(ctx, theme, 436, 582, 333, 93, "X ID", data.xId, { lines: 1 });
+
+      drawProfileBox(ctx, theme, 827, 38, 333, 106, "地雷・自衛", data.landmine, { lines: 2 });
+      drawProfileBox(ctx, theme, 827, 174, 333, 106, "どんな人と繋がりたい？", data.connect, { lines: 2 });
+      drawProfileBox(ctx, theme, 827, 310, 333, 242, "ひとこと", data.message, { lines: 4, large: true });
+      drawProfileBox(ctx, theme, 827, 582, 333, 93, "読了カード", "刺さった作品は読了カードに残す", { lines: 1 });
+
+      ctx.fillStyle = theme.ink;
+      ctx.font = "700 16px 'Yu Gothic', sans-serif";
+      ctx.fillText("BL読了カードメーカー / profile", 24, 654);
+      ctx.textAlign = "right";
+      ctx.fillText(SITE_HOST, 1176, 654);
+      ctx.textAlign = "left";
+    }
+
     function createDmmAffiliateUrl(keyword) {
       if (!AFFILIATE_SEARCH_PROVIDERS.dmm.enabled || !AFFILIATE_SEARCH_PROVIDERS.dmm.affiliateId) return "";
       const q = encodeURIComponent(keyword || "");
@@ -1041,6 +1363,15 @@
       updateSharePreview();
     }
 
+    function updateProfileAll() {
+      const data = getProfileData();
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(data));
+      els.profileImageStatus.textContent = profileUploadedImage
+        ? `${profileUploadedImageName} を使用中`
+        : "画像は自己紹介カード画像の作成・保存用です";
+      drawProfileCard();
+    }
+
     function loadSelectedImage(file) {
       if (!file) { uploadedImage = null; uploadedImageName = ""; updateAll(); return; }
       const reader = new FileReader();
@@ -1052,61 +1383,52 @@
       reader.readAsDataURL(file);
     }
 
-    function getImageFileName() {
-      const baseName = (els.title.value.trim() || "bl-reading-card").replace(/[\\/:*?"<>|]/g, "");
-      return `${baseName}-BL読了カード.png`;
-    }
-
-    function canvasToBlob(canvas) {
-      return new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-    }
-
-    function downloadBlob(blob, fileName) {
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.download = fileName;
-      link.href = url;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
-
-    async function saveImage() {
-      drawCard(els.canvas, getCardData(), { allowImage: true });
-      const fileName = getImageFileName();
-      const blob = await canvasToBlob(els.canvas);
-      if (!blob) {
-        const link = document.createElement("a");
-        link.download = fileName;
-        link.href = els.canvas.toDataURL("image/png");
-        link.click();
-        els.formStatus.textContent = "画像を保存しました。";
-        return;
-      }
-
-      const file = new File([blob], fileName, { type: "image/png" });
-      const shareData = {
-        files: [file],
-        title: "BL読了カード",
-        text: "作成した読了カード画像です。"
+    function loadProfileImage(file) {
+      if (!file) { profileUploadedImage = null; profileUploadedImageName = ""; updateProfileAll(); return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const image = new Image();
+        image.onload = () => { profileUploadedImage = image; profileUploadedImageName = file.name; updateProfileAll(); };
+        image.src = reader.result;
       };
+      reader.readAsDataURL(file);
+    }
 
-      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-        try {
-          await navigator.share(shareData);
-          els.formStatus.textContent = "保存メニューを開きました。スマホの共有先から画像を保存できます。";
-          return;
-        } catch (error) {
-          if (error && error.name === "AbortError") {
-            els.formStatus.textContent = "画像保存をキャンセルしました。";
-            return;
-          }
-        }
-      }
+    function saveImage() {
+      drawCard(els.canvas, getCardData(), { allowImage: true });
+      const link = document.createElement("a");
+      link.download = `${(els.title.value.trim() || "bl-reading-card").replace(/[\\/:*?"<>|]/g, "")}-BL読了カード.png`;
+      link.href = els.canvas.toDataURL("image/png");
+      link.click();
+    }
 
-      downloadBlob(blob, fileName);
-      els.formStatus.textContent = "画像を保存しました。スマホで開かない場合は、端末の共有メニューから保存してください。";
+    function saveProfileImage() {
+      drawProfileCard();
+      const data = getProfileData();
+      const link = document.createElement("a");
+      link.download = `${(data.name || "fujoshi-fudanshi-profile").replace(/[\\/:*?"<>|]/g, "")}-自己紹介カード.png`;
+      link.href = els.profileCanvas.toDataURL("image/png");
+      link.click();
+      els.profileStatus.textContent = "自己紹介カード画像を保存しました。";
+    }
+
+    function buildProfilePostText() {
+      const data = getProfileData();
+      return [
+        "腐女子腐男子自己紹介カードを作りました",
+        data.name ? `名前：${data.name}` : "",
+        data.favorite ? `好き：${data.favorite}` : "",
+        data.cp ? `CP：${data.cp}` : "",
+        data.connect ? `繋がりたい人：${data.connect}` : "",
+        "",
+        "#腐女子腐男子自己紹介カード",
+        "#BL読了カード"
+      ].filter(Boolean).join("\n");
+    }
+
+    async function copyProfilePostText() {
+      await navigator.clipboard.writeText(buildProfilePostText());
+      els.profileStatus.textContent = "自己紹介カード用の投稿文をコピーしました。";
     }
 
     function buildTagsForPost(data) {
@@ -1494,12 +1816,47 @@
       updateAll();
     }
 
+    function resetProfileInputs() {
+      setProfileData({
+        ...profileDefaults,
+        name: "しお",
+        gender: "秘密",
+        history: "8年",
+        age: "成人済",
+        style: "紙派・電子派",
+        trigger: "学生時代に読んだBL漫画で沼落ち",
+        favorite: "青春 / 主従 / 年下攻め / 商業BL",
+        cp: "固定も雑食も作品によります",
+        landmine: "特になし / 自衛します",
+        connect: "感想を言い合える人、読了カード作る人",
+        message: "いいねいただけたらお迎えに行きます。よろしくお願いします！"
+      });
+      els.profileImage.value = "";
+      profileUploadedImage = null;
+      profileUploadedImageName = "";
+      els.profileStatus.textContent = "";
+      updateProfileAll();
+    }
+
+    function prepareProfilePage() {
+      setSectionVisibility("profile");
+      try {
+        const stored = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || "null");
+        if (stored) setProfileData(stored);
+        else if (!els.profileName.value) resetProfileInputs();
+      } catch {
+        resetProfileInputs();
+      }
+      updateProfileAll();
+    }
+
     function route() {
       const rawPath = decodeURIComponent(location.pathname);
       const path = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : rawPath;
       if (path === "/cards") loadCardsPage();
       else if (path === "/admin-picks") loadAdminPicksPage();
       else if (path === "/create") prepareCreatePage();
+      else if (path === "/profile") prepareProfilePage();
       else if (path.startsWith("/tag/")) loadCardsPage(path.replace("/tag/", ""));
       else if (path.startsWith("/card/")) loadCardDetail(path.replace("/card/", ""));
       else if (path.startsWith("/work/")) loadWorkPage(path.replace("/work/", ""));
@@ -1516,18 +1873,29 @@
     }
 
     setupTags();
+    setupProfileTemplates();
     setupWorkSuggestions();
     setupMeters();
     updateTagLimit();
     updateAll();
+    updateProfileAll();
     route();
 
     document.addEventListener("input", (event) => {
+      if (event.target.closest("#profileArea")) {
+        updateProfileAll();
+        return;
+      }
       if (event.target.closest("#tagBox")) updateTagLimit(event.target);
       updateAll();
     });
     document.addEventListener("change", (event) => {
       if (event.target === els.image) { loadSelectedImage(event.target.files[0]); return; }
+      if (event.target === els.profileImage) { loadProfileImage(event.target.files[0]); return; }
+      if (event.target.closest("#profileArea")) {
+        updateProfileAll();
+        return;
+      }
       if (event.target.closest("#tagBox")) updateTagLimit(event.target);
       updateAll();
     });
@@ -1560,6 +1928,10 @@
     els.again.addEventListener("click", resetInputs);
     els.shareTemplate.addEventListener("change", updateSharePreview);
     els.clearImage.addEventListener("click", () => { els.image.value = ""; uploadedImage = null; uploadedImageName = ""; updateAll(); });
+    els.profileSave.addEventListener("click", saveProfileImage);
+    els.profileCopy.addEventListener("click", copyProfilePostText);
+    els.profileReset.addEventListener("click", resetProfileInputs);
+    els.profileClearImage.addEventListener("click", () => { els.profileImage.value = ""; profileUploadedImage = null; profileUploadedImageName = ""; updateProfileAll(); });
     els.tagFilter.addEventListener("change", () => {
       location.href = els.tagFilter.value ? `/tag/${encodeURIComponent(els.tagFilter.value)}` : "/cards";
     });

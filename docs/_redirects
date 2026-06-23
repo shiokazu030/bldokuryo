@@ -1,4 +1,5 @@
 /create /index.html 200
+/profile /index.html 200
 /cards /index.html 200
 /admin-picks /index.html 200
 /card/* /index.html 200
