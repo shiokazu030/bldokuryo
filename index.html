@@ -1182,50 +1182,58 @@
     }
 
     function drawProfileBox(ctx, theme, x, y, w, h, label, value, options = {}) {
+      ctx.save();
       roundedRect(ctx, x, y, w, h, 10);
       ctx.fillStyle = theme.panel;
       ctx.fill();
       ctx.strokeStyle = theme.line;
       ctx.lineWidth = 2;
       ctx.stroke();
+      roundedRect(ctx, x + 8, y + 8, w - 16, h - 16, 8);
+      ctx.clip();
       ctx.textAlign = "left";
       ctx.textBaseline = "alphabetic";
       ctx.fillStyle = theme.ink;
-      ctx.font = "700 22px 'Yu Gothic', sans-serif";
-      ctx.fillText(label, x + 14, y + 32);
+      ctx.font = "700 20px 'Yu Gothic', sans-serif";
+      ctx.fillText(label, x + 14, y + 30);
       const maxLines = options.lines || 2;
-      const maxFont = options.large ? 32 : 28;
-      fitWrappedText(ctx, profileValue(value), x + 18, y + 72, {
+      const maxFont = options.large ? 29 : 23;
+      fitWrappedText(ctx, profileValue(value), x + 18, y + 62, {
         maxWidth: w - 36,
         maxLines,
         maxFont,
-        minFont: 18,
+        minFont: 15,
         weight: 700,
         color: theme.ink,
-        lineRatio: 1.28
+        lineRatio: 1.18
       });
+      ctx.restore();
     }
 
     function drawProfileMini(ctx, theme, x, y, w, h, label, value) {
+      ctx.save();
       roundedRect(ctx, x, y, w, h, 10);
       ctx.fillStyle = theme.panel;
       ctx.fill();
       ctx.strokeStyle = theme.line;
       ctx.lineWidth = 2;
       ctx.stroke();
+      roundedRect(ctx, x + 8, y + 8, w - 16, h - 16, 8);
+      ctx.clip();
       ctx.textAlign = "left";
       ctx.fillStyle = theme.ink;
-      ctx.font = "700 21px 'Yu Gothic', sans-serif";
+      ctx.font = "700 19px 'Yu Gothic', sans-serif";
       ctx.fillText(label, x + 14, y + 28);
       ctx.textAlign = "center";
-      fitSingleLineText(ctx, profileValue(value, "-"), x + w / 2, y + 76, {
+      fitSingleLineText(ctx, profileValue(value, "-"), x + w / 2, y + 74, {
         maxWidth: w - 32,
-        maxFont: 31,
-        minFont: 18,
+        maxFont: 28,
+        minFont: 15,
         weight: 700,
         color: theme.ink
       });
       ctx.textAlign = "left";
+      ctx.restore();
     }
 
     function drawProfileCard() {
@@ -1237,14 +1245,14 @@
       ctx.fillStyle = theme.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      roundedRect(ctx, 44, 38, 330, 56, 9);
+      roundedRect(ctx, 44, 38, 352, 56, 9);
       ctx.fillStyle = theme.panel;
       ctx.fill();
       ctx.strokeStyle = theme.line;
       ctx.lineWidth = 2;
       ctx.stroke();
       ctx.fillStyle = theme.ink;
-      ctx.font = "700 25px 'Yu Gothic', sans-serif";
+      ctx.font = "700 23px 'Yu Gothic', sans-serif";
       ctx.fillText("腐女子腐男子自己紹介カード", 58, 75);
 
       const imageX = 66, imageY = 130, imageW = 288, imageH = 288;
@@ -1263,27 +1271,27 @@
         ctx.textAlign = "left";
       }
 
-      drawProfileMini(ctx, theme, 46, 446, 155, 103, "名前", data.name);
-      drawProfileMini(ctx, theme, 222, 446, 155, 103, "性別", data.gender || "♀・♂");
-      drawProfileMini(ctx, theme, 46, 572, 155, 103, "腐歴", data.history);
-      drawProfileMini(ctx, theme, 222, 572, 155, 103, "年齢", data.age);
+      drawProfileMini(ctx, theme, 46, 438, 155, 93, "名前", data.name);
+      drawProfileMini(ctx, theme, 222, 438, 155, 93, "性別", data.gender || "♀・♂");
+      drawProfileMini(ctx, theme, 46, 548, 155, 93, "腐歴", data.history);
+      drawProfileMini(ctx, theme, 222, 548, 155, 93, "年齢", data.age);
 
-      drawProfileBox(ctx, theme, 436, 38, 333, 106, "腐ったきっかけ", data.trigger, { lines: 2 });
-      drawProfileBox(ctx, theme, 436, 174, 333, 106, "好きな作品・属性", data.favorite, { lines: 2 });
-      drawProfileBox(ctx, theme, 436, 310, 333, 106, "好きなCP", data.cp, { lines: 2 });
-      drawProfileBox(ctx, theme, 436, 446, 333, 103, "紙派？電子派？", data.style, { lines: 1 });
-      drawProfileBox(ctx, theme, 436, 582, 333, 93, "X ID", data.xId, { lines: 1 });
+      drawProfileBox(ctx, theme, 436, 38, 333, 96, "腐ったきっかけ", data.trigger, { lines: 2 });
+      drawProfileBox(ctx, theme, 436, 158, 333, 96, "好きな作品・属性", data.favorite, { lines: 2 });
+      drawProfileBox(ctx, theme, 436, 278, 333, 96, "好きなCP", data.cp, { lines: 2 });
+      drawProfileBox(ctx, theme, 436, 398, 333, 96, "紙派？電子派？", data.style, { lines: 1 });
+      drawProfileBox(ctx, theme, 436, 518, 333, 96, "X ID", data.xId, { lines: 1 });
 
-      drawProfileBox(ctx, theme, 827, 38, 333, 106, "地雷・自衛", data.landmine, { lines: 2 });
-      drawProfileBox(ctx, theme, 827, 174, 333, 106, "どんな人と繋がりたい？", data.connect, { lines: 2 });
-      drawProfileBox(ctx, theme, 827, 310, 333, 242, "ひとこと", data.message, { lines: 4, large: true });
-      drawProfileBox(ctx, theme, 827, 582, 333, 93, "読了カード", "刺さった作品は読了カードに残す", { lines: 1 });
+      drawProfileBox(ctx, theme, 827, 38, 333, 96, "地雷・自衛", data.landmine, { lines: 2 });
+      drawProfileBox(ctx, theme, 827, 158, 333, 96, "どんな人と繋がりたい？", data.connect, { lines: 2 });
+      drawProfileBox(ctx, theme, 827, 278, 333, 216, "ひとこと", data.message, { lines: 4, large: true });
+      drawProfileBox(ctx, theme, 827, 518, 333, 96, "読了カード", "刺さった作品は読了カードに残す", { lines: 1 });
 
       ctx.fillStyle = theme.ink;
       ctx.font = "700 16px 'Yu Gothic', sans-serif";
-      ctx.fillText("BL読了カードメーカー / profile", 24, 654);
+      ctx.fillText("BL読了カードメーカー / profile", 24, 660);
       ctx.textAlign = "right";
-      ctx.fillText(SITE_HOST, 1176, 654);
+      ctx.fillText(SITE_HOST, 1176, 660);
       ctx.textAlign = "left";
     }
 
@@ -1402,13 +1410,43 @@
       link.click();
     }
 
-    function saveProfileImage() {
+    function canvasToBlob(canvas) {
+      return new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    }
+
+    async function saveProfileImage() {
       drawProfileCard();
       const data = getProfileData();
+      const fileName = `${(data.name || "fujoshi-fudanshi-profile").replace(/[\\/:*?"<>|]/g, "")}-自己紹介カード.png`;
+      const blob = await canvasToBlob(els.profileCanvas);
+      if (!blob) return;
+      const file = new File([blob], fileName, { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: "腐女子腐男子自己紹介カード",
+            text: "腐女子腐男子自己紹介カードを作りました"
+          });
+          els.profileStatus.textContent = "共有シートを開きました。画像保存や投稿先を選んでください。";
+          return;
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") return;
+        }
+      }
+      const url = URL.createObjectURL(blob);
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        window.open(url, "_blank", "noopener");
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        els.profileStatus.textContent = "画像を開きました。表示された画像を長押しして保存してください。";
+        return;
+      }
       const link = document.createElement("a");
-      link.download = `${(data.name || "fujoshi-fudanshi-profile").replace(/[\\/:*?"<>|]/g, "")}-自己紹介カード.png`;
-      link.href = els.profileCanvas.toDataURL("image/png");
+      link.download = fileName;
+      link.href = url;
       link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1200);
       els.profileStatus.textContent = "自己紹介カード画像を保存しました。";
     }
 
