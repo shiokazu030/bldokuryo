@@ -248,7 +248,7 @@
 
           <div class="actions">
             <button class="btn primary" id="createButton" type="submit">カードを作成</button>
-            <button class="btn secondary" id="saveButton" type="button">画像を保存</button>
+            <button class="btn secondary" id="saveButton" type="button">画像を保存/共有</button>
             <button class="btn ghost" id="copyButton" type="button">投稿文をコピー</button>
             <button class="btn ghost" id="resetButton" type="button">入力を整える</button>
           </div>
@@ -266,7 +266,7 @@
           </div>
           <div class="actions" id="completeActions">
             <button class="btn primary" id="xButton" type="button">Xに投稿する</button>
-            <button class="btn secondary" id="saveButtonBottom" type="button">画像を保存</button>
+            <button class="btn secondary" id="saveButtonBottom" type="button">画像を保存/共有</button>
             <button class="btn secondary" id="publishButton" type="button">サイトに投稿する</button>
             <a class="btn ghost hidden" id="publicPageButton" href="#">カード詳細ページを見る</a>
             <button class="btn ghost" id="againButton" type="button">もう1枚作る</button>
@@ -287,7 +287,7 @@
           </label>
           <div class="share-preview" id="sharePreview"></div>
           <button class="btn secondary" id="copyButtonBottom" type="button">投稿文をコピー</button>
-          <p class="hint">画像を保存してからXで添付してください。Xの仕様上、このボタンだけでは画像添付まではできません。</p>
+          <p class="hint">スマホでは「画像を保存/共有」から保存メニューを開けます。Xの仕様上、このボタンだけでは画像添付まではできません。</p>
         </aside>
       </div>
     </section>
@@ -1052,12 +1052,61 @@
       reader.readAsDataURL(file);
     }
 
-    function saveImage() {
-      drawCard(els.canvas, getCardData(), { allowImage: true });
+    function getImageFileName() {
+      const baseName = (els.title.value.trim() || "bl-reading-card").replace(/[\\/:*?"<>|]/g, "");
+      return `${baseName}-BL読了カード.png`;
+    }
+
+    function canvasToBlob(canvas) {
+      return new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    }
+
+    function downloadBlob(blob, fileName) {
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.download = `${(els.title.value.trim() || "bl-reading-card").replace(/[\\/:*?"<>|]/g, "")}-BL読了カード.png`;
-      link.href = els.canvas.toDataURL("image/png");
+      link.download = fileName;
+      link.href = url;
+      document.body.appendChild(link);
       link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function saveImage() {
+      drawCard(els.canvas, getCardData(), { allowImage: true });
+      const fileName = getImageFileName();
+      const blob = await canvasToBlob(els.canvas);
+      if (!blob) {
+        const link = document.createElement("a");
+        link.download = fileName;
+        link.href = els.canvas.toDataURL("image/png");
+        link.click();
+        els.formStatus.textContent = "画像を保存しました。";
+        return;
+      }
+
+      const file = new File([blob], fileName, { type: "image/png" });
+      const shareData = {
+        files: [file],
+        title: "BL読了カード",
+        text: "作成した読了カード画像です。"
+      };
+
+      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        try {
+          await navigator.share(shareData);
+          els.formStatus.textContent = "保存メニューを開きました。スマホの共有先から画像を保存できます。";
+          return;
+        } catch (error) {
+          if (error && error.name === "AbortError") {
+            els.formStatus.textContent = "画像保存をキャンセルしました。";
+            return;
+          }
+        }
+      }
+
+      downloadBlob(blob, fileName);
+      els.formStatus.textContent = "画像を保存しました。スマホで開かない場合は、端末の共有メニューから保存してください。";
     }
 
     function buildTagsForPost(data) {
